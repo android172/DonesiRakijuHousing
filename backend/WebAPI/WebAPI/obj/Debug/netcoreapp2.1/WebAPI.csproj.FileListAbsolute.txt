@@ -1,0 +1,14 @@
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\bin\Debug\netcoreapp2.1\WebAPI.deps.json
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\bin\Debug\netcoreapp2.1\WebAPI.runtimeconfig.json
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\bin\Debug\netcoreapp2.1\WebAPI.runtimeconfig.dev.json
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\bin\Debug\netcoreapp2.1\WebAPI.dll
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\bin\Debug\netcoreapp2.1\WebAPI.pdb
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.csprojAssemblyReference.cache
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.csproj.CoreCompileInputs.cache
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.RazorAssemblyInfo.cache
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.RazorAssemblyInfo.cs
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.AssemblyInfoInputs.cache
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.AssemblyInfo.cs
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.RazorTargetAssemblyInfo.cache
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.dll
+E:\Repos\PMU\DonesiRakijuHousing\backend\WebAPI\WebAPI\obj\Debug\netcoreapp2.1\WebAPI.pdb
