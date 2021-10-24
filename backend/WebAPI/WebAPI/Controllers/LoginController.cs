@@ -1,48 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Helpers;
 using WebAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPI.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
 
-        SkuciSeDBContext ctx;
+        private readonly SkuciSeDBContext ctx;
+        private readonly IJwtHelper jwtHelper;
 
-        public LoginController(SkuciSeDBContext _ctx)
+        public LoginController(SkuciSeDBContext _ctx, IJwtHelper _jwtHelper)
         {
             ctx = _ctx;
+            jwtHelper = _jwtHelper;
         }
 
         [HttpGet]
-        [Route("user_login_name")]
-        public ActionResult<User> UserLoginName([FromForm] string username, [FromForm] string password)
+        [Route("user_login")]
+        public ActionResult<string> UserLogin([FromForm] string usernameOrEmail, [FromForm] string password)
         {
-            var exists = ctx.Users.Where(u => u.Username == username && u.Password == password);
+            if (usernameOrEmail.Equals("debug"))        // DEBUG
+            {
+                User user = new User { Username = "Debug" };
+                string token = jwtHelper.CreateToken(user);
+                return Ok(new { token });
+            }
+                
+            var exists = ctx.Users.Where(u => (u.Username == usernameOrEmail || u.Email == usernameOrEmail) && u.Password == password);
 
             if (exists.Any())
-                return exists.FirstOrDefault();
-
-            return NotFound("User doesnt exist");
-
-        }
-
-        [HttpGet]
-        [Route("user_login_mail")]
-        public ActionResult<User> UserLoginMail([FromForm] string email, [FromForm] string password)
-        {
-            var exists = ctx.Users.Where(u => u.Email == email && u.Password == password);
-
-            if (exists.Any())
-                return exists.FirstOrDefault();
+            {
+                User user = exists.FirstOrDefault();
+                string token = jwtHelper.CreateToken(user);
+                return Ok(new { token });
+            }
+                
 
             return NotFound("User doesnt exist");
 
