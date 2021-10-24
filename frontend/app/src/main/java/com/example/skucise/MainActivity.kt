@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_register.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,9 +19,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Set default fragment
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.frc_login_or_register, LoginFragment())
-        fragmentTransaction.commit()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.frc_login_or_register, LoginFragment())
+            .commit()
+
     }
 
     private fun changeActiveLRFragment(fragment: Fragment) {

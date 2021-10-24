@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/et_login_username_or_email" />
 
     <Button
-        android:id="@+id/bt_login"
+        android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Prijavi se"
@@ -50,10 +50,10 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_login" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
 
     <Button
-        android:id="@+id/bt_forgot_password"
+        android:id="@+id/btn_forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Zaboravili ste šifru?"
