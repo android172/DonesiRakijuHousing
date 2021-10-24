@@ -24,9 +24,9 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("user_login_name")]
-        public ActionResult<User> UserLoginName([FromForm] string username, [FromForm] string firstName)
+        public ActionResult<User> UserLoginName([FromForm] string username, [FromForm] string password)
         {
-            var exists = ctx.Users.Where(u => u.Username == username && u.FirstName == firstName);
+            var exists = ctx.Users.Where(u => u.Username == username && u.Password == password);
 
             if (exists.Any())
                 return exists.FirstOrDefault();
@@ -37,9 +37,9 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Route("user_login_mail")]
-        public ActionResult<User> UserLoginMail([FromForm] string email, [FromForm] string firstName)
+        public ActionResult<User> UserLoginMail([FromForm] string email, [FromForm] string password)
         {
-            var exists = ctx.Users.Where(u => u.Email == email && u.FirstName == firstName);
+            var exists = ctx.Users.Where(u => u.Email == email && u.Password == password);
 
             if (exists.Any())
                 return exists.FirstOrDefault();
@@ -50,21 +50,27 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("user_register")]
-        public ActionResult<User> RegisterUser([FromForm] string username, [FromForm] string firstName, [FromForm] string lastName, [FromForm] string email)
+        public ActionResult<User> RegisterUser([FromForm] string firstName, [FromForm] string lastName, [FromForm] string email, [FromForm] string username, [FromForm] string password)
         {
-            User newUser = new User { Username = username, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now };
-
-            try
+            if(email.Contains("@"))
             {
-                ctx.Users.Add(newUser);
-                ctx.SaveChanges();
+                User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now };
 
-                return Ok("User Added");
+                try
+                {
+                    ctx.Users.Add(newUser);
+                    ctx.SaveChanges();
+
+                    return Ok("User Added");
+                }
+                catch (Exception e)
+                {
+                    return StatusCode(500, "Failed to add user");
+                }
             }
-            catch(Exception e)
-            {
-                return StatusCode(400, "Failed to add user");
-            }
+
+            return StatusCode(400, "Email is not in correct format");
+            
         }
     }
 }
