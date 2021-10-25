@@ -11,10 +11,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         btn_login_fragment.setOnClickListener {
-            changeActiveLRFragment(LoginFragment())
+            loginButtonClicked(LoginFragment())
         }
         btn_register_fragment.setOnClickListener {
-            changeActiveLRFragment(RegisterFragment())
+            registerButtonClicked(RegisterFragment())
         }
 
         // Set default fragment
@@ -27,5 +27,19 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frc_login_or_register, fragment)
         fragmentTransaction.commit()
+    }
+
+    private fun loginButtonClicked(fragment: Fragment){
+        //change button color
+        btn_login_fragment.setBackground(getResources().getDrawable(R.drawable.left_button_style_light))
+        btn_register_fragment.setBackground(getResources().getDrawable(R.drawable.right_button_style_dark))
+        changeActiveLRFragment(fragment)
+    }
+
+    private fun registerButtonClicked(fragment: Fragment){
+        //change button color
+        btn_login_fragment.setBackground(getResources().getDrawable(R.drawable.left_button_style_dark))
+        btn_register_fragment.setBackground(getResources().getDrawable(R.drawable.right_button_style_light))
+        changeActiveLRFragment(fragment)
     }
 }

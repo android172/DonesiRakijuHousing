@@ -2,13 +2,14 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
 
     <EditText
         android:id="@+id/et_login_username_or_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:autofillHints="username|emailAddress"
         android:ems="10"
         android:hint="Korisnicko ime ili Email..."
@@ -22,7 +23,7 @@
         android:id="@+id/et_login_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:autofillHints="password"
         android:ems="10"
         android:hint="Šifra ..."
@@ -36,8 +37,9 @@
         android:id="@+id/bt_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="Prijavi se"
-        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_login_password" />
@@ -56,11 +58,12 @@
         android:id="@+id/bt_forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/transparent"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_marginBottom="8dp"
         android:text="Zaboravili ste šifru?"
-        android:background="@color/white"
         android:textColor="@color/black"
-        android:padding="0dp"
-        android:layout_marginTop="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_login_unsuccessful" />
