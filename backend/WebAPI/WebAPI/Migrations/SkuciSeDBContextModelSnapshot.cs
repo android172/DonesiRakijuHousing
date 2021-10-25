@@ -14,22 +14,31 @@ namespace WebAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024");
+                .HasAnnotation("ProductVersion", "5.0.11");
 
             modelBuilder.Entity("WebAPI.Models.User", b =>
                 {
                     b.Property<uint>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DateCreated");
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("Email");
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("TEXT");
 
-                    b.Property<string>("Username");
+                    b.Property<string>("Password")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -42,9 +51,26 @@ namespace WebAPI.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = 1u, DateCreated = new DateTime(2021, 10, 23, 21, 53, 0, 928, DateTimeKind.Local), Email = "test@mail.com", FirstName = "John", LastName = "Doe", Username = "test" },
-                        new { Id = 2u, DateCreated = new DateTime(2021, 10, 23, 21, 53, 0, 930, DateTimeKind.Local), Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", Username = "test2" }
-                    );
+                        new
+                        {
+                            Id = 1u,
+                            DateCreated = new DateTime(2021, 10, 24, 18, 0, 3, 699, DateTimeKind.Local).AddTicks(3224),
+                            Email = "test@mail.com",
+                            FirstName = "John",
+                            LastName = "Doe",
+                            Password = "test",
+                            Username = "test"
+                        },
+                        new
+                        {
+                            Id = 2u,
+                            DateCreated = new DateTime(2021, 10, 24, 18, 0, 3, 702, DateTimeKind.Local).AddTicks(3208),
+                            Email = "test2@mail.com",
+                            FirstName = "Jack",
+                            LastName = "Daniels",
+                            Password = "test2",
+                            Username = "test2"
+                        });
                 });
 #pragma warning restore 612, 618
         }

@@ -22,10 +22,10 @@ namespace WebAPI.Models
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Username = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now});
+                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now});
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 2, Username = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now });
+                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now });
         }
     }
 }
