@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("user_register")]
-        public ActionResult<User> RegisterUser(string firstName, string lastName, string email, string username, string password)
+        public ActionResult<string> RegisterUser(string firstName, string lastName, string email, string username, string password)
         {
             Regex imePrezimeReg = new Regex(@"^([ \u00c0-\u01ffa-zA-Z'\-])+$");
             Regex usernameReg = new Regex(@"^[A-Za-z0-9_-]{4,16}$");
