@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">SkućiSe</string>
+    <string name="username_hint2">Korisničko ime ili email…</string>
+    <string name="username_hint">Korisničko ime</string>
+    <string name="forgot_password">Zaboravili ste lozinku?</string>
+    <string name="password_string">Lozinka…</string>
+    <string name="password2_string">Ponovi lozinku</string>
+    <string name="login_string">Prijavi se</string>
 </resources>
