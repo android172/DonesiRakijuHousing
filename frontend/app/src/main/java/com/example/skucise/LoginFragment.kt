@@ -44,7 +44,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             params["password"] = password
             ReqSender.sendRequest(
                 context = this.activity,
-                Request.Method.GET,
+                Request.Method.POST,
                 url,
                 params,
                 { response ->

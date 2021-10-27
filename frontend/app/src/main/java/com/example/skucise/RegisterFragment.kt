@@ -43,7 +43,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 return@setOnClickListener
             }
 
-            if (!Regex("^[a-z0-9_-]{4,16}$").matches(username)) {
+            if (!Regex("^[A-Za-z0-9_-]{4,16}$").matches(username)) {
                 reportError("Korisničko ime mora sadržati od 4 do 16 karaktera, i to samo slova abecede, brojeve, donju crtu ili crticu.")
                 return@setOnClickListener
             }
@@ -68,9 +68,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             params["username"] = username
             params["password"] = password
 
-            ReqSender.sendRequest(
+            ReqSender.sendRequestString(
                 context = this.activity,
-                method = Request.Method.GET,
+                method = Request.Method.POST,
                 url = url,
                 params = params,
                 listener = { response ->
