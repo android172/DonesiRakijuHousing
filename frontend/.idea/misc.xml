@@ -3,10 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Fax/Kilton/DonesiRakijuHousing/frontend/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Fax/Kilton/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_login.xml" value="0.264" />
-        <entry key="..\:/Fax/Kilton/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_register.xml" value="0.264" />
-        <entry key="..\:/Fax/Kilton/DonesiRakijuHousing/frontend/app/src/main/res/layout/login.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/bottom_round_style.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/btn_style1.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/ic_launcher_background.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/left_button_style_dark.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/left_button_style_light.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/right_button_style.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/right_button_style_dark.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/right_button_style_light.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/roundstyle.xml" value="0.275390625" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_login.xml" value="0.2024793388429752" />
+        <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_register.xml" value="0.25" />
       </map>
     </option>
   </component>

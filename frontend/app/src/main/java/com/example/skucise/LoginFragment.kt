@@ -15,10 +15,6 @@ import android.text.InputFilter
 
 import android.text.Spanned
 
-
-
-
-
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

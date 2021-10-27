@@ -11,4 +11,6 @@
     <color name="transparent_dark">#A0555555</color>
     <color name="transparent_light">#A0AAAAAA</color>
     <color name="logo_color">#FF1E74B1</color>
+    <color name="red">#FFFF0000</color>
+    <color name="error_red">#FFCC0000</color>
 </resources>
