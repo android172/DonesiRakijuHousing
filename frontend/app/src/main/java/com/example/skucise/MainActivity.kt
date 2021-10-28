@@ -3,6 +3,7 @@ package com.example.skucise
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import io.alterac.blurkit.BlurLayout
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_register.*
 
@@ -24,6 +25,11 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frc_login_or_register, LoginFragment())
             .commit()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        blur_layout.startBlur()
     }
 
     private fun changeActiveLRFragment(fragment: Fragment) {
