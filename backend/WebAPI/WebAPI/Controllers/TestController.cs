@@ -46,5 +46,80 @@ namespace WebAPI.Controllers
             ctx.SaveChanges();
             return newUser;
         }
+
+        [HttpGet]
+        [Route("testing")]
+        public ActionResult<List<object>> Tester(int adsPerPage, int pageNum, string orderBy, bool ascending, string city, decimal priceMin, decimal priceMax, string saleType, decimal sizeMin, decimal sizeMax, string structureType, int numOfBedrooms, int numOfBathrooms, bool furnished, string residenceType)
+        {
+            //var adverts = ctx.Adverts.Where(a => (a.Price <= priceMax && a.Price >= priceMin) &&
+            //                        a.SaleType.ToString() == saleType &&
+            //                        (a.Size <= sizeMax && a.Size >= sizeMin) &&
+            //                        a.StructureType.ToString() == structureType &&
+            //                        a.NumBedrooms == numOfBedrooms &&
+            //                        a.NumBathrooms == numOfBathrooms &&
+            //                        a.Furnished == Furnished &&
+            //                        a.ResidenceType.ToString() == ResidenceType).OrderBy(a => 3);
+
+            List<object> returns = new List<object>();
+
+            if (adsPerPage == 0)
+                returns.Add(new { adsPerPage = 1 });
+            else
+                returns.Add(new { adsPerPage = adsPerPage });
+
+            if (pageNum == 0)
+                returns.Add(new { pageNum = 1 });
+            else
+                returns.Add(new { pageNum = pageNum });
+
+            if (numOfBedrooms != 0)
+                returns.Add(new { numOfBedrooms = 2 });
+
+            if (numOfBathrooms != 0)
+                returns.Add(new { numOfBathrooms = 1 });
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
+                returns.Add(new { orderBy = orderBy });
+
+            if(ascending)
+                returns.Add(new { ascending = ascending });
+
+            if (furnished)
+                returns.Add(new { furnished = furnished });
+
+            if (!string.IsNullOrWhiteSpace(city))
+                returns.Add(new { city = city });
+
+            if (priceMin != 0)
+                returns.Add(new { priceMin = priceMin });
+
+            if (priceMax == 0)
+                returns.Add(new { priceMax = decimal.MaxValue });
+            else
+                returns.Add(new { priceMax = priceMax });
+
+            if (sizeMin != 0)
+                returns.Add(new { sizeMin = sizeMin });
+
+            if (sizeMax == 0)
+                returns.Add(new { sizeMax = decimal.MaxValue });
+            else
+                returns.Add(new { sizeMax = sizeMax });
+
+            if (!string.IsNullOrWhiteSpace(saleType))
+                returns.Add(new { saleType = saleType });
+
+            if (!string.IsNullOrWhiteSpace(structureType))
+                returns.Add(new { structureType = structureType });
+
+            if (!string.IsNullOrWhiteSpace(residenceType))
+                returns.Add(new { residenceType = residenceType });
+
+            return returns;
+
+
+
+
+        }
     }
 }

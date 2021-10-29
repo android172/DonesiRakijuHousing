@@ -21,6 +21,15 @@ namespace WebAPI.Models
         public bool Furnished { get; set; }
         public uint YearOfMake { get; set; }
         public DateTime DateCreated { get; set; }
+
+        public static implicit operator Listing(Advert a)
+        {
+            Listing b = new Listing { Id = a.Id, Price = a.Price, Location = a.Location, 
+                                ResidenceType = a.ResidenceType, SaleType = a.SaleType, Size = a.Size, 
+                                StructureType = a.StructureType };
+
+            return b;
+        }
     }
 
     public enum ResidenceType { Apartment, House }
