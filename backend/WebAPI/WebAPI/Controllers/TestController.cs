@@ -11,11 +11,11 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class TestController : ControllerBase
     {
         SkuciSeDBContext ctx;
 
-        public UsersController(SkuciSeDBContext _ctx)
+        public TestController(SkuciSeDBContext _ctx)
         {
             ctx = _ctx;
         }
@@ -30,6 +30,12 @@ namespace WebAPI.Controllers
         public ActionResult<DbSet<User>> GetUsers()
         {
             return ctx.Users;
+        }
+
+        [HttpGet("get_all_adverts")]
+        public ActionResult<DbSet<Advert>> GetAdverts()
+        {
+            return ctx.Adverts;
         }
 
         [HttpPost("add_user")]
