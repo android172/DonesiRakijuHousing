@@ -11,6 +11,10 @@ class SessionManager {
             token = new_token
         }
 
+        fun isActive() : Boolean {
+            return token == null
+        }
+
         fun stopSession() {
             token = null
         }

@@ -1,10 +1,12 @@
 package com.example.skucise.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.skucise.R
+import com.example.skucise.SessionManager
 import com.example.skucise.fragments.LoginFragment
 import com.example.skucise.fragments.RegisterFragment
 //import io.alterac.blurkit.BlurLayout
@@ -14,6 +16,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (SessionManager.isActive()) {
+            startActivity(Intent(this, NavigationActivity::class.java))
+            finish()
+        }
 
         btn_login_fragment.setOnClickListener {
             loginButtonClicked(LoginFragment())
