@@ -1,11 +1,14 @@
-package com.example.skucise
+package com.example.skucise.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import io.alterac.blurkit.BlurLayout
+import com.example.skucise.R
+import com.example.skucise.fragments.LoginFragment
+import com.example.skucise.fragments.RegisterFragment
+//import io.alterac.blurkit.BlurLayout
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_register.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        blur_layout.startBlur()
-    }
-
     private fun changeActiveLRFragment(fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.frc_login_or_register, fragment)
@@ -40,15 +38,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun loginButtonClicked(fragment: Fragment){
         //change button color
-        btn_login_fragment.setBackground(getResources().getDrawable(R.drawable.left_button_style_light))
-        btn_register_fragment.setBackground(getResources().getDrawable(R.drawable.right_button_style_dark))
+        btn_login_fragment.background = ContextCompat.getDrawable(this,
+            R.drawable.left_button_style_light
+        )
+        btn_register_fragment.background = ContextCompat.getDrawable(this,
+            R.drawable.right_button_style_dark
+        )
         changeActiveLRFragment(fragment)
     }
 
     private fun registerButtonClicked(fragment: Fragment){
         //change button color
-        btn_login_fragment.setBackground(getResources().getDrawable(R.drawable.left_button_style_dark))
-        btn_register_fragment.setBackground(getResources().getDrawable(R.drawable.right_button_style_light))
+        btn_login_fragment.background = ContextCompat.getDrawable(this,
+            R.drawable.left_button_style_dark
+        )
+        btn_register_fragment.background = ContextCompat.getDrawable(this,
+            R.drawable.right_button_style_light
+        )
         changeActiveLRFragment(fragment)
     }
 }

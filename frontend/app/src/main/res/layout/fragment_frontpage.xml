@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_buy_real_estate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kupovina nekretnina"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_buy_real_estate_flavor_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="neki flavor text"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_buy_real_estate" />
+    <Button
+        android:id="@+id/btn_search_buy_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pretraži nekretnine"
+        app:layout_constraintTop_toBottomOf="@+id/tv_buy_real_estate_flavor_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_rent_real_estate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iznajmljivanje nekretnina"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_search_buy_options" />
+    <TextView
+        android:id="@+id/tv_rent_real_estate_flavor_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="neki flavor text"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rent_real_estate" />
+    <Button
+        android:id="@+id/btn_search_rent_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pretraži iznajmljivanja"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rent_real_estate_flavor_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/tv_sell_real_estate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prodaja nekretnina"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_search_rent_options" />
+    <TextView
+        android:id="@+id/tv_sell_real_estate_flavor_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="neki flavor text"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sell_real_estate" />
+    <Button
+        android:id="@+id/btn_search_sell_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Postavi oglas"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sell_real_estate_flavor_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

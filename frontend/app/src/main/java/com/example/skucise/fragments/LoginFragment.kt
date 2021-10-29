@@ -1,19 +1,17 @@
-package com.example.skucise
+package com.example.skucise.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.fragment_login.*
 import org.json.JSONException
-import org.json.JSONObject
-import com.android.volley.AuthFailureError
 import com.android.volley.Request
 import android.text.InputFilter
-
-import android.text.Spanned
+import com.example.skucise.activities.NavigationActivity
+import com.example.skucise.R
+import com.example.skucise.ReqSender
+import com.example.skucise.SessionManager
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -45,9 +43,12 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 params,
                 { response ->
                     try {
-                        reportError("response:\n${response.toString()}")
-                    }
-                    catch (e: JSONException) {
+                        val token = response.getString("token")
+                        SessionManager.startSession(token)
+
+                        startActivity(Intent(this.activity, NavigationActivity::class.java))
+                        this.activity?.finish()
+                    } catch (e: JSONException) {
                         reportError("json_error:\n$e")
                     }
                 },

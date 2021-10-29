@@ -1,10 +1,12 @@
-package com.example.skucise
+package com.example.skucise.fragments
 
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
+import com.example.skucise.R
+import com.example.skucise.ReqSender
 import kotlinx.android.synthetic.main.fragment_register.*
 import org.json.JSONException
 
@@ -75,9 +77,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 params = params,
                 listener = { response ->
                     try {
-                        reportError("response:\n${response.toString()}")
-                    }
-                    catch (e: JSONException) {
+                        reportError("response:\n${response}")
+                    } catch (e: JSONException) {
                         reportError("json_error:\n$e")
                     }
                 },
