@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,15 +11,20 @@ using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {
         SkuciSeDBContext ctx;
 
-        public TestController(SkuciSeDBContext _ctx)
+        private readonly string username;
+
+        public TestController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
+
+            //username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [HttpGet("get_user")]
@@ -73,10 +80,10 @@ namespace WebAPI.Controllers
                 returns.Add(new { pageNum = pageNum });
 
             if (numOfBedrooms != 0)
-                returns.Add(new { numOfBedrooms = 2 });
+                returns.Add(new { numOfBedrooms = numOfBedrooms });
 
             if (numOfBathrooms != 0)
-                returns.Add(new { numOfBathrooms = 1 });
+                returns.Add(new { numOfBathrooms = numOfBathrooms });
 
             if (!string.IsNullOrWhiteSpace(orderBy))
                 returns.Add(new { orderBy = orderBy });
@@ -117,9 +124,14 @@ namespace WebAPI.Controllers
 
             return returns;
 
+        }
 
-
-
+        //[Authorize]
+        [HttpPost]
+        [Route("testTokenInfo")]
+        public ActionResult<string> TestToken()
+        {
+            return username;
         }
     }
 }
