@@ -12,22 +12,26 @@ import com.example.skucise.activities.NavigationActivity
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.example.skucise.SessionManager
+import com.example.skucise.Util
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
+    private lateinit var errorReport : Util.Companion.ErrorReport
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        errorReport = Util.Companion.ErrorReport(tv_login_unsuccessful)
 
         btn_login.setOnClickListener{
             val usernameOrEmail = et_login_username_or_email.text.toString()
             val password = et_login_password.text.toString()
 
             if (usernameOrEmail.isBlank()) {
-                reportError("Polje za Email/Korisničko ime je prazno!")
+                errorReport.reportError("Polje za Email/Korisničko ime je prazno!")
                 return@setOnClickListener
             }
             if (password.isBlank()) {
-                reportError("Polje za Šifru ime je prazno!")
+                errorReport.reportError("Polje za Šifru ime je prazno!")
                 return@setOnClickListener
             }
 
@@ -49,11 +53,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         startActivity(Intent(this.activity, NavigationActivity::class.java))
                         this.activity?.finish()
                     } catch (e: JSONException) {
-                        reportError("json_error:\n$e")
+                        errorReport.reportError("json_error:\n$e")
                     }
                 },
                 { error ->
-                    reportError("error:\n$error")
+                    errorReport.reportError("error:\n$error")
                 }
             )
         }
@@ -64,10 +68,5 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         et_login_password.filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
             source.toString().filterNot { it.isWhitespace() }
         })
-    }
-
-    private fun reportError(message: String) {
-        tv_login_unsuccessful.text = message
-        tv_login_unsuccessful.visibility = View.VISIBLE
     }
 }

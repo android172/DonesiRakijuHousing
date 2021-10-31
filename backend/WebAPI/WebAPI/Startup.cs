@@ -50,6 +50,7 @@ namespace WebAPI
                 };
             });
 
+            services.AddHttpContextAccessor();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Latest);
         }
 

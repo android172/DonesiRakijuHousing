@@ -9,18 +9,12 @@ import com.example.skucise.R
 import com.example.skucise.SessionManager
 import com.example.skucise.fragments.LoginFragment
 import com.example.skucise.fragments.RegisterFragment
-//import io.alterac.blurkit.BlurLayout
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        /*if (SessionManager.isActive()) {
-            startActivity(Intent(this, NavigationActivity::class.java))
-            finish()
-        }*/
 
         btn_login_fragment.setOnClickListener {
             loginButtonClicked(LoginFragment())
@@ -35,6 +29,11 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frc_login_or_register, LoginFragment())
             .commit()
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        blur_layout.startBlur()
     }
 
     private fun changeActiveLRFragment(fragment: Fragment) {
