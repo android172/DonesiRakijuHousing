@@ -17,10 +17,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (SessionManager.isActive()) {
+        /*if (SessionManager.isActive()) {
             startActivity(Intent(this, NavigationActivity::class.java))
             finish()
-        }
+        }*/
 
         btn_login_fragment.setOnClickListener {
             loginButtonClicked(LoginFragment())
