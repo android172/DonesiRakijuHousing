@@ -21,8 +21,9 @@ namespace WebAPI.Controllers
         public UsersController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
-            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userId = int.Parse(temp);
         }
 
         [HttpPost]
