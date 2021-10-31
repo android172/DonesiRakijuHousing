@@ -15,8 +15,17 @@ namespace WebAPI.Models
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<User> Users_UnconfirmedEmail { get; set; }
         public DbSet<Advert> Adverts { get; set; }
         public DbSet<AdvertImage> AdvertImages { get; set; }
+
+        public static List<string> CityNames = new List<string>() { "Beograd", "Novi Sad", "Niš", "Kragujevac",
+                                                                "Priština", "Subotica", "Zrenjanin", "Pančevo",
+                                                                "Čačak", "Kruševac", "Kraljevo", "Novi Pazar",
+                                                                "Smederevo", "Leskovac", "Užice", "Vranje", "Valjevo",
+                                                                "Šabac", "Sombor", "Požarevac", "Pirot", "Zaječar",
+                                                                "Kikinda", "Sremska Mitrovica", "Jagodina", "Vršac",
+                                                                "Bor", "Prokuplje", "Loznica"};
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

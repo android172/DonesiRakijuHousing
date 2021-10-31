@@ -13,13 +13,6 @@ namespace WebAPI.Controllers
     public class AdvertController : Controller
     {
         private readonly SkuciSeDBContext ctx;
-        private List<String> ListaGradova = new List<string>() { "Beograd", "Novi Sad", "Niš", "Kragujevac",
-                                                                "Priština", "Subotica", "Zrenjanin", "Pančevo",
-                                                                "Čačak", "Kruševac", "Kraljevo", "Novi Pazar",
-                                                                "Smederevo", "Leskovac", "Užice", "Vranje", "Valjevo",
-                                                                "Šabac", "Sombor", "Požarevac", "Pirot", "Zaječar",
-                                                                "Kikinda", "Sremska Mitrovica", "Jagodina", "Vršac",
-                                                                "Bor", "Prokuplje", "Loznica"};
 
         public AdvertController(SkuciSeDBContext _ctx)
         {
@@ -40,7 +33,7 @@ namespace WebAPI.Controllers
         [Route("get_all_cities")]
         public ActionResult<IEnumerable<String>> GetAllCities()
         {
-            return ListaGradova;
+            return SkuciSeDBContext.CityNames;
         }
 
         [HttpPost]
