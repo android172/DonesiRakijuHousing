@@ -12,7 +12,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/users/get_all_users",
+      "launchUrl": "api/test/get_all_adverts",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,7 @@
     "WebAPI": {
       "commandName": "Project",
       "launchBrowser": false,
-      "launchUrl": "api/values",
+      "launchUrl": "api/test/get_all_adverts",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,20 +9,15 @@ using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TestController : ControllerBase
     {
         SkuciSeDBContext ctx;
 
-        private readonly string username;
-
-        public TestController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
+        public TestController(SkuciSeDBContext _ctx)
         {
             ctx = _ctx;
-
-            //username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
         }
 
         [HttpGet("get_user")]
@@ -39,11 +32,11 @@ namespace WebAPI.Controllers
             return ctx.Users;
         }
 
-        //[HttpGet("get_all_adverts")]
-        //public ActionResult<DbSet<Advert>> GetAdverts()
-        //{
-        //    return ctx.Adverts;
-        //}
+        [HttpGet("get_all_adverts")]
+        public ActionResult<DbSet<Advert>> GetAdverts()
+        {
+            return ctx.Adverts;
+        }
 
         [HttpPost("add_user")]
         public ActionResult<User> AddUser([FromForm] string firstName, [FromForm] string lastName)
@@ -80,10 +73,10 @@ namespace WebAPI.Controllers
                 returns.Add(new { pageNum = pageNum });
 
             if (numOfBedrooms != 0)
-                returns.Add(new { numOfBedrooms = numOfBedrooms });
+                returns.Add(new { numOfBedrooms = 2 });
 
             if (numOfBathrooms != 0)
-                returns.Add(new { numOfBathrooms = numOfBathrooms });
+                returns.Add(new { numOfBathrooms = 1 });
 
             if (!string.IsNullOrWhiteSpace(orderBy))
                 returns.Add(new { orderBy = orderBy });
@@ -124,14 +117,9 @@ namespace WebAPI.Controllers
 
             return returns;
 
-        }
 
-        //[Authorize]
-        [HttpPost]
-        [Route("testTokenInfo")]
-        public ActionResult<string> TestToken()
-        {
-            return username;
+
+
         }
     }
 }

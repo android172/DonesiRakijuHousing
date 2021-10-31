@@ -3,16 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPI.Helpers;
 
 namespace WebAPI.Models
 {
     public class SkuciSeDBContext : DbContext
     {
+        private const int seed = 0;
         public SkuciSeDBContext(DbContextOptions<SkuciSeDBContext> options) : base(options)
         {
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Advert> Adverts { get; set; }
+        public DbSet<AdvertImage> AdvertImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,11 +25,10 @@ namespace WebAPI.Models
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now});
+            modelBuilder.Entity<AdvertImage>().HasKey(ai => ai.AdvertID);
+            modelBuilder.Entity<AdvertImage>().HasKey(ai => ai.ImageUrl);
 
-            modelBuilder.Entity<User>().HasData(
-                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now });
+            SkuciSeDBSeed.Seed(modelBuilder, seed);
         }
     }
 }
