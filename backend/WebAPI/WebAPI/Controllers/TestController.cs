@@ -47,6 +47,12 @@ namespace WebAPI.Controllers
             return newUser;
         }
 
+        [HttpPost("request_with_object")]
+        public ActionResult<object> AddUser([FromBody] object obj)
+        {
+            return obj;
+        }
+
         [HttpGet]
         [Route("testing")]
         public ActionResult<List<object>> Tester(int adsPerPage, int pageNum, string orderBy, bool ascending, string city, decimal priceMin, decimal priceMax, string saleType, decimal sizeMin, decimal sizeMax, string structureType, int numOfBedrooms, int numOfBathrooms, bool furnished, string residenceType)
