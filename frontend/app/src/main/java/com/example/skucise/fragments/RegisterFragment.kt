@@ -7,13 +7,18 @@ import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
 import org.json.JSONException
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
+    private lateinit var errorReport : Util.Companion.ErrorReport
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        errorReport = Util.Companion.ErrorReport(tv_register_unsuccessful)
 
         // Register button
         btn_register.setOnClickListener {
@@ -27,36 +32,36 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             // Check if all inputs are correct
             if (firstname.isBlank() || lastname.isBlank() || email.isBlank() || username.isBlank() ||
                 password.isBlank() || repeatedPassword.isBlank()) {
-                reportError("Sva polja moraju biti popunjena.")
+                errorReport.reportError("Sva polja moraju biti popunjena.")
                 return@setOnClickListener
             }
 
             if (!Regex("^([ \\u00c0-\\u01ffa-zA-Z'\\-])+\$").matches(firstname)) {
-                reportError("Ime i prezime moraju biti slova abecede (ili alfabeta).")
+                errorReport.reportError("Ime i prezime moraju biti slova abecede (ili alfabeta).")
                 return@setOnClickListener
             }
             if (!Regex("^([ \\u00c0-\\u01ffa-zA-Z'\\-])+\$").matches(lastname)) {
-                reportError("Ime i prezime moraju biti slova abecede (ili alfabeta).")
+                errorReport.reportError("Ime i prezime moraju biti slova abecede (ili alfabeta).")
                 return@setOnClickListener
             }
 
             if (!Regex("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$").matches(email)) {
-                reportError("Forma email adrese je pogrešna.")
+                errorReport.reportError("Forma email adrese je pogrešna.")
                 return@setOnClickListener
             }
 
             if (!Regex("^[A-Za-z0-9_-]{4,16}$").matches(username)) {
-                reportError("Korisničko ime mora sadržati od 4 do 16 karaktera, i to samo slova abecede, brojeve, donju crtu ili crticu.")
+                errorReport.reportError("Korisničko ime mora sadržati od 4 do 16 karaktera, i to samo slova abecede, brojeve, donju crtu ili crticu.")
                 return@setOnClickListener
             }
 
             if (repeatedPassword != password) {
-                reportError("Šifra nije dobro ponovljena.")
+                errorReport.reportError("Šifra nije dobro ponovljena.")
                 return@setOnClickListener
             }
 
             if (!Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,32}$").matches(password)) {
-                reportError("Šifra mora da sadrži makar jedno malo i veliko slovo. broj, i svega od 8 do 32 karaktera")
+                errorReport.reportError("Šifra mora da sadrži makar jedno malo i veliko slovo. broj, i svega od 8 do 32 karaktera")
                 return@setOnClickListener
             }
 
@@ -77,13 +82,13 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 params = params,
                 listener = { response ->
                     try {
-                        reportError("response:\n${response}")
+                        errorReport.reportError("response:\n${response}")
                     } catch (e: JSONException) {
-                        reportError("json_error:\n$e")
+                        errorReport.reportError("json_error:\n$e")
                     }
                 },
                 errorListener = { error ->
-                    reportError("error:\n$error")
+                    errorReport.reportError("error:\n$error")
                 }
             )
         }
@@ -101,10 +106,5 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         et_register_repeated_password.filters = arrayOf(InputFilter { source, _, _, _, _, _ ->
             source.toString().filterNot { it.isWhitespace() }
         })
-    }
-
-    private fun reportError(message: String) {
-        tv_register_unsuccessful.text = message
-        tv_register_unsuccessful.visibility = View.VISIBLE
     }
 }
