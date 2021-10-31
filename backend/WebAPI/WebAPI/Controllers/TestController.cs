@@ -32,11 +32,11 @@ namespace WebAPI.Controllers
             return ctx.Users;
         }
 
-        //[HttpGet("get_all_adverts")]
-        //public ActionResult<DbSet<Advert>> GetAdverts()
-        //{
-        //    return ctx.Adverts;
-        //}
+        [HttpGet("get_all_adverts")]
+        public ActionResult<DbSet<Advert>> GetAdverts()
+        {
+            return ctx.Adverts;
+        }
 
         [HttpPost("add_user")]
         public ActionResult<User> AddUser([FromForm] string firstName, [FromForm] string lastName)
@@ -45,6 +45,12 @@ namespace WebAPI.Controllers
             ctx.Users.Add(newUser);
             ctx.SaveChanges();
             return newUser;
+        }
+
+        [HttpPost("request_with_object")]
+        public ActionResult<object> AddUser([FromBody] object obj)
+        {
+            return obj;
         }
 
         [HttpGet]

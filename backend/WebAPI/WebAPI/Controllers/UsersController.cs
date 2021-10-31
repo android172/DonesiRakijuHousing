@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,31 +15,29 @@ namespace WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         SkuciSeDBContext ctx;
+        private readonly string username;
+        private readonly int userId;
 
-        public UsersController(SkuciSeDBContext _ctx)
+        public UsersController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userId = int.Parse(temp);
         }
 
-        [HttpGet("get_user")]
-        public ActionResult<User> GetUser([FromForm] uint id)
+        [HttpPost]
+        [Route("get_user_info")]
+        public ActionResult<object> GetUserInfo()
         {
-            return ctx.Users.Find(id);
+            return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated }).FirstOrDefault();
         }
 
-        [HttpGet("get_all_users")]
-        public ActionResult<DbSet<User>> GetUsers()
-        {
-            return ctx.Users;
-        }
-
-        [HttpPost("add_user")]
-        public ActionResult<User> AddUser([FromForm] string firstName, [FromForm] string lastName)
-        {
-            User newUser = new User { FirstName = firstName, LastName = lastName };
-            ctx.Users.Add(newUser);
-            ctx.SaveChanges();
-            return newUser;
-        }
+        //[HttpPost]
+        //[Route("user_logout")]
+        //public ActionResult<string> UserLogout()
+        //{
+        //    return 
+        //}
     }
 }

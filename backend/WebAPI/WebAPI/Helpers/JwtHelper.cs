@@ -27,8 +27,9 @@ namespace WebAPI.Helpers
         {
             Claim[] claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, model.Username),
-                new Claim(JwtRegisteredClaimNames.Sub, model.Username)
+                new Claim(ClaimTypes.Name, model.Username),
+                //new Claim(JwtRegisteredClaimNames.Sub, model.Username),
+                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString())
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Secret"]));

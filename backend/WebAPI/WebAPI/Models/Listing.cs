@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 namespace WebAPI.Models
 {
 
-    public class Listing
+    public static class Listing
     {
-        public uint Id { get; set; }
-        public decimal Price { get; set; }
-        public string Location { get; set; }
-        public decimal Size { get; set; }
-        public ResidenceType ResidenceType { get; set; }
-        public StructureType StructureType { get; set; }
-        public SaleType SaleType { get; set; }
+        public static Func<Advert, object> AdListing =
+            advert => new
+            {
+                Id = advert.Id,
+                Price = advert.Price,
+                Title = advert.Title,
+                City = advert.City,
+                Address = advert.Address,
+                Size = advert.Size,
+                ResidenceType = advert.ResidenceType,
+                StructureType = advert.StructureType,
+                SaleType = advert.SaleType
+
+            };
 
     }
 }
