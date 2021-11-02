@@ -72,20 +72,55 @@ namespace WebAPI.Controllers
             
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
-                ["numBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
+                ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
                 ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
-                ["City"] = ((ad, param) => ad.City == param.ToString())
+                ["City"] = ((ad, param) => ad.City == param.ToString()),
+                ["SaleType"] = ((ad, param) => ad.SaleType == param.ToString()),
+                ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
+                ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms == int.Parse(param.ToString())),
+                ["StructureType"] = ((ad, param) => ad.StructureType == param.ToString()),
+                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == param.ToString()),
+                ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
+            };
+
+            Dictionary<string, Func<Advert, dynamic>> orderByDict = new Dictionary<string, Func<Advert, dynamic>>
+            {
+                ["Id"] = (ad => ad.Id.ToString()),
+                ["ResidenceType"] = (ad => ad.ResidenceType.ToString()),
+                ["SaleType"] = (ad => ad.SaleType.ToString()),
+                ["StructureType"] = (ad => ad.StructureType.ToString()),
+                ["Title"] = (ad => ad.Title.ToString()),
+                ["City"] = (ad => ad.City.ToString()),
+                ["Size"] = (ad => ad.Size.ToString()),
+                ["Price"] = (ad => ad.Price.ToString()),
+                ["NumBedrooms"] = (ad => ad.NumBedrooms.ToString()),
+                ["NumBathrooms"] = (ad => ad.NumBathrooms.ToString()),
+                ["Furnished"] = (ad => ad.Furnished.ToString()),
+                ["YearOfMake"] = (ad => ad.YearOfMake.ToString()),
+                ["DateCreated"] = (ad => ad.DateCreated.ToString()),
             };
             
             IEnumerable<Advert> result = ctx.Adverts;
-            var filters = JsonSerializer.Deserialize<Filter[]>(filterArray);
-            
-            //var nesto = filters[2].Param.GetProperty("From");
 
-            foreach(var filter in filters)
+            if(filterArray != null)
             {
-                result = result.Where(ad => filterDict[filter.Name](ad, filter.Param));
+                var filters = JsonSerializer.Deserialize<Filter[]>(filterArray);
+
+                foreach (var filter in filters)
+                {
+                    result = result.Where(ad => filterDict[filter.Name](ad, filter.Param));
+                }
             }
+
+            if(orderBy != null)
+            {
+                if (ascending)
+                    result = result.OrderBy(ad => orderByDict[orderBy](ad));
+                else
+                    result = result.OrderByDescending(ad => orderByDict[orderBy](ad));
+            }
+
+            result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
 
             return result.ToList();
         }
