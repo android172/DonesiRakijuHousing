@@ -8,10 +8,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using WebAPI.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace WebAPI.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdvertController : Controller
@@ -23,8 +25,8 @@ namespace WebAPI.Controllers
         public AdvertController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
-            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
 
         [HttpPost]
@@ -57,12 +59,71 @@ namespace WebAPI.Controllers
                 return NotFound("Advert doesn't exist");
         }
 
-        //[HttpPost]
-        //[Route("search_adverts")]
-        //public ActionResult<IEnumerable<Advert>> SearchAdverts()
-        //{
-    
-        //}
+        public class Filter
+        {
+            public string Name { get; set; }
+            public dynamic Param { get; set; }
+        }
+
+        [HttpPost]
+        [Route("search_adverts")]
+        public ActionResult<IEnumerable<Advert>> SearchAdverts(string filterArray, int adsPerPage, int pageNum, string orderBy, bool ascending)
+        {
+            
+            Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
+            {
+                ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
+                ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
+                ["City"] = ((ad, param) => ad.City == param.ToString()),
+                ["SaleType"] = ((ad, param) => ad.SaleType == param.ToString()),
+                ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
+                ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms == int.Parse(param.ToString())),
+                ["StructureType"] = ((ad, param) => ad.StructureType == param.ToString()),
+                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == param.ToString()),
+                ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
+            };
+
+            Dictionary<string, Func<Advert, dynamic>> orderByDict = new Dictionary<string, Func<Advert, dynamic>>
+            {
+                ["Id"] = (ad => ad.Id.ToString()),
+                ["ResidenceType"] = (ad => ad.ResidenceType.ToString()),
+                ["SaleType"] = (ad => ad.SaleType.ToString()),
+                ["StructureType"] = (ad => ad.StructureType.ToString()),
+                ["Title"] = (ad => ad.Title.ToString()),
+                ["City"] = (ad => ad.City.ToString()),
+                ["Size"] = (ad => ad.Size.ToString()),
+                ["Price"] = (ad => ad.Price.ToString()),
+                ["NumBedrooms"] = (ad => ad.NumBedrooms.ToString()),
+                ["NumBathrooms"] = (ad => ad.NumBathrooms.ToString()),
+                ["Furnished"] = (ad => ad.Furnished.ToString()),
+                ["YearOfMake"] = (ad => ad.YearOfMake.ToString()),
+                ["DateCreated"] = (ad => ad.DateCreated.ToString()),
+            };
+            
+            IEnumerable<Advert> result = ctx.Adverts;
+
+            if(filterArray != null)
+            {
+                var filters = JsonSerializer.Deserialize<Filter[]>(filterArray);
+
+                foreach (var filter in filters)
+                {
+                    result = result.Where(ad => filterDict[filter.Name](ad, filter.Param));
+                }
+            }
+
+            if(orderBy != null)
+            {
+                if (ascending)
+                    result = result.OrderBy(ad => orderByDict[orderBy](ad));
+                else
+                    result = result.OrderByDescending(ad => orderByDict[orderBy](ad));
+            }
+
+            result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
+
+            return result.ToList();
+        }
 
         [HttpPost]
         [Route("get_my_adverts")]
