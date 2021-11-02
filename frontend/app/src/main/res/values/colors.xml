@@ -12,6 +12,9 @@
     <color name="transparent_light">#A0AAAAAA</color>
     <color name="transparent_white">#AAFFFFFF</color>
     <color name="logo_color">#FF1E74B1</color>
+    <color name="logo_color2">#FFb19b1e</color>
+    <color name="logo_color3">#ffb11e4a</color> <!--1, 2 i 3-->
+    <color name="logo_color4">#ffb12d1e</color> <!--1 i 4-->
     <color name="red">#FFFF0000</color>
     <color name="error_red">#FFCC0000</color>
 </resources>
