@@ -1,0 +1,36 @@
+package com.example.skucise
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.item_account_dropdown.view.*
+
+class AccountDropdownAdapter(private val options: List<DropdownOption>)
+    : RecyclerView.Adapter<AccountDropdownAdapter.AccountDropdownViewHolder>() {
+    class AccountDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountDropdownViewHolder {
+        return AccountDropdownViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_account_dropdown,
+                parent,
+                false
+            )
+        )
+    }
+
+    override fun onBindViewHolder(holder: AccountDropdownViewHolder, position: Int) {
+        val currentOption = options[position]
+        holder.itemView.apply {
+            btn_account_dd_option.text = currentOption.name
+            btn_account_dd_option.setOnClickListener(currentOption.action)
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return options.size
+    }
+}
