@@ -3,6 +3,7 @@ package com.example.skucise.activities
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +18,7 @@ class NavigationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {
             if (drop_down_account.visibility == View.GONE) {
                 drop_down_account.visibility = View.VISIBLE
@@ -26,33 +28,32 @@ class NavigationActivity : AppCompatActivity() {
             }
         }
 
-
+        // List of dropdown options and their functionalities
         val dropdownOptions = mutableListOf<DropdownOption>()
         dropdownOptions.add(DropdownOption(
-            "Moj nalog",
-            {}
-        ))
+            "Moj nalog"
+        ) {})
         dropdownOptions.add(DropdownOption(
-            "Moji oglasi",
-            {}
-        ))
+            "Moji oglasi"
+        ) {})
         dropdownOptions.add(DropdownOption(
-            "Označeni oglasi",
-            {}
-        ))
+            "Označeni oglasi"
+        ) {
+            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[2].itemId
+        })
         dropdownOptions.add(DropdownOption(
-            "Poruke",
-            {}
-        ))
+            "Poruke"
+        ) {
+            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[3].itemId
+        })
         dropdownOptions.add(DropdownOption(
-            "Kalendar",
-            {}
-        ))
+            "Kalendar"
+        ) {})
         dropdownOptions.add(DropdownOption(
-            "Odjavi se",
-            {}
-        ))
+            "Odjavi se"
+        ) {})
 
+        // Connecting dropdown recycler view necessities
         val accountDropdownAdapter = AccountDropdownAdapter(dropdownOptions)
         rcv_dd_options.adapter = accountDropdownAdapter
         rcv_dd_options.layoutManager = LinearLayoutManager(this)
