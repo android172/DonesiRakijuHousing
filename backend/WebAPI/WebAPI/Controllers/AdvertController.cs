@@ -13,7 +13,7 @@ using System.Text.Json.Serialization;
 
 namespace WebAPI.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdvertController : Controller
@@ -25,14 +25,17 @@ namespace WebAPI.Controllers
         public AdvertController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
-            //username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
 
         [HttpPost]
         [Route("get_recent_adverts")]
         public ActionResult<IEnumerable<object>> GetRecentAdverts(int numOfAdverts)
         {
+            if (!LoginController.CheckActiveToken(userId))
+                return Unauthorized("Token is not found or active");
+
             var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
 
             return adverts.ToList();
@@ -51,6 +54,9 @@ namespace WebAPI.Controllers
         [Route("get_advert")]
         public ActionResult<Advert> GetAdvert(int advertId)
         {
+            if (!LoginController.CheckActiveToken(userId))
+                return Unauthorized("Token is not found or active");
+
             var exists = ctx.Adverts.Where(ad => ad.Id == advertId);        // CHANGE LATER
 
             if (exists.Any())
@@ -69,7 +75,9 @@ namespace WebAPI.Controllers
         [Route("search_adverts")]
         public ActionResult<IEnumerable<Advert>> SearchAdverts(string filterArray, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
-            
+            if (!LoginController.CheckActiveToken(userId))
+                return Unauthorized("Token is not found or active");
+
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
                 ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
@@ -129,6 +137,9 @@ namespace WebAPI.Controllers
         [Route("get_my_adverts")]
         public ActionResult<IEnumerable<Advert>> GetMyAdverts()
         {
+            if (!LoginController.CheckActiveToken(userId))
+                return Unauthorized("Token is not found or active");
+
             return ctx.Adverts.Where(a => a.OwnerID == userId).ToList();
         }
     }
