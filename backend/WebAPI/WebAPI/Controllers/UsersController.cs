@@ -30,14 +30,12 @@ namespace WebAPI.Controllers
         [Route("get_user_info")]
         public ActionResult<object> GetUserInfo()
         {
+            if (!LoginController.CheckActiveToken(userId))
+                return Unauthorized("Token is not found or active");
+
             return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated }).FirstOrDefault();
         }
 
-        //[HttpPost]
-        //[Route("user_logout")]
-        //public ActionResult<string> UserLogout()
-        //{
-        //    return 
-        //}
+        
     }
 }
