@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebAPI.Helpers;
 using WebAPI.Models;
+using WebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,11 +21,13 @@ namespace WebAPI.Controllers
     {
 
         private readonly SkuciSeDBContext ctx;
+        private readonly SkuciSeEmailService ems;
         private readonly IJwtHelper jwtHelper;
 
-        public LoginController(SkuciSeDBContext _ctx, IJwtHelper _jwtHelper)
+        public LoginController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IJwtHelper _jwtHelper)
         {
             ctx = _ctx;
+            ems = _ems;
             jwtHelper = _jwtHelper;
         }
 
@@ -39,8 +42,8 @@ namespace WebAPI.Controllers
         [Route("user_login")]
         public ActionResult<string> UserLogin(string usernameOrEmail, string password)
         {
-            if (String.IsNullOrWhiteSpace(usernameOrEmail) ||  String.IsNullOrWhiteSpace(password))
-                return BadRequest("Username or password is blank or empty");
+            if (String.IsNullOrWhiteSpace(usernameOrEmail) || String.IsNullOrWhiteSpace(password))
+                return BadRequest("Username or password is blank or empty.");
 
             if (usernameOrEmail.Equals("debug"))        // DEBUG
             {
@@ -58,7 +61,7 @@ namespace WebAPI.Controllers
                 return Ok(new { token });
             }
 
-            return NotFound("User doesnt exist");
+            return NotFound("User does not exist.");
 
         }
 
@@ -73,22 +76,66 @@ namespace WebAPI.Controllers
 
             if (!(imePrezimeReg.IsMatch(firstName) && imePrezimeReg.IsMatch(lastName) && emailReg.IsMatch(email)
                     && usernameReg.IsMatch(username) && passReg.IsMatch(password)))
-                return BadRequest("Regex does not match");
+                return BadRequest("Regex does not match.");
 
-            User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now };
+            User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now, Confirmed = false };
 
             try
             {
                 ctx.Users.Add(newUser);
                 ctx.SaveChanges();
+                ems.SendConfirmationEmail(newUser.Email);
 
-                return Ok("User Added");
+                return Ok("User added.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to add user");
+                return StatusCode(500, "Failed to add user.");
             }
-            
+        }
+
+        [HttpPost]
+        [Route("send_confirmation_email")]
+        public ActionResult<string> SendConfirmation(string username)
+        {
+            User user = ctx.Users.Where(u => u.Username == username && !u.Confirmed).FirstOrDefault();
+
+            if(user == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                ems.SendConfirmationEmail(user.Email);
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Route("send_pass_reset_email")]
+        public ActionResult<string> SendPasswordReset(string username)
+        {
+            User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                ems.SendPasswordResetEmail(user.Email);
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

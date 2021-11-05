@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
@@ -15,12 +16,15 @@ namespace WebAPI.Controllers
     public class UsersController : ControllerBase
     {
         SkuciSeDBContext ctx;
+        SkuciSeEmailService ems;
+
         private readonly string username;
         private readonly int userId;
 
-        public UsersController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
+        public UsersController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
+            ems = _ems;
             username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             userId = int.Parse(temp);
@@ -31,6 +35,22 @@ namespace WebAPI.Controllers
         public ActionResult<object> GetUserInfo()
         {
             return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated }).FirstOrDefault();
+        }
+
+        [HttpPost]
+        [Route("send_pass_reset_email")]
+        public ActionResult ResetPassword()
+        {
+            User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
+            try
+            {
+                ems.SendPasswordResetEmail(user.Email);
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
         //[HttpPost]

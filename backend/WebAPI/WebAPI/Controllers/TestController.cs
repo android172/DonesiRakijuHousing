@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
@@ -14,10 +15,12 @@ namespace WebAPI.Controllers
     public class TestController : ControllerBase
     {
         SkuciSeDBContext ctx;
+        SkuciSeEmailService ems;
 
-        public TestController(SkuciSeDBContext _ctx)
+        public TestController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems)
         {
             ctx = _ctx;
+            ems = _ems;
         }
 
         [HttpGet("get_user")]
@@ -38,6 +41,18 @@ namespace WebAPI.Controllers
             return ctx.Adverts;
         }
 
+        [HttpGet("get_all_unconfirmed")]
+        public ActionResult<IEnumerable<User>> GetUnconfirmed()
+        {
+            return ctx.Users.Where(u => !u.Confirmed).ToList();
+        }
+
+        [HttpGet("get_all_confirmed")]
+        public ActionResult<IEnumerable<User>> GetConfirmed()
+        {
+            return ctx.Users.Where(u => u.Confirmed).ToList();
+        }
+
         [HttpPost("add_user")]
         public ActionResult<User> AddUser([FromForm] string firstName, [FromForm] string lastName)
         {
@@ -51,6 +66,21 @@ namespace WebAPI.Controllers
         public ActionResult<object> AddUser([FromBody] object obj)
         {
             return obj;
+        }
+
+        [HttpGet("send_email")]
+        public ActionResult<string> SendConfirmEmail(string email)
+        {
+            try
+            {
+                ems.SendConfirmationEmail(email);
+                //ems.SendPasswordResetEmail(user);
+                return "Email sent.";
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
         }
 
         [HttpGet]

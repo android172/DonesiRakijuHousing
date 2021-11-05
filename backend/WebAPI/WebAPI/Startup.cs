@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebAPI.Helpers;
 using WebAPI.Models;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -31,8 +32,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             string connString = Configuration.GetConnectionString("DefaultConnectionString");
-            services.AddDbContext<SkuciSeDBContext>(options => options.UseSqlite(connString)); //.UseSqlServer(connString)));
-
+            services.AddDbContext<SkuciSeDBContext>(options => options.UseSqlite(connString).EnableSensitiveDataLogging(true)); //.UseSqlServer(connString)));
+            services.AddSingleton<SkuciSeEmailService>();
 
             services.AddSingleton<IJwtHelper, JwtHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
