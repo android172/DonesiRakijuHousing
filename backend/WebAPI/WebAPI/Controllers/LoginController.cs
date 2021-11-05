@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebAPI.Helpers;
@@ -23,12 +25,28 @@ namespace WebAPI.Controllers
         private readonly SkuciSeDBContext ctx;
         private readonly SkuciSeEmailService ems;
         private readonly IJwtHelper jwtHelper;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private static List<(uint, string)> activeTokens = new List<(uint, string)>();
 
-        public LoginController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IJwtHelper _jwtHelper)
+        public static bool CheckActiveToken(int userId)
+        {
+            foreach ((uint, string) t in activeTokens)
+            {
+                if (t.Item1 == userId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public LoginController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IJwtHelper _jwtHelper, IHttpContextAccessor _httpContextAccessor)
         {
             ctx = _ctx;
             ems = _ems;
             jwtHelper = _jwtHelper;
+            httpContextAccessor = _httpContextAccessor;
         }
 
         [HttpGet]       // DEBUG
@@ -58,6 +76,8 @@ namespace WebAPI.Controllers
             {
                 User user = exists.FirstOrDefault();
                 string token = jwtHelper.CreateToken(user);
+                activeTokens.Add((user.Id, token));
+
                 return Ok(new { token });
             }
 
@@ -136,6 +156,26 @@ namespace WebAPI.Controllers
             {
                 return StatusCode(500);
             }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("user_logout")]
+        public ActionResult<string> UserLogout()
+        {
+            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            int userId = int.Parse(temp);
+
+            foreach((uint, string) t in activeTokens)
+            {
+                if(t.Item1 == userId)
+                {
+                    activeTokens.Remove(t);
+                    break;
+                }
+            }
+
+            return Ok();
         }
     }
 }
