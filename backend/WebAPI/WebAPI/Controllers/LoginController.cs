@@ -26,21 +26,7 @@ namespace WebAPI.Controllers
         private readonly SkuciSeEmailService ems;
         private readonly IJwtHelper jwtHelper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private static List<(uint, string)> activeTokens = new List<(uint, string)>();
-
-        public static bool CheckActiveToken(int userId)
-        {
-            foreach ((uint, string) t in activeTokens)
-            {
-                if (t.Item1 == userId)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
+        
         public LoginController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IJwtHelper _jwtHelper, IHttpContextAccessor _httpContextAccessor)
         {
             ctx = _ctx;
@@ -76,7 +62,7 @@ namespace WebAPI.Controllers
             {
                 User user = exists.FirstOrDefault();
                 string token = jwtHelper.CreateToken(user);
-                activeTokens.Add((user.Id, token));
+                JwtHelper.AddActiveToken(user.Id, token);
 
                 return Ok(new { token });
             }
@@ -163,19 +149,16 @@ namespace WebAPI.Controllers
         [Route("user_logout")]
         public ActionResult<string> UserLogout()
         {
-            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (temp == null)
+                return NotFound("Token doesn't exist");
+
             int userId = int.Parse(temp);
 
-            foreach((uint, string) t in activeTokens)
-            {
-                if(t.Item1 == userId)
-                {
-                    activeTokens.Remove(t);
-                    break;
-                }
-            }
+            JwtHelper.RemoveToken(userId);
 
-            return Ok();
+            return Ok("logged out");
         }
     }
 }

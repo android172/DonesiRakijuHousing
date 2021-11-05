@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
+using WebAPI.Helpers;
 using WebAPI.Models;
 using WebAPI.Services;
 
@@ -34,8 +36,10 @@ namespace WebAPI.Controllers
         [Route("get_user_info")]
         public ActionResult<object> GetUserInfo()
         {
-            if (!LoginController.CheckActiveToken(userId))
-                return Unauthorized("Token is not found or active");
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
 
             return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated }).FirstOrDefault();
         }
@@ -55,12 +59,5 @@ namespace WebAPI.Controllers
                 return StatusCode(500);
             }
         }
-
-        //[HttpPost]
-        //[Route("user_logout")]
-        //public ActionResult<string> UserLogout()
-        //{
-        //    return 
-        //}
     }
 }
