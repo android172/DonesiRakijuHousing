@@ -76,7 +76,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             params["password"] = password
 
             ReqSender.sendRequestString(
-                context = this.activity,
+                context = this.requireActivity(),
                 method = Request.Method.POST,
                 url = url,
                 params = params,
@@ -89,7 +89,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 },
                 errorListener = { error ->
                     errorReport.reportError("error:\n$error")
-                }
+                },
+                authorization = false
             )
         }
 
