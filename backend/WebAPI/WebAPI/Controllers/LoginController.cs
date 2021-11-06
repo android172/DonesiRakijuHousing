@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
                 ems.SendPasswordResetEmail(user.Email);
                 return Ok();
             }
-            catch
+            catch (Exception e)
             {
                 return StatusCode(500);
             }

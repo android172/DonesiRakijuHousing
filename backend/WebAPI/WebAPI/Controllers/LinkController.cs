@@ -19,10 +19,10 @@ namespace WebAPI.Controllers
             ctx = _ctx;
             ems = _ems;
         }
-
+        
         public IActionResult Index()
         {
-            return View();
+            return View("Error");
         }
 
         [HttpGet]

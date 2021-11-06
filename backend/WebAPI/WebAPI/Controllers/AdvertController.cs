@@ -136,6 +136,11 @@ namespace WebAPI.Controllers
                     result = result.OrderByDescending(ad => orderByDict[orderBy](ad));
             }
 
+            if (adsPerPage == 0)
+                adsPerPage = 10;
+            if (pageNum == 0)
+                pageNum = 1;
+
             result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
 
             return result.ToList();
