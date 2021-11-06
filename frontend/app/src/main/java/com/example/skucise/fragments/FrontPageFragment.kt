@@ -1,10 +1,14 @@
 package com.example.skucise.fragments
 
 import android.os.Bundle
-import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.example.skucise.R
@@ -22,10 +26,8 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val ctw : ContextThemeWrapper = ContextThemeWrapper(activity, R.style.Theme_SkuciSe_FrontpageTheme)
-        val localInflater : LayoutInflater = inflater.cloneInContext(ctw)
-
-        return localInflater.inflate(R.layout.fragment_frontpage, frc_page_body, false)
+        val view = inflater.inflate(R.layout.fragment_frontpage, container, false)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,5 +69,29 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                 }
             )
         }
+
+        val btn: Button = Button(context)
+        val cities : List<String> = listOf("beograd")//, "novi_sad", "nis", "kragujevac", "kraljevo", "krusevac", "subotica")
+        val cardViews : MutableList<CardView> = mutableListOf()
+        val cl: ConstraintLayout = view.findViewById<ConstraintLayout>(R.id.hv_layout_container2)
+        val cs = ConstraintSet()
+        //cs.connect(R.id.button_tmp, ConstraintSet.START, R.id.hv_layout_container2, ConstraintSet.)
+
+
+        for (city in cities){
+            val card: CardView = CardView(requireContext())
+
+            cs.clone(cl)
+            cs.connect(card.id, ConstraintSet.TOP, cl.id, ConstraintSet.TOP)
+            cs.connect(card.id, ConstraintSet.START, cl.id, ConstraintSet.START)
+            cs.applyTo(cl)
+
+            val img: ImageView = ImageView(context)
+            img.setImageResource(R.drawable.beograd)
+            card.addView(img)
+            cl.addView(card)
+        }
+
+
     }
 }
