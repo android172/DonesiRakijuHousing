@@ -4,15 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-<<<<<<< HEAD
 import android.widget.Toast
-=======
 import android.widget.Button
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
->>>>>>> 0bf47e168d9e83ecc06fd88c2bb485ee27a30867
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.example.skucise.FilterArray
@@ -29,15 +26,8 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-<<<<<<< HEAD
-        val ctw = ContextThemeWrapper(activity, R.style.Theme_SkuciSe_FrontpageTheme)
-        val localInflater : LayoutInflater = inflater.cloneInContext(ctw)
-
-        return localInflater.inflate(R.layout.fragment_frontpage, frc_page_body, false)
-=======
         val view = inflater.inflate(R.layout.fragment_frontpage, container, false)
         return view
->>>>>>> 0bf47e168d9e83ecc06fd88c2bb485ee27a30867
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
