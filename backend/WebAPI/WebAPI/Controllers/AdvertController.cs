@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using WebAPI.Models;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using WebAPI.Helpers;
+using Microsoft.Net.Http.Headers;
 
 namespace WebAPI.Controllers
 {
@@ -33,8 +35,10 @@ namespace WebAPI.Controllers
         [Route("get_recent_adverts")]
         public ActionResult<IEnumerable<object>> GetRecentAdverts(int numOfAdverts)
         {
-            if (!LoginController.CheckActiveToken(userId))
-                return Unauthorized("Token is not found or active");
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
 
             var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
 
@@ -54,8 +58,10 @@ namespace WebAPI.Controllers
         [Route("get_advert")]
         public ActionResult<Advert> GetAdvert(int advertId)
         {
-            if (!LoginController.CheckActiveToken(userId))
-                return Unauthorized("Token is not found or active");
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
 
             var exists = ctx.Adverts.Where(ad => ad.Id == advertId);        // CHANGE LATER
 
@@ -75,19 +81,21 @@ namespace WebAPI.Controllers
         [Route("search_adverts")]
         public ActionResult<IEnumerable<Advert>> SearchAdverts(string filterArray, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
-            if (!LoginController.CheckActiveToken(userId))
-                return Unauthorized("Token is not found or active");
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
                 ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
                 ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
                 ["City"] = ((ad, param) => ad.City == param.ToString()),
-                ["SaleType"] = ((ad, param) => ad.SaleType == param.ToString()),
+                ["SaleType"] = ((ad, param) => ad.SaleType == Enum.Parse(typeof(SaleType), param.ToString())),
                 ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
                 ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms == int.Parse(param.ToString())),
-                ["StructureType"] = ((ad, param) => ad.StructureType == param.ToString()),
-                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == param.ToString()),
+                ["StructureType"] = ((ad, param) => ad.StructureType == Enum.Parse(typeof(StructureType), param.ToString())),
+                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == Enum.Parse(typeof(ResidenceType), param.ToString())),
                 ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
             };
 
@@ -128,6 +136,11 @@ namespace WebAPI.Controllers
                     result = result.OrderByDescending(ad => orderByDict[orderBy](ad));
             }
 
+            if (adsPerPage == 0)
+                adsPerPage = 10;
+            if (pageNum == 0)
+                pageNum = 1;
+
             result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
 
             return result.ToList();
@@ -137,8 +150,10 @@ namespace WebAPI.Controllers
         [Route("get_my_adverts")]
         public ActionResult<IEnumerable<Advert>> GetMyAdverts()
         {
-            if (!LoginController.CheckActiveToken(userId))
-                return Unauthorized("Token is not found or active");
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
 
             return ctx.Adverts.Where(a => a.OwnerID == userId).ToList();
         }

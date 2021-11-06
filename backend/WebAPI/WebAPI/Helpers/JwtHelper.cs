@@ -15,6 +15,7 @@ namespace WebAPI.Helpers
     public class JwtHelper : IJwtHelper
     {
         private readonly IConfiguration config;
+        private static List<(uint, string)> activeTokens = new List<(uint, string)>();
         public JwtHelper(IConfiguration configuration)
         {
             config = configuration;
@@ -46,6 +47,41 @@ namespace WebAPI.Helpers
             string token = new JwtSecurityTokenHandler().WriteToken(jst);
 
             return token;
+        }
+
+        public static string CheckActiveToken(int userId)
+        {
+            foreach ((uint, string) t in activeTokens)
+            {
+                if (t.Item1 == userId)
+                {
+                    return t.Item2;
+                }
+            }
+
+            return null;
+        }
+
+        public static void AddActiveToken(uint userId, string token)
+        {
+            string temp = CheckActiveToken(int.Parse(userId.ToString()));
+
+            if (temp != null)
+                RemoveToken(int.Parse(userId.ToString()));
+
+            activeTokens.Add((userId, token));
+        }
+
+        public static void RemoveToken(int userId)
+        {
+            foreach ((uint, string) t in activeTokens)
+            {
+                if (t.Item1 == userId)
+                {
+                    activeTokens.Remove(t);
+                    return;
+                }
+            }
         }
     }
 }

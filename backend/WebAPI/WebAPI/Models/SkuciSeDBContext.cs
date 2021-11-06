@@ -15,7 +15,6 @@ namespace WebAPI.Models
         }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<User> Users_UnconfirmedEmail { get; set; }
         public DbSet<Advert> Adverts { get; set; }
         public DbSet<AdvertImage> AdvertImages { get; set; }
 

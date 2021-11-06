@@ -14,10 +14,10 @@ namespace WebAPI.Helpers
             Random rgen = new Random(seed);
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now });
+                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now, Confirmed = true });
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now });
+                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now, Confirmed = false });
 
             uint numApartments = 35;
             uint numHouses = 20;

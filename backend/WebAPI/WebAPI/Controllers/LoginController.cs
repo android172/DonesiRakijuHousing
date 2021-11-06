@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using WebAPI.Helpers;
 using WebAPI.Models;
+using WebAPI.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,26 +23,14 @@ namespace WebAPI.Controllers
     {
 
         private readonly SkuciSeDBContext ctx;
+        private readonly SkuciSeEmailService ems;
         private readonly IJwtHelper jwtHelper;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private static List<(uint, string)> activeTokens = new List<(uint, string)>();
-
-        public static bool CheckActiveToken(int userId)
-        {
-            foreach ((uint, string) t in activeTokens)
-            {
-                if (t.Item1 == userId)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public LoginController(SkuciSeDBContext _ctx, IJwtHelper _jwtHelper, IHttpContextAccessor _httpContextAccessor)
+        
+        public LoginController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IJwtHelper _jwtHelper, IHttpContextAccessor _httpContextAccessor)
         {
             ctx = _ctx;
+            ems = _ems;
             jwtHelper = _jwtHelper;
             httpContextAccessor = _httpContextAccessor;
         }
@@ -57,8 +46,8 @@ namespace WebAPI.Controllers
         [Route("user_login")]
         public ActionResult<string> UserLogin(string usernameOrEmail, string password)
         {
-            if (String.IsNullOrWhiteSpace(usernameOrEmail) ||  String.IsNullOrWhiteSpace(password))
-                return BadRequest("Username or password is blank or empty");
+            if (String.IsNullOrWhiteSpace(usernameOrEmail) || String.IsNullOrWhiteSpace(password))
+                return BadRequest("Username or password is blank or empty.");
 
             if (usernameOrEmail.Equals("debug"))        // DEBUG
             {
@@ -73,12 +62,12 @@ namespace WebAPI.Controllers
             {
                 User user = exists.FirstOrDefault();
                 string token = jwtHelper.CreateToken(user);
-                activeTokens.Add((user.Id, token));
+                JwtHelper.AddActiveToken(user.Id, token);
 
                 return Ok(new { token });
             }
 
-            return NotFound("User doesnt exist");
+            return NotFound("User does not exist.");
 
         }
 
@@ -93,22 +82,66 @@ namespace WebAPI.Controllers
 
             if (!(imePrezimeReg.IsMatch(firstName) && imePrezimeReg.IsMatch(lastName) && emailReg.IsMatch(email)
                     && usernameReg.IsMatch(username) && passReg.IsMatch(password)))
-                return BadRequest("Regex does not match");
+                return BadRequest("Regex does not match.");
 
-            User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now };
+            User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now, Confirmed = false };
 
             try
             {
                 ctx.Users.Add(newUser);
                 ctx.SaveChanges();
+                ems.SendConfirmationEmail(newUser.Email);
 
-                return Ok("User Added");
+                return Ok("User added.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to add user");
+                return StatusCode(500, "Failed to add user.");
             }
-            
+        }
+
+        [HttpPost]
+        [Route("send_confirmation_email")]
+        public ActionResult<string> SendConfirmation(string username)
+        {
+            User user = ctx.Users.Where(u => u.Username == username && !u.Confirmed).FirstOrDefault();
+
+            if(user == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                ems.SendConfirmationEmail(user.Email);
+                return Ok();
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        [Route("send_pass_reset_email")]
+        public ActionResult<string> SendPasswordReset(string username)
+        {
+            User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
+
+            if (user == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                ems.SendPasswordResetEmail(user.Email);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
         [Authorize]
@@ -116,19 +149,16 @@ namespace WebAPI.Controllers
         [Route("user_logout")]
         public ActionResult<string> UserLogout()
         {
-            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (temp == null)
+                return NotFound("Token doesn't exist");
+
             int userId = int.Parse(temp);
 
-            foreach((uint, string) t in activeTokens)
-            {
-                if(t.Item1 == userId)
-                {
-                    activeTokens.Remove(t);
-                    break;
-                }
-            }
+            JwtHelper.RemoveToken(userId);
 
-            return Ok();
+            return Ok("logged out");
         }
     }
 }
