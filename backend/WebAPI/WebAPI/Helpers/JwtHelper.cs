@@ -64,6 +64,11 @@ namespace WebAPI.Helpers
 
         public static void AddActiveToken(uint userId, string token)
         {
+            string temp = CheckActiveToken(int.Parse(userId.ToString()));
+
+            if (temp != null)
+                RemoveToken(int.Parse(userId.ToString()));
+
             activeTokens.Add((userId, token));
         }
 
