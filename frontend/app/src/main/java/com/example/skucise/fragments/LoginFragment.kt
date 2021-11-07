@@ -41,7 +41,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             params["usernameOrEmail"] = usernameOrEmail
             params["password"] = password
             ReqSender.sendRequest(
-                context = this.activity,
+                context = this.requireActivity(),
                 Request.Method.POST,
                 url,
                 params,
@@ -58,7 +58,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 },
                 { error ->
                     errorReport.reportError("error:\n$error")
-                }
+                },
+                false
             )
         }
 

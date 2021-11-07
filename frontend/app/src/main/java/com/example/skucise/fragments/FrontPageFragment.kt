@@ -6,6 +6,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.Button
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
@@ -18,15 +19,11 @@ import com.android.volley.Request
 import com.example.skucise.FilterArray
 import com.example.skucise.R
 import com.example.skucise.ReqSender
-import com.example.skucise.Util
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
-import org.json.JSONObject
-import java.util.ArrayList
+import kotlinx.android.synthetic.main.fragment_frontpage.view.*
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
-
-    private lateinit var errorReport : Util.Companion.ErrorReport
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +36,10 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        errorReport = Util.Companion.ErrorReport(tv_debug)
+
+        hv_tiles.tile_layout1.setOnClickListener {
+            Toast.makeText(this.activity, "Test", Toast.LENGTH_LONG).show()
+        }
 
         btn_search_buy_options.setOnClickListener {
             val filters = FilterArray()
@@ -49,15 +49,15 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             params["filterArray"] = filters.getFilters()
 
             ReqSender.sendRequestArray(
-                this.activity,
+                this.requireActivity(),
                 Request.Method.POST,
                 "http://10.0.2.2:5000/api/advert/search_adverts",
                 params,
                 { response ->
-                    errorReport.reportError("response:\n${response}")
+                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
                 },
                 { error ->
-                    errorReport.reportError("error:\n$error")
+                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
                 }
             )
         }
@@ -70,15 +70,15 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             params["filterArray"] = filters.getFilters()
 
             ReqSender.sendRequestArray(
-                this.activity,
+                this.requireActivity(),
                 Request.Method.POST,
                 "http://10.0.2.2:5000/api/advert/search_adverts",
                 params,
                 { response ->
-                    errorReport.reportError("response:\n${response}")
+                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
                 },
                 { error ->
-                    errorReport.reportError("error:\n$error")
+                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
                 }
             )
         }

@@ -8,9 +8,8 @@ import kotlinx.android.synthetic.main.item_account_dropdown.view.*
 
 class AccountDropdownAdapter(private val options: List<DropdownOption>)
     : RecyclerView.Adapter<AccountDropdownAdapter.AccountDropdownViewHolder>() {
-    class AccountDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    }
+    class AccountDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountDropdownViewHolder {
         return AccountDropdownViewHolder(
