@@ -160,5 +160,16 @@ namespace WebAPI.Controllers
 
             return Ok("logged out");
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("check_token")]
+        public ActionResult<string> CheckToken(string token)
+        {
+            if (JwtHelper.CheckActiveToken(token))
+                return Ok("Token exists");
+
+            return NotFound("Token doesn't exist");
+        }
     }
 }
