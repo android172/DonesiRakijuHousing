@@ -1,6 +1,8 @@
 package com.example.skucise.fragments
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,8 @@ import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.MarginLayoutParamsCompat
+import androidx.core.view.marginStart
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.example.skucise.FilterArray
@@ -79,6 +83,16 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             )
         }
 
+        ReqSender.sendRequestArray(
+            this.activity,
+            Request.Method.GET,
+            "http://10.0.2.2:5000/api/advert/get_all_cities",
+            null,
+            {},
+            {}
+        )
+
+
         val btn: Button = Button(context)
         val cities : List<String> = listOf("beograd")//, "novi_sad", "nis", "kragujevac", "kraljevo", "krusevac", "subotica")
         val cardViews : MutableList<CardView> = mutableListOf()
@@ -88,15 +102,28 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
 
         for (city in cities){
-            val card: CardView = CardView(requireContext())
+            val card = CardView(requireContext())
+
+
+            val params: ViewGroup.MarginLayoutParams = ViewGroup.MarginLayoutParams(660, 756)
+            val margin1 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16F, Resources.getSystem().displayMetrics)
+            params.marginStart = 16
+            params.marginEnd = 16
+            params.topMargin = 16
+            params.bottomMargin = 16
+
+            card.layoutParams = params
+            card.requestLayout()
 
             cs.clone(cl)
             cs.connect(card.id, ConstraintSet.TOP, cl.id, ConstraintSet.TOP)
             cs.connect(card.id, ConstraintSet.START, cl.id, ConstraintSet.START)
+
             cs.applyTo(cl)
 
-            val img: ImageView = ImageView(context)
+            val img = ImageView(context)
             img.setImageResource(R.drawable.beograd)
+            img.scaleType = ImageView.ScaleType.CENTER_CROP
             card.addView(img)
             cl.addView(card)
         }
