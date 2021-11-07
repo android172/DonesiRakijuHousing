@@ -154,7 +154,7 @@ namespace WebAPI.Controllers
             if (temp == null)
                 return NotFound("Token doesn't exist");
 
-            int userId = int.Parse(temp);
+            uint userId = uint.Parse(temp);
 
             JwtHelper.RemoveToken(userId);
 

@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         SkuciSeEmailService ems;
 
         private readonly string username;
-        private readonly int userId;
+        private readonly uint userId;
 
         public UsersController(SkuciSeDBContext _ctx, SkuciSeEmailService _ems, IHttpContextAccessor httpContextAccessor)
         {
@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
             ems = _ems;
             username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
             string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userId = int.Parse(temp);
+            userId = uint.Parse(temp);
         }
 
         [HttpPost]

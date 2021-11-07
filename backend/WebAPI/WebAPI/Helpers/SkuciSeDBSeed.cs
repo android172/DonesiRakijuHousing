@@ -88,7 +88,7 @@ namespace WebAPI.Helpers
                         Furnished = PickOne(rgen, furnishedOptions),
                         YearOfMake = (uint)(1970 + (rgen.Next() % 50)),
                         DateCreated = DateTime.Now
-                    }); 
+                    });
             }
 
             for (uint i = 1; i < numHouses + 1; i++)
@@ -115,7 +115,42 @@ namespace WebAPI.Helpers
                         Furnished = PickOne(rgen, furnishedOptions),
                         YearOfMake = (uint)(1950 + (rgen.Next() % 70)),
                         DateCreated = DateTime.Now
-                    }); 
+                    });
+            }
+
+            modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = 1,
+                        SenderId = 1,
+                        ReceiverId = 2,
+                        Content = "Hello world!",
+                        SendDate = DateTime.Now,
+                        Seen = false
+                    });
+
+            for (uint i = 2; i <= 11; i++)
+            {
+                modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = i,
+                        SenderId = 1,
+                        ReceiverId = 2,
+                        Content = $"Hello world! ({i})",
+                        SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365*45 + rgen.Next() % 2000, 0, 0, 0),
+                        Seen = PickOne(rgen, furnishedOptions)
+                    });
+                modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = i + 10,
+                        SenderId = 2,
+                        ReceiverId = 1,
+                        Content = $"Hello! ({i + 10})",
+                        SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365 * 45 + rgen.Next() % 2000, 0, 0, 0),
+                        Seen = PickOne(rgen, furnishedOptions)
+                    });
             }
         }
 

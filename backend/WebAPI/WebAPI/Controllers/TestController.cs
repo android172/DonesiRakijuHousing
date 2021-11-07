@@ -157,5 +157,12 @@ namespace WebAPI.Controllers
 
 
         }
+    
+        [HttpGet]
+        [Route("get_all_messages")]
+        public ActionResult<IEnumerable<Message>> GetAllMessages()
+        {
+            return ctx.Messages.ToList();
+        }
     }
 }

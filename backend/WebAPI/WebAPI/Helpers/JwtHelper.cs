@@ -49,13 +49,13 @@ namespace WebAPI.Helpers
             return token;
         }
 
-        public static string CheckActiveToken(int userId)
+        public static string CheckActiveToken(uint userId)
         {
-            foreach ((uint, string) t in activeTokens)
+            foreach ((uint uId, string token) in activeTokens)
             {
-                if (t.Item1 == userId)
+                if (uId == userId)
                 {
-                    return t.Item2;
+                    return token;
                 }
             }
 
@@ -64,17 +64,17 @@ namespace WebAPI.Helpers
 
         public static void AddActiveToken(uint userId, string token)
         {
-            string temp = CheckActiveToken(int.Parse(userId.ToString()));
+            string temp = CheckActiveToken(userId);
 
             if (temp != null)
-                RemoveToken(int.Parse(userId.ToString()));
+                RemoveToken(userId);
 
             activeTokens.Add((userId, token));
         }
 
-        public static void RemoveToken(int userId)
+        public static void RemoveToken(uint userId)
         {
-            foreach ((uint, string) t in activeTokens)
+            foreach ((uint uId, string token) t in activeTokens)
             {
                 if (t.Item1 == userId)
                 {

@@ -22,13 +22,13 @@ namespace WebAPI.Controllers
     {
         private readonly SkuciSeDBContext ctx;
         private readonly string username;
-        private readonly int userId;
+        private readonly uint userId;
 
         public AdvertController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
-            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userId = int.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            userId = uint.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+                return Unauthorized("Token is not active.");
 
             var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
 
@@ -61,14 +61,14 @@ namespace WebAPI.Controllers
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+                return Unauthorized("Token is not active.");
 
             var exists = ctx.Adverts.Where(ad => ad.Id == advertId);        // CHANGE LATER
 
             if (exists.Any())
                 return exists.FirstOrDefault();
             else
-                return NotFound("Advert doesn't exist");
+                return NotFound("Advert doesn't exist.");
         }
 
         public class Filter
@@ -84,7 +84,7 @@ namespace WebAPI.Controllers
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+                return Unauthorized("Token is not active.");
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
@@ -153,7 +153,7 @@ namespace WebAPI.Controllers
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+                return Unauthorized("Token is not active.");
 
             return ctx.Adverts.Where(a => a.OwnerID == userId).ToList();
         }
