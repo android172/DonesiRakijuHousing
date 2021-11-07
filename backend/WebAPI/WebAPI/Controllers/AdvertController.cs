@@ -155,7 +155,7 @@ namespace WebAPI.Controllers
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active.");
 
-            return ctx.Adverts.Where(a => a.OwnerID == userId).ToList();
+            return ctx.Adverts.Where(a => a.OwnerId == userId).ToList();
         }
     }
 }

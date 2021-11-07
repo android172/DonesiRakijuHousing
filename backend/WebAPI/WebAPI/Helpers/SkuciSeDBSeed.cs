@@ -82,7 +82,7 @@ namespace WebAPI.Helpers
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
                         Size = size,
                         Price = price,
-                        OwnerID = (uint)rgen.Next() % 2 + 1,
+                        OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 3) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, furnishedOptions),
@@ -109,7 +109,7 @@ namespace WebAPI.Helpers
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
                         Size = size,
                         Price = size * 1234,
-                        OwnerID = (uint)rgen.Next() % 2 + 1,
+                        OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 4) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, furnishedOptions),
@@ -150,6 +150,23 @@ namespace WebAPI.Helpers
                         Content = $"Hello! ({i + 10})",
                         SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365 * 45 + rgen.Next() % 2000, 0, 0, 0),
                         Seen = PickOne(rgen, furnishedOptions)
+                    });
+            }
+
+            for (uint i = 2; i <= 5; i++)
+            {
+                modelBuilder.Entity<FavouriteAdvert>().HasData(
+                    new FavouriteAdvert
+                    {
+                        UserId = 1,
+                        AdvertId = (uint)rgen.Next() % 51 + 1
+                    });
+
+                modelBuilder.Entity<FavouriteAdvert>().HasData(
+                    new FavouriteAdvert
+                    {
+                        UserId = 2,
+                        AdvertId = (uint)rgen.Next() % 51 + 1
                     });
             }
         }
