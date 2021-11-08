@@ -18,7 +18,7 @@ namespace WebAPI.Models
         public string Address { get; set; }
         public decimal Size { get; set; } //M^2
         public decimal Price { get; set; } //EURO
-        public uint OwnerID { get; set; }
+        public uint OwnerId { get; set; }
         public uint NumBedrooms { get; set; }
         public uint NumBathrooms { get; set; }
         public bool Furnished { get; set; }

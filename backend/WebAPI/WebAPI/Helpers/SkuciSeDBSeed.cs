@@ -82,13 +82,13 @@ namespace WebAPI.Helpers
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
                         Size = size,
                         Price = price,
-                        OwnerID = (uint)rgen.Next() % 2 + 1,
+                        OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 3) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, furnishedOptions),
                         YearOfMake = (uint)(1970 + (rgen.Next() % 50)),
                         DateCreated = DateTime.Now
-                    }); 
+                    });
             }
 
             for (uint i = 1; i < numHouses + 1; i++)
@@ -109,13 +109,65 @@ namespace WebAPI.Helpers
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
                         Size = size,
                         Price = size * 1234,
-                        OwnerID = (uint)rgen.Next() % 2 + 1,
+                        OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 4) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, furnishedOptions),
                         YearOfMake = (uint)(1950 + (rgen.Next() % 70)),
                         DateCreated = DateTime.Now
-                    }); 
+                    });
+            }
+
+            modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = 1,
+                        SenderId = 1,
+                        ReceiverId = 2,
+                        Content = "Hello world!",
+                        SendDate = DateTime.Now,
+                        Seen = false
+                    });
+
+            for (uint i = 2; i <= 11; i++)
+            {
+                modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = i,
+                        SenderId = 1,
+                        ReceiverId = 2,
+                        Content = $"Hello world! ({i})",
+                        SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365*45 + rgen.Next() % 2000, 0, 0, 0),
+                        Seen = PickOne(rgen, furnishedOptions)
+                    });
+                modelBuilder.Entity<Message>().HasData(
+                    new Message
+                    {
+                        Id = i + 10,
+                        SenderId = 2,
+                        ReceiverId = 1,
+                        Content = $"Hello! ({i + 10})",
+                        SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365 * 45 + rgen.Next() % 2000, 0, 0, 0),
+                        Seen = PickOne(rgen, furnishedOptions)
+                    });
+            }
+
+            for (uint i = 2; i <= 5; i++)
+            {
+                modelBuilder.Entity<FavouriteAdvert>().HasData(
+                    new FavouriteAdvert
+                    {
+                        UserId = 1,
+                        AdvertId = (uint)rgen.Next() % 51 + 1
+                    });
+
+                modelBuilder.Entity<FavouriteAdvert>().HasData(
+                    new FavouriteAdvert
+                    {
+                        UserId = 2,
+                        AdvertId = (uint)rgen.Next() % 51 + 1
+                    });
             }
         }
 

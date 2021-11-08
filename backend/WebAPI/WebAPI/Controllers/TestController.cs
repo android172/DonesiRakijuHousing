@@ -157,5 +157,19 @@ namespace WebAPI.Controllers
 
 
         }
+    
+        [HttpGet]
+        [Route("get_all_messages")]
+        public ActionResult<IEnumerable<Message>> GetAllMessages()
+        {
+            return ctx.Messages.ToList();
+        }
+
+        [HttpGet]
+        [Route("get_all_fav_adverts")]
+        public ActionResult<IEnumerable<FavouriteAdvert>> GetAllFavAdverts()
+        {
+            return ctx.FavouriteAdverts.ToList();
+        }
     }
 }

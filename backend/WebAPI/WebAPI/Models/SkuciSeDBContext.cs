@@ -17,6 +17,8 @@ namespace WebAPI.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Advert> Adverts { get; set; }
         public DbSet<AdvertImage> AdvertImages { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<FavouriteAdvert> FavouriteAdverts { get; set; }
 
         public static List<string> CityNames = new List<string>() { "Beograd", "Novi Sad", "Niš", "Kragujevac",
                                                                 "Priština", "Subotica", "Zrenjanin", "Pančevo",
@@ -33,8 +35,9 @@ namespace WebAPI.Models
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
-            modelBuilder.Entity<AdvertImage>().HasKey(ai => ai.AdvertID);
-            modelBuilder.Entity<AdvertImage>().HasKey(ai => ai.ImageUrl);
+            modelBuilder.Entity<AdvertImage>().HasKey(ai => new { ai.AdvertId, ai.ImageUrl });
+
+            modelBuilder.Entity<FavouriteAdvert>().HasKey(fa => new { fa.AdvertId, fa.UserId });
 
             SkuciSeDBSeed.Seed(modelBuilder, seed);
         }
