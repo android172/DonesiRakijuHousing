@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -28,9 +30,8 @@ namespace WebAPI.Controllers
         {
             ctx = _ctx;
             ems = _ems;
-            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            userId = uint.Parse(temp);
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            uint.TryParse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out userId);
         }
 
         [HttpPost]

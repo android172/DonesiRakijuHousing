@@ -17,8 +17,6 @@ namespace WebAPI.Models
                 City = advert.City,
                 Address = advert.Address,
                 Size = advert.Size,
-                ResidenceType = advert.ResidenceType,
-                StructureType = advert.StructureType,
                 SaleType = advert.SaleType
 
             };
