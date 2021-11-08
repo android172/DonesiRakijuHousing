@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebAPI.Helpers;
 using Microsoft.Net.Http.Headers;
+using NinjaNye.SearchExtensions.Levenshtein;
 
 namespace WebAPI.Controllers
 {
@@ -27,8 +28,8 @@ namespace WebAPI.Controllers
         public AdvertController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
-            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            userId = uint.Parse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            uint.TryParse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out userId);
         }
 
         [HttpPost]
@@ -76,10 +77,10 @@ namespace WebAPI.Controllers
             public string Name { get; set; }
             public dynamic Param { get; set; }
         }
-
+        
         [HttpPost]
         [Route("search_adverts")]
-        public ActionResult<IEnumerable<Advert>> SearchAdverts(string filterArray, int adsPerPage, int pageNum, string orderBy, bool ascending)
+        public ActionResult<IEnumerable<object>> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
             string token = JwtHelper.CheckActiveToken(userId);
 
@@ -136,6 +137,9 @@ namespace WebAPI.Controllers
                     result = result.OrderByDescending(ad => orderByDict[orderBy](ad));
             }
 
+            if (searchParam != null)
+                result = result.Where(ad => ad.Title.ToLower().Contains(searchParam) || ad.Description.ToLower().Contains(searchParam));
+
             if (adsPerPage == 0)
                 adsPerPage = 10;
             if (pageNum == 0)
@@ -143,7 +147,7 @@ namespace WebAPI.Controllers
 
             result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
 
-            return result.ToList();
+            return result.Select(Listing.AdListing).ToList();
         }
 
         [HttpPost]
@@ -156,6 +160,26 @@ namespace WebAPI.Controllers
                 return Unauthorized("Token is not active.");
 
             return ctx.Adverts.Where(a => a.OwnerId == userId).ToList();
+        }
+
+        [HttpPost]
+        [Route("get_favourite_adverts")]
+        public ActionResult<IEnumerable<object>> GetFavouriteAdverts()
+        {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
+            var result = ctx.FavouriteAdverts.Where(f => f.UserId == userId)
+                .Join(ctx.Adverts,
+                    f => f.AdvertId,
+                    ad => ad.Id,
+                    (f, ad) => Listing.AdListing(ad));
+
+            return result.ToList();
+
+
         }
     }
 }
