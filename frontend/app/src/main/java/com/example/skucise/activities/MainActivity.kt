@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         SessionManager.loadSession(this)
-        if (!SessionManager.isActive()) {
+        if (SessionManager.isActive()) {
             startActivity(Intent(this, NavigationActivity::class.java))
             finish()
         }
