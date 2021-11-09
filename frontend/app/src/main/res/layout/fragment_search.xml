@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name"
             android:hint="Traži po ..."
             app:layout_constraintEnd_toStartOf="@+id/btn_find_searched"
             app:layout_constraintStart_toStartOf="parent"

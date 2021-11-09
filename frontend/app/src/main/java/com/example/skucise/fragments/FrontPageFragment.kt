@@ -54,7 +54,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                     )
                 }
                 //Toast.makeText(context, "test: mounted = " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show()
-                val cityTilesAdapter = CityTilesAdapter(tileSet)
+                val cityTilesAdapter = CityTilesAdapter(tileSet, requireActivity().nav_bottom_navigator)
                 val a = view.findViewById<RecyclerView>(R.id.rcv_city_tiles)
                 a.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 a.adapter = cityTilesAdapter

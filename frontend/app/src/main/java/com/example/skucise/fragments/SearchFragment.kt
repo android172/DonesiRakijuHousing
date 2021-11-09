@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.skucise.*
 import com.example.skucise.adapter.AdvertAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*

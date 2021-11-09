@@ -8,13 +8,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
+import com.example.skucise.fragments.MyAccountFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity() {
@@ -22,10 +22,6 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
-
-        var x = "yes"
-        if (SessionManager.sharedPreferences == null) x = "no"
-        Toast.makeText(this, x, Toast.LENGTH_LONG).show()
 
         // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {
@@ -41,10 +37,18 @@ class NavigationActivity : AppCompatActivity() {
         val dropdownOptions = mutableListOf<DropdownOption>()
         dropdownOptions.add(DropdownOption(
             "Moj nalog"
-        ) {})
+        ) {
+//            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[4].itemId
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.frc_page_body, MyAccountFragment())
+                .commit()
+        })
         dropdownOptions.add(DropdownOption(
             "Moji oglasi"
-        ) {})
+        ) {
+            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[5].itemId
+        })
         dropdownOptions.add(DropdownOption(
             "Označeni oglasi"
         ) {
@@ -57,7 +61,9 @@ class NavigationActivity : AppCompatActivity() {
         })
         dropdownOptions.add(DropdownOption(
             "Kalendar"
-        ) {})
+        ) {
+            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[6].itemId
+        })
         dropdownOptions.add(DropdownOption(
             "Odjavi se"
         ) {
