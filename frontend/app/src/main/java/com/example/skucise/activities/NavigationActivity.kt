@@ -8,11 +8,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
+import com.example.skucise.adapter.AccountDropdownAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity() {
@@ -70,6 +72,9 @@ class NavigationActivity : AppCompatActivity() {
                     finish()
                 },
                 { error ->
+                    SessionManager.stopSession()
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
                     Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
                 }
             )

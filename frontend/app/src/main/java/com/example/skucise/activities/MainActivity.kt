@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.example.skucise.SessionManager
 import com.example.skucise.fragments.LoginFragment
 import com.example.skucise.fragments.RegisterFragment

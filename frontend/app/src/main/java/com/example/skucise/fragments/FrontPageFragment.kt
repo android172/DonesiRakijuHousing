@@ -1,7 +1,6 @@
 package com.example.skucise.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,15 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.get
+import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.frontpageTiles.CityTilesAdapter
 import com.example.skucise.frontpageTiles.TileSet
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
 import kotlinx.android.synthetic.main.fragment_frontpage.view.*
-import java.io.File
-import java.io.OutputStreamWriter
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
@@ -86,7 +86,9 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                 "http://10.0.2.2:5000/api/advert/search_adverts",
                 params,
                 { response ->
-                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
+                    val args = Bundle()
+                    args.putString("advertsJsonArray", response.toString())
+                    findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -107,7 +109,9 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                 "http://10.0.2.2:5000/api/advert/search_adverts",
                 params,
                 { response ->
-                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
+                    val args = Bundle()
+                    args.putString("advertsJsonArray", response.toString())
+                    findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
