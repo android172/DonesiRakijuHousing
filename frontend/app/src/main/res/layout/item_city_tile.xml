@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="@+id/tile_layout2">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
@@ -28,9 +28,11 @@
 
         <TextView
             android:id="@+id/tv_tile1"
+            style="@style/cityTilesText"
+            android:text="Test"
+            android:shadowColor="@color/transparent_dark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Beograd"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp" />
     </androidx.cardview.widget.CardView>
@@ -62,9 +64,10 @@
 
         <TextView
             android:id="@+id/tv_tile2"
+            android:text="Test"
+            style="@style/cityTilesText.small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Niš"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp" />
     </androidx.cardview.widget.CardView>
@@ -94,9 +97,9 @@
 
         <TextView
             android:id="@+id/tv_tile3"
+            style="@style/cityTilesText.small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Novi Sad"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp" />
     </androidx.cardview.widget.CardView>

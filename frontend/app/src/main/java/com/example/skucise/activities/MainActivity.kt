@@ -53,9 +53,11 @@ class MainActivity : AppCompatActivity() {
         btn_login_fragment.background = ContextCompat.getDrawable(this,
             R.drawable.left_button_style_light
         )
+        btn_login_fragment.setTextColor(ContextCompat.getColor(this, R.color.black))
         btn_register_fragment.background = ContextCompat.getDrawable(this,
             R.drawable.right_button_style_dark
         )
+        btn_register_fragment.setTextColor(ContextCompat.getColor(this, R.color.transparent_white))
         changeActiveLRFragment(fragment)
     }
 
@@ -64,9 +66,11 @@ class MainActivity : AppCompatActivity() {
         btn_login_fragment.background = ContextCompat.getDrawable(this,
             R.drawable.left_button_style_dark
         )
+        btn_register_fragment.setTextColor(ContextCompat.getColor(this, R.color.black))
         btn_register_fragment.background = ContextCompat.getDrawable(this,
             R.drawable.right_button_style_light
         )
+        btn_login_fragment.setTextColor(ContextCompat.getColor(this, R.color.transparent_white))
         changeActiveLRFragment(fragment)
     }
 }

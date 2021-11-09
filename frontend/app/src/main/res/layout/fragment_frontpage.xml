@@ -34,7 +34,6 @@
                 android:id="@+id/hv_layout_container1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -290,7 +289,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/kraguejvac" />
+                            app:srcCompat="@drawable/kragujevac" />
                     </androidx.cardview.widget.CardView>
 
 

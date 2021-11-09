@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/right_button_style_dark"
             android:text="@string/register_string"
-            android:textColor="@color/black"
+            android:textColor="@color/transparent_white"
             android:textAllCaps="false"
             android:textSize="18sp"
             app:backgroundTint="@null"

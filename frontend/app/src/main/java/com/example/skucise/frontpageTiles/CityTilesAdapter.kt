@@ -1,16 +1,17 @@
-package com.example.skucise
+package com.example.skucise.frontpageTiles
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_account_dropdown.view.*
+import com.example.skucise.R
 import kotlinx.android.synthetic.main.item_city_tile.view.*
 
 class CityTilesAdapter(private val tiles: List<TileSet>)
     : RecyclerView.Adapter<CityTilesAdapter.CityTilesViewHolder>() {
 
     class CityTilesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    val img = CityImageMap()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityTilesViewHolder {
         return CityTilesViewHolder(
@@ -25,15 +26,16 @@ class CityTilesAdapter(private val tiles: List<TileSet>)
     override fun onBindViewHolder(holder: CityTilesViewHolder, position: Int) {
         val tile = tiles[position]
         holder.itemView.apply {
-            tile_layout1.tv_tile1.text = tile.name1
-            tile_layout1.tv_tile1.id
-            tile_layout2.tv_tile2.text = tile.name2
-            tile_layout3.tv_tile3.text = tile.name3
+            //Toast.makeText(context, tiles[2].name1.lowercase().replace(' ', '_'), Toast.LENGTH_SHORT).show()
 
-            //val imgId = context.resources.getIdentifier(tile.name1, "drawable", requireActivity().packageName);
-            tile_layout1.imageView.setImageResource(R.drawable.beograd)
-            tile_layout2.imageView2.setImageResource(R.drawable.nis)
-            tile_layout3.imageView3.setImageResource(R.drawable.kraguejvac)
+            tile_layout1.tv_tile1.text = tile.name1
+            tile_layout1.imageView1.setImageResource(img.images.getValue(tile.name1))
+
+            tile_layout2.tv_tile2.text = tile.name2
+            tile_layout2.imageView2.setImageResource(img.images.getValue(tile.name2))
+
+            tile_layout3.tv_tile3.text = tile.name3
+            tile_layout3.imageView3.setImageResource(img.images.getValue(tile.name3))
         }
     }
 

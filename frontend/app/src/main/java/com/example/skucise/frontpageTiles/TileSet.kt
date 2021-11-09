@@ -1,4 +1,4 @@
-package com.example.skucise
+package com.example.skucise.frontpageTiles
 
 data class TileSet(
     val name1: String,
