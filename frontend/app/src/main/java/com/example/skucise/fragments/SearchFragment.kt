@@ -10,6 +10,7 @@ import com.example.skucise.*
 import com.example.skucise.adapter.AdvertAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import kotlinx.android.synthetic.main.fragment_search.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
@@ -46,8 +47,10 @@ class SearchFragment : Fragment() {
 
         // Connecting adverts recycler view
         val advertAdapter = AdvertAdapter(adverts)
-        rcv_search_adverts.adapter = advertAdapter
-        rcv_search_adverts.layoutManager = LinearLayoutManager(activity)
+        /*scv_search_scroll.csl_search_scroll_box.*/rcv_search_adverts.apply {
+            adapter = advertAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
     }
 
     fun loadAdverts(jsonArray: JSONArray) {

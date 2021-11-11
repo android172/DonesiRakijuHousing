@@ -8,12 +8,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
+import com.example.skucise.fragments.FrontPageFragment
 import com.example.skucise.fragments.MyAccountFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
 
@@ -38,16 +40,12 @@ class NavigationActivity : AppCompatActivity() {
         dropdownOptions.add(DropdownOption(
             "Moj nalog"
         ) {
-//            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[4].itemId
-            supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.frc_page_body, MyAccountFragment())
-                .commit()
+            navigateToOutsideFragment(R.id.myAccountFragment)
         })
         dropdownOptions.add(DropdownOption(
             "Moji oglasi"
         ) {
-            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[5].itemId
+            navigateToOutsideFragment(R.id.myAdvertsFragment)
         })
         dropdownOptions.add(DropdownOption(
             "Označeni oglasi"
@@ -62,7 +60,7 @@ class NavigationActivity : AppCompatActivity() {
         dropdownOptions.add(DropdownOption(
             "Kalendar"
         ) {
-            nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[6].itemId
+            navigateToOutsideFragment(R.id.calendarFragment)
         })
         dropdownOptions.add(DropdownOption(
             "Odjavi se"
@@ -106,5 +104,15 @@ class NavigationActivity : AppCompatActivity() {
             }
         }
         return super.dispatchTouchEvent(ev)
+    }
+
+    fun navigateToOutsideFragment(fragment: Int) {
+        nav_bottom_navigator.menu.setGroupCheckable(0, true, false)
+        for (i in 0 until nav_bottom_navigator.menu.size()) {
+            nav_bottom_navigator.menu.getItem(i).isChecked = false
+        }
+        nav_bottom_navigator.menu.setGroupCheckable(0, true, true)
+
+        findNavController(frc_page_body.id).navigate(fragment)
     }
 }
