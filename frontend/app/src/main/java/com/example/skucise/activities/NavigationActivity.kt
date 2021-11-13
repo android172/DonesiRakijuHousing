@@ -25,6 +25,9 @@ class NavigationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        // Stop navigation menu from reloading same fragment
+        nav_bottom_navigator.setOnItemReselectedListener {}
+
         // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {
             if (drop_down_account.visibility == View.GONE) {
