@@ -120,7 +120,7 @@ namespace WebAPI.Controllers
                     bool result = false;
                     foreach (var x in array)
                     {
-                        result = result || ad.StructureType == Enum.Parse(typeof(StructureType), x);
+                        result = result || ((int)ad.StructureType).ToString() == x;
                     }
 
                     return result;
