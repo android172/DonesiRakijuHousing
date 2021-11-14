@@ -169,6 +169,25 @@ namespace WebAPI.Helpers
                         AdvertId = (uint)rgen.Next() % 51 + 1
                     });
             }
+
+            modelBuilder.Entity<Meeting>().HasData(
+                new Meeting
+                {
+                    Id = 1,
+                    AdvertId = 1,
+                    VisitorId = 2,
+                    Time = DateTime.Now,
+                    AgreedUpon = true,
+                    Concluded = true
+                });
+
+            modelBuilder.Entity<Review>().HasData(
+                new Review
+                {
+                    MeetingId = 1,
+                    Rating = 4,
+                    Text = "Mesto je OK!"
+                });
         }
 
         private static T PickOne<T>(Random r, T[] options)

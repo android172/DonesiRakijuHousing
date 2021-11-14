@@ -171,5 +171,19 @@ namespace WebAPI.Controllers
         {
             return ctx.FavouriteAdverts.ToList();
         }
+
+        [HttpGet]
+        [Route("get_all_meetings")]
+        public ActionResult<IEnumerable<Meeting>> GetAllMeetings()
+        {
+            return ctx.Meetings.ToList();
+        }
+
+        [HttpGet]
+        [Route("get_all_reviews")]
+        public ActionResult<IEnumerable<Review>> GetAllReviews()
+        {
+            return ctx.Reviews.ToList();
+        }
     }
 }

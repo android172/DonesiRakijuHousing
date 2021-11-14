@@ -19,6 +19,8 @@ namespace WebAPI.Models
         public DbSet<AdvertImage> AdvertImages { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<FavouriteAdvert> FavouriteAdverts { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         public static List<string> CityNames = new List<string>() { "Beograd", "Novi Sad", "Niš", "Kragujevac",
                                                                 "Priština", "Subotica", "Zrenjanin", "Pančevo",
