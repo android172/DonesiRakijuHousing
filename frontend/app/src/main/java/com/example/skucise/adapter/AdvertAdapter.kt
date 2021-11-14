@@ -1,5 +1,6 @@
 package com.example.skucise.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,7 @@ import com.example.skucise.R
 import kotlinx.android.synthetic.main.item_advert.view.*
 
 class AdvertAdapter(
-    private val adverts: ArrayList<Advert> = ArrayList()
+    private var adverts: ArrayList<Advert> = ArrayList()
 ) : RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
 
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -33,6 +34,12 @@ class AdvertAdapter(
             tv_advert_size.text = "${currentAdvert.size} kvadrata"
             tv_advert_price.text = "${currentAdvert.price} €"
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateAdverts(adverts: ArrayList<Advert>) {
+        this.adverts = adverts
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
