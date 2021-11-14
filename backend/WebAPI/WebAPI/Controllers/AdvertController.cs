@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
 
                         return result;
                     }),
-                ["SaleType"] = ((ad, param) => ad.SaleType == Enum.Parse(typeof(SaleType), param.ToString())),
+                ["SaleType"] = ((ad, param) => ((int)ad.SaleType).ToString() == param.ToString()),
                 ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
                 ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms >= int.Parse(param.ToString())),
                 //["StructureType"] = ((ad, param) => ad.StructureType == Enum.Parse(typeof(StructureType), param.ToString())),
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
 
                     return result;
                 }),
-                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == Enum.Parse(typeof(ResidenceType), param.ToString())),
+                ["ResidenceType"] = ((ad, param) => ((int)ad.ResidenceType).ToString() == param.ToString()),
                 ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
             };
 
