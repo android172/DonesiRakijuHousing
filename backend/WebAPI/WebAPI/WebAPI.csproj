@@ -22,6 +22,7 @@
 
   <ItemGroup>
   	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.11" />
+  	<PackageReference Include="NinjaNye.SearchExtensions.Levenshtein" Version="3.0.1" />
   </ItemGroup>
 
 </Project>

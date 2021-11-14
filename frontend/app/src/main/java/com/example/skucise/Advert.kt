@@ -6,7 +6,7 @@ data class Advert(
     val id: UInt,
     val residenceType: ResidenceType = ResidenceType.Apartman,
     val saleType: SaleType,
-    val structureType: StructureType = StructureType.OneAndAHalfRoom,
+    val structureType: StructureType = StructureType.Studio,
     val title: String,
     val description: String = "",
     val city: String,
@@ -22,5 +22,5 @@ data class Advert(
 )
 
 enum class ResidenceType { Apartman, Kuca }
-enum class StructureType { Studio, OneRoom, OneAndAHalfRoom, TwoRoom, TwoAndAHalfRoom }
+enum class StructureType { Studio, Jednosobna, JednaIpoSoba, Dvosobna, DveIpoSobe }
 enum class SaleType { Prodaja, Iznajmljivanje }

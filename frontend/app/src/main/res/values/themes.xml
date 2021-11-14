@@ -30,6 +30,14 @@
         <!--<item name="android:textViewStyle">@drawable/tw_style1</item>-->
     </style>
 
+    <style name="Theme.SkuciSe.LoginTheme" parent="Theme.SkuciSe">
+        <item name="android:textViewStyle">@style/loginTextView</item>
+    </style>
+
+    <style name="loginTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/login_tw_style</item>
+    </style>
+
     <style name="roundedCardView" parent="Base.CardView">
         <item name="cardElevation">0dp</item>
         <item name="cardCornerRadius">10dp</item>

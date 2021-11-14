@@ -24,4 +24,19 @@
         android:name="com.example.skucise.fragments.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/myAccountFragment"
+        android:name="com.example.skucise.fragments.MyAccountFragment"
+        android:label="fragment_my_account"
+        tools:layout="@layout/fragment_my_account" />
+    <fragment
+        android:id="@+id/myAdvertsFragment"
+        android:name="com.example.skucise.fragments.MyAdvertsFragment"
+        android:label="fragment_my_adverts"
+        tools:layout="@layout/fragment_my_adverts" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.example.skucise.fragments.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>

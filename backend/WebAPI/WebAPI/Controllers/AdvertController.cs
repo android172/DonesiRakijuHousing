@@ -12,7 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using WebAPI.Helpers;
 using Microsoft.Net.Http.Headers;
-using NinjaNye.SearchExtensions.Levenshtein;
+using System.Reflection;
 
 namespace WebAPI.Controllers
 {
@@ -89,14 +89,34 @@ namespace WebAPI.Controllers
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
-                ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms == int.Parse(param.ToString())),
+                ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms >= int.Parse(param.ToString())),
                 ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
-                ["City"] = ((ad, param) => ad.City == param.ToString()),
-                ["SaleType"] = ((ad, param) => ad.SaleType == Enum.Parse(typeof(SaleType), param.ToString())),
+                ["City"] = ((ad, param) =>
+                    {
+                        var array = param.GetString().Trim('[', ']').Split(" , ");
+                        bool result = false;
+                        foreach (var x in array)
+                        {
+                            result = result || ad.City.Contains(x);
+                        }
+
+                        return result;
+                    }),
+                ["SaleType"] = ((ad, param) => ((int)ad.SaleType).ToString() == param.ToString()),
                 ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
-                ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms == int.Parse(param.ToString())),
-                ["StructureType"] = ((ad, param) => ad.StructureType == Enum.Parse(typeof(StructureType), param.ToString())),
-                ["ResidenceType"] = ((ad, param) => ad.ResidenceType == Enum.Parse(typeof(ResidenceType), param.ToString())),
+                ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms >= int.Parse(param.ToString())),
+                ["StructureType"] = ((ad, param) =>
+                {
+                    var array = param.GetString().Trim('[', ']').Split(" , ");
+                    bool result = false;
+                    foreach (var x in array)
+                    {
+                        result = result || ((int)ad.StructureType).ToString() == x;
+                    }
+
+                    return result;
+                }),
+                ["ResidenceType"] = ((ad, param) => ((int)ad.ResidenceType).ToString() == param.ToString()),
                 ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
             };
 
@@ -138,7 +158,14 @@ namespace WebAPI.Controllers
             }
 
             if (searchParam != null)
-                result = result.Where(ad => ad.Title.ToLower().Contains(searchParam) || ad.Description.ToLower().Contains(searchParam));
+            {
+                //result = result.Where(ad => ad.Title.ToLower().Contains(searchParam) || ad.Description.ToLower().Contains(searchParam));
+
+                string[] searchTerms = searchParam.Split(' ').Select(s => s.ToLowerInvariant()).ToArray();
+                searchTerms = SearchHelper.RemoveNoise(searchTerms);
+
+                result = result.Where(ad => searchTerms.Any(ad.Title.ToLower().Contains));
+            }
 
             if (adsPerPage == 0)
                 adsPerPage = 10;
@@ -172,12 +199,104 @@ namespace WebAPI.Controllers
                 return Unauthorized("Token is not active.");
 
             var result = ctx.FavouriteAdverts.Where(f => f.UserId == userId)
-                .Join(ctx.Adverts,
-                    f => f.AdvertId,
-                    ad => ad.Id,
-                    (f, ad) => Listing.AdListing(ad));
+                .Join(ctx.Adverts,f => f.AdvertId,ad => ad.Id,(f, ad) => Listing.AdListing(ad));
 
             return result.ToList();
+
+
+        }
+
+        [HttpPost]
+        [Route("add_advert")]
+        public ActionResult<string> AddAdvert(string advertJson)
+        {
+            Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
+            newAdvert.DateCreated = DateTime.Now;
+
+            try
+            {
+                ctx.Adverts.Add(newAdvert);
+                ctx.SaveChanges();
+
+                return Ok("Advert added.");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Failed to add advert.");
+            }
+        }
+
+        [HttpPost]
+        [Route("remove_advert")]
+        public ActionResult<string> RemoveAdvert(uint advertId)
+        {
+            var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
+            
+            if(result != null)
+            {
+                ctx.Adverts.Remove(result);
+                ctx.SaveChanges();
+
+                return Ok("Advert removed.");
+            }
+
+            return NotFound("Advert does not exist.");
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("edit_advert")]
+        public ActionResult<string> EditAdvert(uint advertId, string editJson)
+        {
+            dynamic editAdvert = JsonSerializer.Deserialize<dynamic>(editJson);
+            Advert result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
+            PropertyInfo[] properties = typeof(Advert).GetProperties();
+            
+            if (result == null)
+                return NotFound("Advert does not exist.");
+            
+            foreach(PropertyInfo property in properties)
+            {
+                if (property.Name == "Id")
+                    continue;
+                try
+                {
+                    editAdvert.GetProperty(property.Name);      // ne prolazi kroz if-ove ukoliko ne postoji property
+
+                    if (property.PropertyType == typeof(string))
+                    {
+                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetString());
+                    }
+                    else if(property.PropertyType == typeof(decimal))
+                    {
+                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetDecimal());
+                    }
+                    else if(property.PropertyType == typeof(bool))
+                    {
+                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetBoolean());
+                    }
+                    else if(property.PropertyType == typeof(uint))
+                    {
+                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetUInt32());
+                    }
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
+            }
+
+            try
+            {
+                ctx.Adverts.Update(result);
+                ctx.SaveChanges();
+
+                return Ok("Adverted edited.");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Failed to edit advert." + e.Message);
+            }
 
 
         }
