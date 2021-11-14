@@ -77,14 +77,7 @@ namespace WebAPI.Controllers
             public string Name { get; set; }
             public dynamic Param { get; set; }
         }
-
-        private static string[] ToArray<T>(dynamic obj)
-        {
-            var temp = JsonSerializer.Serialize(obj);
-            return JsonSerializer.Deserialize<T>(temp);
-        }
         
-        [AllowAnonymous]
         [HttpPost]
         [Route("search_adverts")]
         public ActionResult<IEnumerable<object>> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
@@ -98,10 +91,9 @@ namespace WebAPI.Controllers
             {
                 ["NumBedrooms"] = ((ad, param) => ad.NumBedrooms >= int.Parse(param.ToString())),
                 ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
-                //["City"] = ((ad, param) => ad.City == param.ToString()),
                 ["City"] = ((ad, param) =>
                     {
-                        var array = ToArray<string[]>(param);
+                        var array = param.GetString().Trim('[', ']').Split(" , ");
                         bool result = false;
                         foreach (var x in array)
                         {
@@ -113,10 +105,9 @@ namespace WebAPI.Controllers
                 ["SaleType"] = ((ad, param) => ((int)ad.SaleType).ToString() == param.ToString()),
                 ["Size"] = ((ad, param) => ad.Size >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Size <= decimal.Parse(param.GetProperty("To").ToString())),
                 ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms >= int.Parse(param.ToString())),
-                //["StructureType"] = ((ad, param) => ad.StructureType == Enum.Parse(typeof(StructureType), param.ToString())),
                 ["StructureType"] = ((ad, param) =>
                 {
-                    var array = ToArray<string[]>(param);
+                    var array = param.GetString().Trim('[', ']').Split(" , ");
                     bool result = false;
                     foreach (var x in array)
                     {
