@@ -11,17 +11,28 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/login_bg2"
+        android:visibility="gone"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+
+        android:id="@+id/vpg_background_slider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <io.alterac.blurkit.BlurLayout
         android:id="@+id/blur_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:blk_blurRadius="1"
         app:blk_downscaleFactor="0.12"
         app:blk_fps="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/iv_logo"

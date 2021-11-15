@@ -3,16 +3,22 @@ package com.example.skucise.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.example.skucise.SessionManager
+import com.example.skucise.adapter.LoginScrolerAdapter
 import com.example.skucise.fragments.LoginFragment
 import com.example.skucise.fragments.RegisterFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var sliderHandler: Handler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,7 +42,37 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frc_login_or_register, LoginFragment())
             .commit()
 
+        val bg_images = arrayListOf(R.drawable.login_bg1, R.drawable.login_bg2, R.drawable.login_bg3, R.drawable.login_bg4)
+
+        vpg_background_slider.adapter = LoginScrolerAdapter(bg_images, vpg_background_slider)
+
+        sliderHandler = Handler()
+        vpg_background_slider.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    sliderHandler.removeCallbacks(threadSlider)
+                    sliderHandler.postDelayed(threadSlider, 3000)
+                }
+            }
+        )
     }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(threadSlider)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(threadSlider, 3000)
+    }
+
+    private val threadSlider =
+        Runnable {
+            vpg_background_slider.currentItem = vpg_background_slider.currentItem + 1
+            blur_layout.startBlur()
+        }
 
     override fun onStart() {
         super.onStart()
