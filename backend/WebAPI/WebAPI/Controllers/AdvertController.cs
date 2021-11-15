@@ -117,7 +117,7 @@ namespace WebAPI.Controllers
                     return result;
                 }),
                 ["ResidenceType"] = ((ad, param) => ((int)ad.ResidenceType).ToString() == param.ToString()),
-                ["Furnished"] = ((ad, param) => ad.Furnished == param.ToString())
+                ["Furnished"] = ((ad, param) => ad.Furnished.ToString() == param.ToString())
             };
 
             Dictionary<string, Func<Advert, dynamic>> orderByDict = new Dictionary<string, Func<Advert, dynamic>>
@@ -243,62 +243,97 @@ namespace WebAPI.Controllers
             return NotFound("Advert does not exist.");
         }
 
+        //[HttpPost]
+        //[Route("edit_advert")]
+        //public ActionResult<string> EditAdvert(uint advertId, string editJson)
+        //{
+        //    dynamic editAdvert = JsonSerializer.Deserialize<dynamic>(editJson);
+        //    Advert result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
+        //    PropertyInfo[] properties = typeof(Advert).GetProperties();
+            
+        //    if (result == null)
+        //        return NotFound("Advert does not exist.");
+            
+        //    foreach(PropertyInfo property in properties)
+        //    {
+        //        if (property.Name == "Id")
+        //            continue;
+        //        try
+        //        {
+        //            editAdvert.GetProperty(property.Name);      // ne prolazi kroz if-ove ukoliko ne postoji property
+
+        //            if (property.PropertyType == typeof(string))
+        //            {
+        //                property.SetValue(result, editAdvert.GetProperty(property.Name).GetString());
+        //            }
+        //            else if(property.PropertyType == typeof(decimal))
+        //            {
+        //                property.SetValue(result, editAdvert.GetProperty(property.Name).GetDecimal());
+        //            }
+        //            else if(property.PropertyType == typeof(bool))
+        //            {
+        //                property.SetValue(result, editAdvert.GetProperty(property.Name).GetBoolean());
+        //            }
+        //            else if(property.PropertyType == typeof(uint))
+        //            {
+        //                property.SetValue(result, editAdvert.GetProperty(property.Name).GetUInt32());
+        //            }
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            continue;
+        //        }
+        //    }
+
+        //    try
+        //    {
+        //        ctx.Adverts.Update(result);
+        //        ctx.SaveChanges();
+
+        //        return Ok("Adverted edited.");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(500, "Failed to edit advert." + e.Message);
+        //    }
+
+
+        //}
+
         [AllowAnonymous]
         [HttpPost]
         [Route("edit_advert")]
-        public ActionResult<string> EditAdvert(uint advertId, string editJson)
+        public ActionResult<string> EditAdvert(string editJson)
         {
-            dynamic editAdvert = JsonSerializer.Deserialize<dynamic>(editJson);
-            Advert result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
-            PropertyInfo[] properties = typeof(Advert).GetProperties();
-            
-            if (result == null)
-                return NotFound("Advert does not exist.");
-            
-            foreach(PropertyInfo property in properties)
+            Advert editAdvert = JsonSerializer.Deserialize<Advert>(editJson);
+            Advert result = ctx.Adverts.Where(ad => editAdvert.Id == ad.Id).FirstOrDefault();
+
+            if(result != null)
             {
-                if (property.Name == "Id")
-                    continue;
                 try
                 {
-                    editAdvert.GetProperty(property.Name);      // ne prolazi kroz if-ove ukoliko ne postoji property
+                    PropertyInfo[] properties = typeof(Advert).GetProperties();
 
-                    if (property.PropertyType == typeof(string))
+                    foreach (PropertyInfo property in properties)
                     {
-                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetString());
+                        if (property.Name == "Id")
+                            continue;
+
+                        property.SetValue(result, property.GetValue(editAdvert));
                     }
-                    else if(property.PropertyType == typeof(decimal))
-                    {
-                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetDecimal());
-                    }
-                    else if(property.PropertyType == typeof(bool))
-                    {
-                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetBoolean());
-                    }
-                    else if(property.PropertyType == typeof(uint))
-                    {
-                        property.SetValue(result, editAdvert.GetProperty(property.Name).GetUInt32());
-                    }
+
+                    ctx.Adverts.Update(result);
+                    ctx.SaveChanges();
+
+                    return Ok("Adverted edited.");
                 }
                 catch (Exception e)
                 {
-                    continue;
+                    return StatusCode(500, "Failed to edit advert." + e.Message);
                 }
             }
 
-            try
-            {
-                ctx.Adverts.Update(result);
-                ctx.SaveChanges();
-
-                return Ok("Adverted edited.");
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, "Failed to edit advert." + e.Message);
-            }
-
-
+            return NotFound("Advert does not exist.");
         }
     }
 }

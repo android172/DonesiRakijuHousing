@@ -146,5 +146,19 @@ namespace WebAPI.Controllers
 
             return Ok("Info changed.");
         }
+
+        [HttpPost]
+        [Route("arrange_meeting")]
+        public ActionResult<string> ArrangeMeeting()
+        {
+            return Ok("Not ready");
+        }
+
+        [HttpPost]
+        [Route("confirm_meeting")]
+        public ActionResult<string> ConfirmMeeting()
+        {
+            return Ok("Not ready");
+        }
     }
 }
