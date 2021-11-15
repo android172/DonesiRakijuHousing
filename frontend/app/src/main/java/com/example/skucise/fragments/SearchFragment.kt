@@ -312,14 +312,14 @@ class SearchFragment : Fragment() {
             }
 
             // Furnished
-//            if (radioGroupFurnished.checkedRadioButtonId != 0) {
-//                val checkedRadio =
-//                    radioGroupFurnished.findViewById<RadioButton>(radioGroupFurnished.checkedRadioButtonId)
-//                when(checkedRadio.text.toString()) {
-//                    "Da" -> filters.applyFilter(FilterArray.FilterNames.Furnished, true)
-//                    "Ne" -> filters.applyFilter(FilterArray.FilterNames.Furnished, false)
-//                }
-//            }
+            if (radioGroupFurnished.checkedRadioButtonId != 0) {
+                val checkedRadio =
+                    radioGroupFurnished.findViewById<RadioButton>(radioGroupFurnished.checkedRadioButtonId)
+                when(checkedRadio.text.toString()) {
+                    "Da" -> filters.applyFilter(FilterArray.FilterNames.Furnished, "True")
+                    "Ne" -> filters.applyFilter(FilterArray.FilterNames.Furnished, "False")
+                }
+            }
 
             val params = HashMap<String, String>()
             params["filterArray"] = filters.getFilters()

@@ -59,7 +59,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
         btn_search_buy_options.setOnClickListener {
             val filters = FilterArray()
-            filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Purchase)
+            filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Purchase.ordinal)
 
             val params = HashMap<String, String>()
             params["filterArray"] = filters.getFilters()
@@ -82,7 +82,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
         btn_search_rent_options.setOnClickListener {
             val filters = FilterArray()
-            filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Rent)
+            filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Rent.ordinal)
 
             val params = HashMap<String, String>()
             params["filterArray"] = filters.getFilters()

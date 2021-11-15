@@ -42,7 +42,7 @@ class FilterArray(
             FilterNames.NumBathrooms -> value is Int
             FilterNames.StructureType -> value is ArrayList<*>
             FilterNames.ResidenceType -> value is Int
-            FilterNames.Furnished -> value is Boolean
+            FilterNames.Furnished -> value is String
         }
 
         if (validValue) {
