@@ -18,8 +18,8 @@ namespace WebAPI.Models
                 Address = advert.Address,
                 Size = advert.Size,
                 SaleType = advert.SaleType,
-                ResidenceType = advert.ResidenceType
-
+                ResidenceType = advert.ResidenceType,
+                DateCreated = advert.DateCreated
             };
 
     }

@@ -1,5 +1,6 @@
 package com.example.skucise.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.example.skucise.adapter.AdvertAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -55,9 +57,30 @@ class SearchFragment : Fragment() {
                 fragmentState!!["search_query"] = advertsLoaded!!
         }
 
+        // load state
         if (advertsLoaded != null) {
             adverts = advertsLoaded!!
             advertAdapter.updateAdverts(adverts)
+        }
+        else {
+            val params = HashMap<String, String>()
+            params["filterArray"] = FilterArray().getFilters()
+
+            ReqSender.sendRequestArray(
+                this.requireActivity(),
+                Request.Method.POST,
+                "http://10.0.2.2:5000/api/advert/search_adverts",
+                params,
+                { response ->
+                    adverts = loadAdverts(response)
+                    fragmentState!!["search_query"] = adverts
+                    advertAdapter.updateAdverts(adverts)
+                    updateAdvertCount()
+                },
+                { error ->
+                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
         }
     }
 
@@ -72,10 +95,11 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Connecting adverts recycler view
-        /*scv_search_scroll.csl_search_scroll_box.*/rcv_search_adverts.apply {
+        rcv_search_adverts.apply {
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
         }
+        updateAdvertCount()
 
         // Construct Filters
         btn_filters.setOnClickListener {
@@ -161,21 +185,29 @@ class SearchFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NewApi")
     private fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
         val adverts = ArrayList<Advert>()
         for (i in 0 until jsonArray.length()) {
             val json = jsonArray[i] as JSONObject
             adverts.add( Advert(
-                id       = json.getInt("id").toUInt(),
-                title    = json.getString("title"),
-                price    = json.getDouble("price"),
-                city     = json.getString("city"),
-                address  = json.getString("address"),
-                saleType = SaleType.values()[json.getInt("saleType")],
-                size     = json.getDouble("size")
+                id            = json.getInt("id").toUInt(),
+                title         = json.getString("title"),
+                price         = json.getDouble("price"),
+                city          = json.getString("city"),
+                address       = json.getString("address"),
+                saleType      = SaleType.values()[json.getInt("saleType")],
+                residenceType = ResidenceType.values()[json.getInt("residenceType")],
+                size          = json.getDouble("size"),
+                dateCreated   = LocalDateTime.parse(json.getString("dateCreated"))
             ))
         }
         return adverts
+    }
+
+    private fun updateAdvertCount() {
+        val x = advertAdapter.itemCount
+        tv_number_of_ads.text = "Broj pronadjenih oglasa: $x"
     }
 
     private fun createCheckbox(into: ConstraintLayout, name: String, checked: Boolean = false) : CheckBox {
@@ -333,6 +365,7 @@ class SearchFragment : Fragment() {
                     adverts = loadAdverts(response)
                     fragmentState!!["search_query"] = adverts
                     advertAdapter.updateAdverts(adverts)
+                    updateAdvertCount()
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()

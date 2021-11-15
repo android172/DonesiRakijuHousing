@@ -1,14 +1,17 @@
 package com.example.skucise.adapter
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.skucise.Advert
 import com.example.skucise.R
 import kotlinx.android.synthetic.main.item_advert.view.*
+import java.time.format.DateTimeFormatter
 
 class AdvertAdapter(
     private var adverts: ArrayList<Advert> = ArrayList()
@@ -26,10 +29,13 @@ class AdvertAdapter(
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: AdvertViewHolder, position: Int) {
         val currentAdvert = adverts[position]
         holder.itemView.apply {
             tv_advert_title.text = currentAdvert.title
+            tv_advert_date.text = currentAdvert.dateCreated.format(DateTimeFormatter.ISO_DATE)
+            tv_advert_residence_type.text = currentAdvert.residenceType.toString()
             tv_advert_city.text = "${currentAdvert.city}, ${currentAdvert.address}"
             tv_advert_type.text = currentAdvert.saleType.toString()
             tv_advert_size.text = "${currentAdvert.size} kvadrata"

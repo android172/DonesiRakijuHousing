@@ -107,7 +107,7 @@ namespace WebAPI.Controllers
                 ["NumBathrooms"] = ((ad, param) => ad.NumBathrooms >= int.Parse(param.ToString())),
                 ["StructureType"] = ((ad, param) =>
                 {
-                    var array = param.GetString().Trim('[', ']').Split(" , ");
+                    var array = param.GetString().Trim('[', ']').Split(", ");
                     bool result = false;
                     foreach (var x in array)
                     {

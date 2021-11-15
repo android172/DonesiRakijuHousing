@@ -1,6 +1,6 @@
 package com.example.skucise
 
-import java.util.*
+import java.time.LocalDateTime
 
 data class Advert(
     val id: UInt,
@@ -18,7 +18,7 @@ data class Advert(
     val numberOfBathrooms: UInt = 0u,
     val yearOfMake: UInt = 0u,
     val furnished: Boolean = false,
-    val dateCreated: Date = Date()
+    val dateCreated: LocalDateTime
 )
 
 enum class ResidenceType { Stan, Kuća }

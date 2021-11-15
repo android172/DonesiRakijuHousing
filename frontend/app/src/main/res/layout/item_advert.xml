@@ -39,13 +39,30 @@
         app:layout_constraintTop_toBottomOf="@+id/vpg_advert_images" />
 
     <TextView
+        android:id="@+id/tv_advert_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date created"
+        app:layout_constraintEnd_toStartOf="@+id/tv_advert_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_advert_title" />
+
+    <TextView
+        android:id="@+id/tv_advert_residence_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="House"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_advert_title" />
+
+    <TextView
         android:id="@+id/tv_advert_city"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="City name"
         app:layout_constraintEnd_toStartOf="@+id/tv_advert_type"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_advert_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_advert_date" />
 
     <TextView
         android:id="@+id/tv_advert_type"
@@ -53,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="Type"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_advert_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_advert_date" />
 
     <TextView
         android:id="@+id/tv_advert_size"
