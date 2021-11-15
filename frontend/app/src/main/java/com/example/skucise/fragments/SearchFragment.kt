@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +28,8 @@ private const val ARG_PARAM1 = "advertsJsonArray"
  */
 class SearchFragment : Fragment() {
     private var adverts: ArrayList<Advert> = ArrayList()
+    private var filterViews: HashMap<String, Any>? = null
+    private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +55,10 @@ class SearchFragment : Fragment() {
                 fragmentState!!["search_query"] = advertsLoaded!!
         }
 
-        if (advertsLoaded != null)
+        if (advertsLoaded != null) {
             adverts = advertsLoaded!!
+            advertAdapter.updateAdverts(adverts)
+        }
     }
 
     override fun onCreateView(
@@ -71,7 +72,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Connecting adverts recycler view
-        val advertAdapter = AdvertAdapter(adverts)
         /*scv_search_scroll.csl_search_scroll_box.*/rcv_search_adverts.apply {
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
@@ -81,56 +81,83 @@ class SearchFragment : Fragment() {
         btn_filters.setOnClickListener {
             csl_filters.visibility = View.VISIBLE
 
-            // Residence type
-            val checkBoxHouse = createCheckbox(csl_filters_residence_type, "Kuća")
-            val checkBoxApartment = createCheckbox(csl_filters_residence_type, "Stan")
-            checkBoxApartment.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                startToEnd = checkBoxHouse.id
-            }
+            if (filterViews == null) {
+                // Residence type
+                val checkBoxHouse = createCheckbox(csl_filters_residence_type, "Kuća")
+                val checkBoxApartment = createCheckbox(csl_filters_residence_type, "Stan")
+                checkBoxApartment.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    startToEnd = checkBoxHouse.id
+                }
 
-            // Sale type
-            val checkBoxBuy = createCheckbox(csl_filters_sale_type, "Prodaja")
-            val checkBoxRent = createCheckbox(csl_filters_sale_type, "Iznajmljivanje")
-            checkBoxRent.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                startToEnd = checkBoxBuy.id
-            }
+                // Sale type
+                val checkBoxBuy = createCheckbox(csl_filters_sale_type, "Prodaja")
+                val checkBoxRent = createCheckbox(csl_filters_sale_type, "Iznajmljivanje")
+                checkBoxRent.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    startToEnd = checkBoxBuy.id
+                }
 
-            // Structure type
-            listCheckBoxes(csl_filters_structure_type, StructureType.values().asIterable())
-
-            // City
-            if (allCities == null) {
-                ReqSender.sendRequestArray(
-                    requireActivity(), Request.Method.GET,
-                    "http://10.0.2.2:5000/api/advert/get_all_cities", null,
-                    { cities ->
-                        val cityArray = Array(
-                            cities.length()
-                        ) { i -> cities[i].toString() }
-                        listCheckBoxes(csl_filters_city, cityArray.asIterable())
-                        allCities = cityArray
-                    },
-                    { error ->
-                        Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
-                    }
+                // Structure type
+                val checkBoxStructureType = listCheckBoxes(
+                    csl_filters_structure_type,
+                    StructureType.values().asIterable()
                 )
-            } else {
-                listCheckBoxes(csl_filters_city, allCities!!.asIterable())
+
+                // City
+                var checkBoxCity : ArrayList<CheckBox> = ArrayList()
+                if (allCities == null) {
+                    ReqSender.sendRequestArray(
+                        requireActivity(), Request.Method.GET,
+                        "http://10.0.2.2:5000/api/advert/get_all_cities", null,
+                        { cities ->
+                            val cityArray = Array(
+                                cities.length()
+                            ) { i -> cities[i].toString() }
+                            checkBoxCity = listCheckBoxes(csl_filters_city, cityArray.asIterable())
+                            allCities = cityArray
+                        },
+                        { error ->
+                            Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                        }
+                    )
+                } else {
+                    checkBoxCity = listCheckBoxes(csl_filters_city, allCities!!.asIterable())
+                }
+
+                // Number of rooms
+                val radioGroupNumOfRooms = createRadioGroup(
+                    csl_filters_number_of_rooms,
+                    arrayOf("1+", "2+", "3+", "4+", "5+")
+                )
+
+                // Number of bathrooms
+                val radioGroupNumOfBathrooms = createRadioGroup(
+                    csl_filters_number_of_bathrooms,
+                    arrayOf("1+", "2+", "3+")
+                )
+
+                // furnished
+                val radioGroupFurnished = createRadioGroup(
+                    csl_filters_furnished,
+                    arrayOf("Da", "Ne", "Nebitno")
+                )
+
+                filterViews = HashMap()
+                filterViews!!["house"]     = checkBoxHouse
+                filterViews!!["apartment"] = checkBoxApartment
+                filterViews!!["buy"]       = checkBoxBuy
+                filterViews!!["rent"]      = checkBoxRent
+                filterViews!!["structure"] = checkBoxStructureType
+                filterViews!!["city"]      = checkBoxCity
+                filterViews!!["bedrooms"]  = radioGroupNumOfRooms
+                filterViews!!["bathrooms"] = radioGroupNumOfBathrooms
+                filterViews!!["furnished"] = radioGroupFurnished
             }
-
-            // Number of rooms
-            createRadioGroup(csl_filters_number_of_rooms, arrayOf("1+", "2+", "3+", "4+", "5+"))
-
-            // Number of bathrooms
-            createRadioGroup(csl_filters_number_of_bathrooms, arrayOf("1+", "2+", "3+"))
-
-            // furnished
-            createRadioGroup(csl_filters_furnished, arrayOf("Da", "Ne", "Nebitno"))
         }
 
         // Apply filters
         btn_filters_apply.setOnClickListener {
             csl_filters.visibility = View.GONE
+            requestAdverts()
         }
     }
 
@@ -161,20 +188,31 @@ class SearchFragment : Fragment() {
         return checkBox
     }
 
-    private fun listCheckBoxes(into: ConstraintLayout, array: Iterable<Any>) {
-        var previus : CheckBox? = null
+    private fun listCheckBoxes(into: ConstraintLayout, array: Iterable<Any>) : ArrayList<CheckBox> {
+        val checkBoxList = ArrayList<CheckBox>()
+        var previous : CheckBox? = null
         for (element in array) {
             val current = createCheckbox(into, element.toString())
-            if (previus != null) {
+            if (previous != null) {
                 current.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = previus!!.id
+                    topToBottom = previous!!.id
                 }
             }
-            previus = current
+            checkBoxList.add(current)
+            previous = current
         }
+        return checkBoxList
     }
 
-    private fun createRadioGroup(into: ConstraintLayout, options: Array<String>, selected: Int = 0) {
+    private fun checkBoxesAsArrayList(checkBoxes: ArrayList<CheckBox>): ArrayList<String> {
+        val checkedCheckBoxes = ArrayList<String>()
+        for (checkBox in checkBoxes) {
+            if (checkBox.isChecked) checkedCheckBoxes.add(checkBox.text.toString())
+        }
+        return checkedCheckBoxes
+    }
+
+    private fun createRadioGroup(into: ConstraintLayout, options: Array<String>, selected: Int = 0): RadioGroup {
         val radioGroup = RadioGroup(context)
         for (option in options) {
             val radioButton = RadioButton(context)
@@ -183,6 +221,124 @@ class SearchFragment : Fragment() {
         }
         radioGroup.check(selected)
         into.addView(radioGroup)
+        return radioGroup
+    }
+
+    private fun requestAdverts() {
+        if (filterViews != null) {
+            val checkBoxHouse            = filterViews!!["house"]     as CheckBox
+            val checkBoxApartment        = filterViews!!["apartment"] as CheckBox
+            val checkBoxBuy              = filterViews!!["buy"]       as CheckBox
+            val checkBoxRent             = filterViews!!["rent"]      as CheckBox
+            val checkBoxStructureType    = filterViews!!["structure"] as ArrayList<*>
+            val checkBoxCity             = filterViews!!["city"]      as ArrayList<*>
+            val radioGroupNumOfRooms     = filterViews!!["bedrooms"]  as RadioGroup
+            val radioGroupNumOfBathrooms = filterViews!!["bathrooms"] as RadioGroup
+            val radioGroupFurnished      = filterViews!!["furnished"] as RadioGroup
+
+            // Apply filters where needed
+            val filters = FilterArray()
+
+            // Residence type
+            val residenceType = checkBoxesAsArrayList(arrayListOf(checkBoxHouse, checkBoxApartment))
+            if (residenceType.size == 1)
+                filters.applyFilter(FilterArray.FilterNames.ResidenceType, ResidenceType.valueOf(residenceType[0]).ordinal)
+
+            // Sale type
+            val saleType = checkBoxesAsArrayList(arrayListOf(checkBoxBuy, checkBoxRent))
+            if (saleType.size == 1)
+                filters.applyFilter(FilterArray.FilterNames.SaleType, SaleType.valueOf(saleType[0]).ordinal)
+
+            // Structure type
+            val structureType = checkBoxesAsArrayList(checkBoxStructureType as ArrayList<CheckBox>)
+            for (i in 0 until structureType.size)
+                structureType[i] = StructureType.valueOf(structureType[i]).ordinal.toString()
+            if (structureType.isNotEmpty())
+                filters.applyFilter(FilterArray.FilterNames.StructureType, structureType)
+
+            // City
+            val city = checkBoxesAsArrayList(checkBoxCity as ArrayList<CheckBox>)
+            if (city.isNotEmpty())
+                filters.applyFilter(FilterArray.FilterNames.City, city)
+
+            // Size
+            var sendSize = false
+            var sizeFrom = 0.0
+            if (et_filters_size_from.text.toString().isNotBlank()) {
+                sizeFrom = et_filters_size_from.text.toString().toDouble()
+                sendSize = true
+            }
+            var sizeTo = Double.MAX_VALUE
+            if (et_filters_size_to.text.toString().isNotBlank()) {
+                sizeTo = et_filters_size_to.text.toString().toDouble()
+                sendSize = true
+            }
+            if (sendSize)
+                filters.applyFilter(FilterArray.FilterNames.Size, sizeFrom, sizeTo)
+
+            // Price
+            var sendPrice = false
+            var priceFrom = 0.0
+            if (et_filters_price_from.text.toString().isNotBlank()) {
+                priceFrom = et_filters_price_from.text.toString().toDouble()
+                sendPrice = true
+            }
+            var priceTo = Double.MAX_VALUE
+            if (et_filters_price_to.text.toString().isNotBlank()) {
+                priceTo = et_filters_price_to.text.toString().toDouble()
+                sendPrice = true
+            }
+            if (sendPrice)
+                filters.applyFilter(FilterArray.FilterNames.Price, priceFrom, priceTo)
+
+            // Number of bedrooms
+            if (radioGroupNumOfRooms.checkedRadioButtonId != 0) {
+                val checkedRadio =
+                    radioGroupNumOfRooms.findViewById<RadioButton>(radioGroupNumOfRooms.checkedRadioButtonId)
+                filters.applyFilter(
+                    FilterArray.FilterNames.NumBedrooms,
+                    checkedRadio.text.toString().trimEnd('+').toInt()
+                )
+            }
+
+            // Number of bathrooms
+            if (radioGroupNumOfBathrooms.checkedRadioButtonId != 0) {
+                val checkedRadio =
+                    radioGroupNumOfBathrooms.findViewById<RadioButton>(radioGroupNumOfBathrooms.checkedRadioButtonId)
+                filters.applyFilter(
+                    FilterArray.FilterNames.NumBathrooms,
+                    checkedRadio.text.toString().trimEnd('+').toInt()
+                )
+            }
+
+            // Furnished
+//            if (radioGroupFurnished.checkedRadioButtonId != 0) {
+//                val checkedRadio =
+//                    radioGroupFurnished.findViewById<RadioButton>(radioGroupFurnished.checkedRadioButtonId)
+//                when(checkedRadio.text.toString()) {
+//                    "Da" -> filters.applyFilter(FilterArray.FilterNames.Furnished, true)
+//                    "Ne" -> filters.applyFilter(FilterArray.FilterNames.Furnished, false)
+//                }
+//            }
+
+            val params = HashMap<String, String>()
+            params["filterArray"] = filters.getFilters()
+
+            ReqSender.sendRequestArray(
+                this.requireActivity(),
+                Request.Method.POST,
+                "http://10.0.2.2:5000/api/advert/search_adverts",
+                params,
+                { response ->
+                    adverts = loadAdverts(response)
+                    fragmentState!!["search_query"] = adverts
+                    advertAdapter.updateAdverts(adverts)
+                },
+                { error ->
+                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
+        }
     }
 
     companion object {
