@@ -202,8 +202,6 @@ namespace WebAPI.Controllers
                 .Join(ctx.Adverts,f => f.AdvertId,ad => ad.Id,(f, ad) => Listing.AdListing(ad));
 
             return result.ToList();
-
-
         }
 
         [HttpPost]
@@ -300,7 +298,6 @@ namespace WebAPI.Controllers
 
         //}
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("edit_advert")]
         public ActionResult<string> EditAdvert(string editJson)
