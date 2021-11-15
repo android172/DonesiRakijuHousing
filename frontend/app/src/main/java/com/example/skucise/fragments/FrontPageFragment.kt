@@ -5,19 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.view.get
-import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
-import com.example.skucise.*
+import com.example.skucise.FilterArray
+import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.example.skucise.frontpageTiles.CityTilesAdapter
 import com.example.skucise.frontpageTiles.TileSet
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
-import kotlinx.android.synthetic.main.fragment_frontpage.view.*
-import kotlinx.serialization.json.JsonArray
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
@@ -56,10 +56,6 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        hv_tiles.tile_layout1.setOnClickListener {
-            Toast.makeText(this.activity, "Test", Toast.LENGTH_LONG).show()
-        }
 
         btn_search_buy_options.setOnClickListener {
             val filters = FilterArray()

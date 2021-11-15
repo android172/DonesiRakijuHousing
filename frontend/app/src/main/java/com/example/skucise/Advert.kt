@@ -4,9 +4,9 @@ import java.util.*
 
 data class Advert(
     val id: UInt,
-    val residenceType: ResidenceType = ResidenceType.Apartman,
+    val residenceType: ResidenceType = ResidenceType.Stan,
     val saleType: SaleType,
-    val structureType: StructureType = StructureType.Studio,
+    val structureType: StructureType = StructureType.Garsonjera,
     val title: String,
     val description: String = "",
     val city: String,
@@ -21,6 +21,6 @@ data class Advert(
     val dateCreated: Date = Date()
 )
 
-enum class ResidenceType { Apartman, Kuca }
-enum class StructureType { Studio, Jednosobna, JednaIpoSoba, Dvosobna, DveIpoSobe }
+enum class ResidenceType { Stan, Kuća }
+enum class StructureType { Garsonjera, Jednosobna, JednaIpoSoba, Dvosobna, DveIpoSobe }
 enum class SaleType { Prodaja, Iznajmljivanje }
