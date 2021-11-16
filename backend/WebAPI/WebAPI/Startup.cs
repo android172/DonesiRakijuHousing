@@ -34,6 +34,7 @@ namespace WebAPI
             string connString = Configuration.GetConnectionString("DefaultConnectionString");
             services.AddDbContext<SkuciSeDBContext>(options => options.UseSqlite(connString).EnableSensitiveDataLogging(true)); //.UseSqlServer(connString)));
             services.AddSingleton<SkuciSeEmailService>();
+            services.AddSingleton<SkuciSeImageService>();
 
             services.AddSingleton<IJwtHelper, JwtHelper>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
