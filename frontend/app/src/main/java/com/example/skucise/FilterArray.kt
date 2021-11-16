@@ -36,13 +36,13 @@ class FilterArray(
         val validValue = when(name) {
             FilterNames.NumBedrooms -> value is Int
             FilterNames.Price -> value is JSONObject
-            FilterNames.City -> value is String
-            FilterNames.SaleType -> value is SaleTypes
+            FilterNames.City -> value is ArrayList<*>
+            FilterNames.SaleType -> value is Int
             FilterNames.Size -> value is JSONObject
             FilterNames.NumBathrooms -> value is Int
-            FilterNames.StructureType -> value is String
-            FilterNames.ResidenceType -> value is String
-            FilterNames.Furnished -> value is Boolean
+            FilterNames.StructureType -> value is ArrayList<*>
+            FilterNames.ResidenceType -> value is Int
+            FilterNames.Furnished -> value is String
         }
 
         if (validValue) {

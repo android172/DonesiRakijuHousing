@@ -61,7 +61,7 @@ class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationV
 
     private fun sendRequestForSearch(city : String) {
         val filters = FilterArray()
-        filters.applyFilter(FilterArray.FilterNames.City, city)
+        filters.applyFilter(FilterArray.FilterNames.City, arrayListOf(city))
 
         val params = HashMap<String, String>()
         params["filterArray"] = filters.getFilters()
