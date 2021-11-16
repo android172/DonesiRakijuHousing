@@ -22,7 +22,7 @@ class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationV
     : RecyclerView.Adapter<CityTilesAdapter.CityTilesViewHolder>() {
 
     class CityTilesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    val img = CityImageMap()
+    private val img = CityImageMap()
     lateinit var parent : ViewGroup
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityTilesViewHolder {

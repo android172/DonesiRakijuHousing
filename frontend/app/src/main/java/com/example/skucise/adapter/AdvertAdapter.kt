@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.skucise.Advert
 import com.example.skucise.R
 import kotlinx.android.synthetic.main.item_advert.view.*
@@ -20,12 +19,16 @@ class AdvertAdapter(
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdvertViewHolder {
+
+        //val imgAdvert = parent.findViewById<ImageView>(R.id.img_advert)
+        //imgAdvert.minimumHeight = imgAdvert.measuredHeight * 2
+
         return AdvertViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.item_advert,
-                parent,
-                false
-            )
+                LayoutInflater.from(parent.context).inflate(
+                        R.layout.item_advert,
+                        parent,
+                        false
+                )
         )
     }
 
@@ -47,7 +50,6 @@ class AdvertAdapter(
                 "https://rs.n1info.com/wp-content/uploads/2021/04/KRAGUJEVAC-PANORAMA-IZVOR-N1-MILAN-NIKIC-scaled.jpg"
             )
             val adapter = AdvertImagesAdapter(images)
-            //val pager = this.findViewById<ViewPager2>(R.id.vpg_advert_images)
             vpg_advert_images.adapter = adapter
         }
     }

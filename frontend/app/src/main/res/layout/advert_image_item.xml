@@ -9,9 +9,10 @@
     <ImageView
         android:id="@+id/img_advert"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:background="@drawable/rounded_style_10"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/beograd" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

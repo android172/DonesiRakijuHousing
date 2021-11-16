@@ -17,18 +17,19 @@
             android:id="@+id/editTextTextPersonName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/search_shape"
             android:ems="10"
-            android:inputType="textPersonName"
             android:hint="Traži po ..."
+            android:inputType="textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/btn_filters"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Filteri"
+            android:src="@drawable/ic_filter_alt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,15 +63,6 @@
 
 
         </com.google.android.material.textfield.TextInputLayout>
-
-<!--        <Button-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/btn_sort_by"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="Sortiraj po"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/btn_filters" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -198,7 +190,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Kvadratura:"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_city" />
@@ -226,7 +218,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Od:"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
