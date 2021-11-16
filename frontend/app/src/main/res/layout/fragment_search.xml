@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -37,18 +36,41 @@
             android:id="@+id/tv_number_of_ads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Broj pronadjenih oglasa: x"
+            android:text="x oglasa"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
 
-        <Button
-            android:id="@+id/btn_sort_by"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sortiraj po"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_filters" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_filters"
+            >
+
+            <AutoCompleteTextView
+                android:id="@+id/atv_sort_by"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Sortiraj po"
+                >
+
+            </AutoCompleteTextView>
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <Button-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/btn_sort_by"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Sortiraj po"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/btn_filters" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
