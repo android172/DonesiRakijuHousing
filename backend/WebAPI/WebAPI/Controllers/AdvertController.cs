@@ -80,7 +80,7 @@ namespace WebAPI.Controllers
         
         [HttpPost]
         [Route("search_adverts")]
-        public ActionResult<IEnumerable<object>> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
+        public ActionResult<object> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
             string token = JwtHelper.CheckActiveToken(userId);
 
@@ -172,9 +172,10 @@ namespace WebAPI.Controllers
             if (pageNum == 0)
                 pageNum = 1;
 
-            result = result.Take(adsPerPage * pageNum).TakeLast(adsPerPage);
+            int count = result.Count();
+            result = result.Skip(adsPerPage * (pageNum - 1)).Take(adsPerPage);
 
-            return result.Select(Listing.AdListing).ToList();
+            return new { Count = count, Result = result.Select(Listing.AdListing).ToList() };
         }
 
         [HttpPost]
@@ -208,6 +209,11 @@ namespace WebAPI.Controllers
         [Route("add_advert")]
         public ActionResult<string> AddAdvert(string advertJson)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
             newAdvert.DateCreated = DateTime.Now;
 
@@ -228,6 +234,11 @@ namespace WebAPI.Controllers
         [Route("remove_advert")]
         public ActionResult<string> RemoveAdvert(uint advertId)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
             
             if(result != null)
@@ -302,6 +313,11 @@ namespace WebAPI.Controllers
         [Route("edit_advert")]
         public ActionResult<string> EditAdvert(string editJson)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             Advert editAdvert = JsonSerializer.Deserialize<Advert>(editJson);
             Advert result = ctx.Adverts.Where(ad => editAdvert.Id == ad.Id).FirstOrDefault();
 
