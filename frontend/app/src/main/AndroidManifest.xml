@@ -12,16 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkuciSe">
 
-        <activity
+        <!--<activity
             android:name=".activities.TestActivity"
             android:exported="true" >
 
-            <!--<intent-filter>
+            &lt;!&ndash;<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>&ndash;&gt;
 
-        </activity>
+        </activity>-->
         <activity
             android:name=".activities.MainActivity"
             android:exported="true"
