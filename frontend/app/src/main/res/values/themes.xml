@@ -30,7 +30,7 @@
 
         <item name="cardViewStyle">@style/roundedCardView</item>
         <item name="android:checkboxStyle">@style/filterCheckboxesStyle</item>
-        <item name="radioButtonStyle">@style/radioButtonStyle</item>
+        <item name="android:radioButtonStyle">@style/radioButtonStyle</item>
         <!--<item name="android:textViewStyle">@drawable/tw_style1</item>-->
     </style>
 
@@ -42,10 +42,16 @@
 
     <style name="radioButtonStyle" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:button">@null</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="minWidth">100dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="filterCheckboxesStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="background">@drawable/checkbox_selector</item>
+        <item name="background">@drawable/checkbox_selector_shape</item>
         <item name="android:paddingEnd">15dp</item>
         <item name="android:paddingStart">15dp</item>
         <item name="android:paddingTop">10dp</item>

@@ -81,7 +81,7 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         android:padding="8dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" >
 
@@ -348,12 +348,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_rooms"
                     app:layout_constraintStart_toStartOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/csl_filters_number_of_rooms"
+                    <LinearLayout
+                        android:id="@+id/ll_filters_number_of_rooms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:minHeight="20dp">
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
                 </HorizontalScrollView>
 
                 <TextView
@@ -374,12 +375,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_bathrooms"
                     app:layout_constraintStart_toStartOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/csl_filters_number_of_bathrooms"
+                    <LinearLayout
+                        android:id="@+id/ll_filters_number_of_bathrooms"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:minHeight="20dp">
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
                 </HorizontalScrollView>
 
 
@@ -401,12 +403,13 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_furnished"
                     app:layout_constraintStart_toStartOf="parent">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/csl_filters_furnished"
+                    <LinearLayout
+                        android:id="@+id/ll_filters_furnished"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
                         android:minHeight="20dp">
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
                 </HorizontalScrollView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

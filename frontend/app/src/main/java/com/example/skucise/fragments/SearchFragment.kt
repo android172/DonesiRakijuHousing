@@ -1,21 +1,15 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
-import android.app.ActionBar
-import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.marginEnd
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -171,7 +165,9 @@ class SearchFragment : Fragment() {
         val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
         params.setMargins(px, 0, 0, 0)
         checkBox.layoutParams = params
-        checkBox.setBackgroundResource(R.drawable.checkbox_selector)
+        checkBox.setBackgroundResource(R.drawable.checkbox_selector_shape)
+        checkBox.setTextColor(resources.getColorStateList(R.color.selector_color))
+        //checkBox.setTextColor(R.drawable.checkbox_selector_text_color)
         into.addView(checkBox)
         return checkBox
     }
@@ -200,23 +196,19 @@ class SearchFragment : Fragment() {
         return checkedCheckBoxes
     }
 
-    private fun createRadioGroup(into: ConstraintLayout, options: Array<String>, selected: Int = 0): RadioGroup {
+    private fun createRadioGroup(into: LinearLayout, options: Array<String>, selected: Int = 0): RadioGroup {
         val radioGroup = RadioGroup(context)
-        var previous : RadioButton? = null
+        radioGroup.orientation = RadioGroup.HORIZONTAL
         for (option in options) {
             val radioButton = RadioButton(context)
             radioButton.text = option
-            val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            radioButton.setTextColor(resources.getColorStateList(R.color.selector_color))
+            val params = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             params.setMargins(px, 0, 0, 0)
             radioButton.layoutParams = params
-            if (previous != null) {
-                radioButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    startToEnd = previous!!.id
-                }
-            }
-            radioButton.setBackgroundResource(R.drawable.checkbox_selector)
+            radioButton.setBackgroundResource(R.drawable.checkbox_selector_shape)
+            //radioButton.setTextColor(R.drawable.checkbox_selector_text_color)
             radioGroup.addView(radioButton)
-            previous = radioButton
         }
         radioGroup.check(selected)
         into.addView(radioGroup)
@@ -270,19 +262,19 @@ class SearchFragment : Fragment() {
 
         // Number of rooms
         val radioGroupNumOfRooms = createRadioGroup(
-            csl_filters_number_of_rooms,
+            ll_filters_number_of_rooms,
             arrayOf("1+", "2+", "3+", "4+", "5+")
         )
 
         // Number of bathrooms
         val radioGroupNumOfBathrooms = createRadioGroup(
-            csl_filters_number_of_bathrooms,
+            ll_filters_number_of_bathrooms,
             arrayOf("1+", "2+", "3+")
         )
 
         // furnished
         val radioGroupFurnished = createRadioGroup(
-            csl_filters_furnished,
+            ll_filters_furnished,
             arrayOf("Da", "Ne", "Nebitno")
         )
 
