@@ -66,16 +66,19 @@ class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationV
         val params = HashMap<String, String>()
         params["filterArray"] = filters.getFilters()
 
-        ReqSender.sendRequestArray(
+        ReqSender.sendRequest(
             parent.context,
             Request.Method.POST,
             "http://10.0.2.2:5000/api/advert/search_adverts",
             params,
             { response ->
+                val count = response.getInt("count")
+                val array = response.getJSONArray("result").toString()
+
                 val args = Bundle()
-                args.putString("advertsJsonArray", response.toString())
+                args.putString("advertsJsonArray", array)
+                args.putInt("advertsCount", count)
                 parent.findNavController().navigate(navigationView.menu[1].itemId, args)
-//                Toast.makeText(parent.context, , Toast.LENGTH_LONG).show()
             },
             { error ->
                 Toast.makeText(parent.context, "error:\n$error", Toast.LENGTH_LONG).show()

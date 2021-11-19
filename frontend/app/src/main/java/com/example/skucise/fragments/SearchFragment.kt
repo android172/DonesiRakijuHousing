@@ -25,6 +25,7 @@ import kotlin.collections.HashMap
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "advertsJsonArray"
+private const val ARG_PARAM2 = "advertsCount"
 
 /**
  * A simple [Fragment] subclass.
@@ -32,9 +33,12 @@ private const val ARG_PARAM1 = "advertsJsonArray"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
+
     private var adverts: ArrayList<Advert> = ArrayList()
+    private var advertCount: Int = 0
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
+
     private lateinit var r : Resources
     private var px = 0
 
@@ -47,20 +51,24 @@ class SearchFragment : Fragment() {
 
         // load previous state if it exists
         if (fragmentState != null) {
+            advertCount = fragmentState!!["count"] as Int
             val list = fragmentState!!["search_query"]
             advertsLoaded = (list as ArrayList<*>)
                 .filterIsInstance<Advert>()
                 .takeIf { it.size == list.size } as ArrayList<Advert>?
         } else {
             fragmentState = HashMap()
+            fragmentState!!["count"] = advertCount
             fragmentState!!["search_query"] = ArrayList<Advert>()
         }
 
         // if there have been new arguments sent they take priority
         arguments?.let {
             val jsonArray = JSONArray(it.getString(ARG_PARAM1))
+            advertCount = it.getInt(ARG_PARAM2)
             advertsLoaded = loadAdverts(jsonArray)
             if (advertsLoaded != null)
+                fragmentState!!["count"] = advertCount
                 fragmentState!!["search_query"] = advertsLoaded!!
         }
 
@@ -154,7 +162,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun updateAdvertCount() {
-        tv_number_of_ads.text = "${advertAdapter.itemCount} oglasa"
+        tv_number_of_ads.text = "$advertCount oglasa"
     }
 
     private fun createCheckbox(into: ConstraintLayout, name: String, checked: Boolean = false) : CheckBox {
@@ -408,13 +416,15 @@ class SearchFragment : Fragment() {
             }
         }
 
-        ReqSender.sendRequestArray(
+        ReqSender.sendRequest(
             this.requireActivity(),
             Request.Method.POST,
             "http://10.0.2.2:5000/api/advert/search_adverts",
             params,
             { response ->
-                adverts = loadAdverts(response)
+                advertCount = response.getInt("count")
+                adverts = loadAdverts(response.getJSONArray("result"))
+                fragmentState!!["count"] = advertCount
                 fragmentState!!["search_query"] = adverts
                 advertAdapter.updateAdverts(adverts)
                 updateAdvertCount()
@@ -431,14 +441,16 @@ class SearchFragment : Fragment() {
          * this fragment using the provided parameters.
          *
          * @param advertsJsonArray Parameter 1.
+         * @param advertsCount Parameter 2.
          * @return A new instance of fragment SearchFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(advertsJsonArray: JSONArray) =
+        fun newInstance(advertsJsonArray: JSONArray, advertsCount: Int) =
             SearchFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, advertsJsonArray.toString())
+                    putInt(ARG_PARAM2, advertsCount)
                 }
             }
 
