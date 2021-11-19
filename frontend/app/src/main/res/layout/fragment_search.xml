@@ -47,8 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_filters"
-            >
+            app:layout_constraintTop_toBottomOf="@+id/btn_filters" >
 
             <AutoCompleteTextView
                 android:id="@+id/atv_sort_by"
@@ -56,8 +55,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:inputType="none"
-                android:text="Sortiraj po"
-                >
+                android:text="Sortiraj po" >
 
             </AutoCompleteTextView>
 
@@ -83,7 +81,7 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         android:padding="8dp"
-
+        android:visibility="visible"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" >
 
@@ -93,7 +91,7 @@
             android:layout_height="wrap_content"
             android:text="Primeni"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -105,7 +103,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/csl_filters_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content" >
 
                 <TextView
                     android:id="@+id/tv_filters_residence_type"
@@ -137,6 +135,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_residence_type" />
 
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csl_filters_sale_type"
                     android:layout_width="match_parent"
@@ -157,14 +156,20 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_sale_type" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_structure_type"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_structure_type"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_structure_type"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_structure_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_city"
@@ -174,16 +179,22 @@
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_structure_type" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_structure_type" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_city"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_city"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_city"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_size"
@@ -193,7 +204,7 @@
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_city" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_city" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csl_filters_size"
@@ -329,14 +340,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_price" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_number_of_rooms"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_number_of_rooms"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_rooms"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_number_of_rooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_number_of_bathrooms"
@@ -346,16 +364,24 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_number_of_rooms" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_number_of_rooms" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_number_of_bathrooms"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_number_of_bathrooms"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_bathrooms"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_number_of_bathrooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
+
 
                 <TextView
                     android:id="@+id/tv_filters_furnished"
@@ -365,16 +391,23 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_number_of_bathrooms" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_number_of_bathrooms" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_furnished"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_furnished"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_furnished"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_furnished"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

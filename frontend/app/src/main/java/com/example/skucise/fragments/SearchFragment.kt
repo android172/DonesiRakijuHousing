@@ -1,13 +1,21 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
+import android.app.ActionBar
+import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.marginEnd
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +41,13 @@ class SearchFragment : Fragment() {
     private var adverts: ArrayList<Advert> = ArrayList()
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
+    private lateinit var r : Resources
+    private var px = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initCheckboxMargins(8.0f)
 
         var advertsLoaded : ArrayList<Advert>? = null
 
@@ -65,6 +77,15 @@ class SearchFragment : Fragment() {
         }
         else
             performAdvertsRequest(FilterArray())
+    }
+
+    private fun initCheckboxMargins(fl: Float) {
+        r = requireContext().resources
+        px = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            fl,
+            r.displayMetrics
+        ).toInt()
     }
 
     override fun onResume() {
@@ -147,7 +168,10 @@ class SearchFragment : Fragment() {
         checkBox.id = View.generateViewId()
         checkBox.text = name
         checkBox.isChecked = checked
-        checkBox.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+        params.setMargins(px, 0, 0, 0)
+        checkBox.layoutParams = params
+        checkBox.setBackgroundResource(R.drawable.checkbox_selector)
         into.addView(checkBox)
         return checkBox
     }
@@ -159,7 +183,7 @@ class SearchFragment : Fragment() {
             val current = createCheckbox(into, element.toString())
             if (previous != null) {
                 current.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = previous!!.id
+                    startToEnd = previous!!.id
                 }
             }
             checkBoxList.add(current)
@@ -178,10 +202,21 @@ class SearchFragment : Fragment() {
 
     private fun createRadioGroup(into: ConstraintLayout, options: Array<String>, selected: Int = 0): RadioGroup {
         val radioGroup = RadioGroup(context)
+        var previous : RadioButton? = null
         for (option in options) {
             val radioButton = RadioButton(context)
             radioButton.text = option
+            val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+            params.setMargins(px, 0, 0, 0)
+            radioButton.layoutParams = params
+            if (previous != null) {
+                radioButton.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    startToEnd = previous!!.id
+                }
+            }
+            radioButton.setBackgroundResource(R.drawable.checkbox_selector)
             radioGroup.addView(radioButton)
+            previous = radioButton
         }
         radioGroup.check(selected)
         into.addView(radioGroup)
