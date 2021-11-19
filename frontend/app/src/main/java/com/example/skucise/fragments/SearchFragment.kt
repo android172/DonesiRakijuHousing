@@ -24,8 +24,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "advertsJsonArray"
-private const val ARG_PARAM2 = "advertsCount"
+private const val ARG_PARAM1 = "advertsFilterArray"
 
 /**
  * A simple [Fragment] subclass.
@@ -35,7 +34,6 @@ private const val ARG_PARAM2 = "advertsCount"
 class SearchFragment : Fragment() {
 
     private var adverts: ArrayList<Advert> = ArrayList()
-    private var advertCount: Int = 0
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
 
@@ -47,38 +45,27 @@ class SearchFragment : Fragment() {
 
         initCheckboxMargins(8.0f)
 
-        var advertsLoaded : ArrayList<Advert>? = null
+        var filterArray : String? = null
 
         // load previous state if it exists
         if (fragmentState != null) {
-            advertCount = fragmentState!!["count"] as Int
-            val list = fragmentState!!["search_query"]
-            advertsLoaded = (list as ArrayList<*>)
-                .filterIsInstance<Advert>()
-                .takeIf { it.size == list.size } as ArrayList<Advert>?
+            filterArray = fragmentState!!["filterArray"] as String
         } else {
             fragmentState = HashMap()
-            fragmentState!!["count"] = advertCount
-            fragmentState!!["search_query"] = ArrayList<Advert>()
+            fragmentState!!["filterArray"] = "[]"
         }
 
         // if there have been new arguments sent they take priority
         arguments?.let {
-            val jsonArray = JSONArray(it.getString(ARG_PARAM1))
-            advertCount = it.getInt(ARG_PARAM2)
-            advertsLoaded = loadAdverts(jsonArray)
-            if (advertsLoaded != null)
-                fragmentState!!["count"] = advertCount
-                fragmentState!!["search_query"] = advertsLoaded!!
+            filterArray = it.getString(ARG_PARAM1)
+            fragmentState!!["filterArray"] = filterArray!!
         }
 
         // load state
-        if (advertsLoaded != null) {
-            adverts = advertsLoaded!!
-            advertAdapter.updateAdverts(adverts)
-        }
+        if (filterArray != null)
+            performAdvertsRequest(filterArray!!)
         else
-            performAdvertsRequest(FilterArray())
+            performAdvertsRequest("[]")
     }
 
     private fun initCheckboxMargins(fl: Float) {
@@ -120,7 +107,6 @@ class SearchFragment : Fragment() {
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
         }
-        updateAdvertCount()
 
         // Construct Filters
         createFilterFields()
@@ -137,7 +123,7 @@ class SearchFragment : Fragment() {
 
         // Preform sorting when necessary
         atv_sort_by.doOnTextChanged { _, _, _, _ ->
-            requestAdverts()
+            performAdvertsRequest(fragmentState!!["filterArray"] as String)
         }
     }
 
@@ -159,10 +145,6 @@ class SearchFragment : Fragment() {
             ))
         }
         return adverts
-    }
-
-    private fun updateAdvertCount() {
-        tv_number_of_ads.text = "$advertCount oglasa"
     }
 
     private fun createCheckbox(into: ConstraintLayout, name: String, checked: Boolean = false) : CheckBox {
@@ -397,12 +379,12 @@ class SearchFragment : Fragment() {
         }
 
         // make request
-        performAdvertsRequest(filters)
+        performAdvertsRequest(filters.getFilters())
     }
 
-    private fun performAdvertsRequest(filterArray: FilterArray) {
+    private fun performAdvertsRequest(filterArray: String) {
         val params = HashMap<String, String>()
-        params["filterArray"] = filterArray.getFilters()
+        params["filterArray"] = filterArray
 
         if (atv_sort_by != null) {
             when (atv_sort_by.text.toString().split(" ")[0]) {
@@ -422,12 +404,13 @@ class SearchFragment : Fragment() {
             "http://10.0.2.2:5000/api/advert/search_adverts",
             params,
             { response ->
-                advertCount = response.getInt("count")
+                fragmentState!!["filterArray"] = filterArray
+
+                val advertCount = response.getInt("count")
+                tv_number_of_ads.text = "$advertCount oglasa"
+
                 adverts = loadAdverts(response.getJSONArray("result"))
-                fragmentState!!["count"] = advertCount
-                fragmentState!!["search_query"] = adverts
                 advertAdapter.updateAdverts(adverts)
-                updateAdvertCount()
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -440,17 +423,15 @@ class SearchFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param advertsJsonArray Parameter 1.
-         * @param advertsCount Parameter 2.
+         * @param advertsFilterArray Parameter 1.
          * @return A new instance of fragment SearchFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(advertsJsonArray: JSONArray, advertsCount: Int) =
+        fun newInstance(advertsFilterArray: String) =
             SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, advertsJsonArray.toString())
-                    putInt(ARG_PARAM2, advertsCount)
+                    putString(ARG_PARAM1, advertsFilterArray)
                 }
             }
 
