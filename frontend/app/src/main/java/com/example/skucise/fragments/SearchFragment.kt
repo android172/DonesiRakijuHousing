@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
@@ -24,7 +25,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "advertsJsonArray"
+private const val ARG_PARAM1 = "advertsFilterArray"
 
 /**
  * A simple [Fragment] subclass.
@@ -32,9 +33,17 @@ private const val ARG_PARAM1 = "advertsJsonArray"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
+
     private var adverts: ArrayList<Advert> = ArrayList()
+    private var currentPage:    Int = 1
+    private var numberOfPages:  Int = 1
+    private var advertsPerPage: Int = 10
+    private var sortBy:      String = "Sortiraj po"
+    private var searchQuery: String = ""
+
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
+
     private lateinit var r : Resources
     private var px = 0
 
@@ -43,34 +52,37 @@ class SearchFragment : Fragment() {
 
         initCheckboxMargins(8.0f)
 
-        var advertsLoaded : ArrayList<Advert>? = null
+        var filterArray : String? = null
 
         // load previous state if it exists
         if (fragmentState != null) {
-            val list = fragmentState!!["search_query"]
-            advertsLoaded = (list as ArrayList<*>)
-                .filterIsInstance<Advert>()
-                .takeIf { it.size == list.size } as ArrayList<Advert>?
+            filterArray    = fragmentState!!["filterArray"]    as String
+            currentPage    = fragmentState!!["currentPage"]    as Int
+            numberOfPages  = fragmentState!!["numberOfPages"]  as Int
+            advertsPerPage = fragmentState!!["advertsPerPage"] as Int
+            sortBy         = fragmentState!!["sortBy"]         as String
+            searchQuery    = fragmentState!!["searchQuery"]    as String
         } else {
             fragmentState = HashMap()
-            fragmentState!!["search_query"] = ArrayList<Advert>()
+            fragmentState!!["filterArray"]    = "[]"
+            fragmentState!!["currentPage"]    = currentPage
+            fragmentState!!["numberOfPages"]  = numberOfPages
+            fragmentState!!["advertsPerPage"] = advertsPerPage
+            fragmentState!!["sortBy"]         = sortBy
+            fragmentState!!["searchQuery"]    = searchQuery
         }
 
         // if there have been new arguments sent they take priority
         arguments?.let {
-            val jsonArray = JSONArray(it.getString(ARG_PARAM1))
-            advertsLoaded = loadAdverts(jsonArray)
-            if (advertsLoaded != null)
-                fragmentState!!["search_query"] = advertsLoaded!!
+            filterArray = it.getString(ARG_PARAM1)
+            fragmentState!!["filterArray"] = filterArray!!
         }
 
         // load state
-        if (advertsLoaded != null) {
-            adverts = advertsLoaded!!
-            advertAdapter.updateAdverts(adverts)
-        }
+        if (filterArray != null)
+            performAdvertsRequest(filterArray!!)
         else
-            performAdvertsRequest(FilterArray())
+            performAdvertsRequest("[]")
     }
 
     private fun initCheckboxMargins(fl: Float) {
@@ -83,6 +95,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onResume() {
+        // Sort dropdown menu
         val sortOptions = arrayOf(
             "Cena opadajuća",
             "Cena rastuća",
@@ -91,8 +104,18 @@ class SearchFragment : Fragment() {
             "Staros opadajuća",
             "Staros rastuća"
         )
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_sort_by_dropdown, sortOptions)
-        atv_sort_by.setAdapter(arrayAdapter)
+        val sortArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_sort_by_dropdown, sortOptions)
+        atv_sort_by.setAdapter(sortArrayAdapter)
+
+        // Ads per page dropdown menu
+        val numberOfAds = arrayOf(
+            "10",
+            "15",
+            "25",
+            "50"
+        )
+        val adNumArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_ads_per_page_dropdown, numberOfAds)
+        atv_paging_ads_per_page.setAdapter(adNumArrayAdapter)
 
         return super.onResume()
     }
@@ -111,8 +134,8 @@ class SearchFragment : Fragment() {
         rcv_search_adverts.apply {
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
+            isNestedScrollingEnabled = false
         }
-        updateAdvertCount()
 
         // Construct Filters
         createFilterFields()
@@ -128,9 +151,50 @@ class SearchFragment : Fragment() {
         }
 
         // Preform sorting when necessary
+        atv_sort_by.setText(sortBy)
         atv_sort_by.doOnTextChanged { _, _, _, _ ->
-            requestAdverts()
+            sortBy = atv_sort_by.text.toString()
+            performAdvertsRequest(fragmentState!!["filterArray"] as String)
         }
+
+        // change ads per page
+        atv_paging_ads_per_page.setText(advertsPerPage.toString())
+        atv_paging_ads_per_page.doOnTextChanged { _, _, _, _ ->
+            advertsPerPage = atv_paging_ads_per_page.text.toString().toInt()
+            performAdvertsRequest(fragmentState!!["filterArray"] as String)
+        }
+
+        // Paging buttons
+        btn_paging_next.setOnClickListener {
+            if (currentPage < numberOfPages) {
+                currentPage += 1
+                performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            }
+        }
+        btn_paging_previous.setOnClickListener {
+            if (currentPage > 1) {
+                currentPage -= 1
+                performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            }
+        }
+
+        // Dealing with query's
+        sv_adverts.setQuery("\u200B", false)
+        sv_adverts.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText == null || newText.isEmpty())
+                    sv_adverts.setQuery("\u200B", false)
+                return true
+            }
+
+            override fun onQueryTextSubmit(newText: String?): Boolean {
+                searchQuery = newText!!.replace("\u200B","")
+                performAdvertsRequest(fragmentState!!["filterArray"] as String, true)
+                return false
+            }
+        })
     }
 
     @SuppressLint("NewApi")
@@ -153,8 +217,10 @@ class SearchFragment : Fragment() {
         return adverts
     }
 
-    private fun updateAdvertCount() {
-        tv_number_of_ads.text = "${advertAdapter.itemCount} oglasa"
+    private fun updatePaging() {
+        et_paging_current.setText(currentPage.toString())
+        btn_paging_previous.visibility = if (currentPage == 1) View.INVISIBLE else View.VISIBLE
+        btn_paging_next.visibility = if (currentPage == numberOfPages) View.INVISIBLE else View.VISIBLE
     }
 
     private fun createCheckbox(into: ConstraintLayout, name: String, checked: Boolean = false) : CheckBox {
@@ -166,7 +232,7 @@ class SearchFragment : Fragment() {
         params.setMargins(px, 0, 0, 0)
         checkBox.layoutParams = params
         checkBox.setBackgroundResource(R.drawable.checkbox_selector_shape)
-        checkBox.setTextColor(resources.getColorStateList(R.color.selector_color))
+        checkBox.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
         //checkBox.setTextColor(R.drawable.checkbox_selector_text_color)
         into.addView(checkBox)
         return checkBox
@@ -202,7 +268,7 @@ class SearchFragment : Fragment() {
         for (option in options) {
             val radioButton = RadioButton(context)
             radioButton.text = option
-            radioButton.setTextColor(resources.getColorStateList(R.color.selector_color))
+            radioButton.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
             val params = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             params.setMargins(px, 0, 0, 0)
             radioButton.layoutParams = params
@@ -389,35 +455,57 @@ class SearchFragment : Fragment() {
         }
 
         // make request
-        performAdvertsRequest(filters)
+        performAdvertsRequest(filters.getFilters(), true)
     }
 
-    private fun performAdvertsRequest(filterArray: FilterArray) {
+    private fun performAdvertsRequest(filterArray: String, resetToPageOne: Boolean = false) {
         val params = HashMap<String, String>()
-        params["filterArray"] = filterArray.getFilters()
 
-        if (atv_sort_by != null) {
-            when (atv_sort_by.text.toString().split(" ")[0]) {
-                "Cena" -> params["orderBy"] = "Price"
-                "Kvadratura" -> params["orderBy"] = "Price"
-                "Staros" -> params["orderBy"] = "DateCreated"
-            }
-            when (atv_sort_by.text.toString().split(" ")[1]) {
-                "opadajuća" -> params["ascending"] = "false"
-                "rastuća" -> params["ascending"] = "true"
-            }
+        // send filters
+        params["filterArray"] = filterArray
+
+        // send sorting parameters
+        when (sortBy.split(" ")[0]) {
+            "Cena"       -> params["orderBy"] = "Price"
+            "Kvadratura" -> params["orderBy"] = "Price"
+            "Staros"     -> params["orderBy"] = "DateCreated"
+        }
+        when (sortBy.split(" ")[1]) {
+            "opadajuća" -> params["ascending"] = "false"
+            "rastuća"   -> params["ascending"] = "true"
         }
 
-        ReqSender.sendRequestArray(
+        // send paging parameters
+        if (resetToPageOne) currentPage = 1
+        params["pageNum"]    = currentPage.toString()
+        params["adsPerPage"] = advertsPerPage.toString()
+
+        // search query
+        params["searchParam"] = searchQuery
+
+        ReqSender.sendRequest(
             this.requireActivity(),
             Request.Method.POST,
             "http://10.0.2.2:5000/api/advert/search_adverts",
             params,
             { response ->
-                adverts = loadAdverts(response)
-                fragmentState!!["search_query"] = adverts
+                val advertCount = response.getInt("count")
+                tv_number_of_ads.text = "$advertCount oglasa"
+
+                numberOfPages = if (advertCount == 0) 1 else (advertCount - 1) / advertsPerPage + 1
+                updatePaging()
+
+                adverts = loadAdverts(response.getJSONArray("result"))
                 advertAdapter.updateAdverts(adverts)
-                updateAdvertCount()
+
+                fragmentState!!["filterArray"]    = filterArray
+                fragmentState!!["currentPage"]    = currentPage
+                fragmentState!!["numberOfPages"]  = numberOfPages
+                fragmentState!!["advertsPerPage"] = advertsPerPage
+                fragmentState!!["sortBy"]         = sortBy
+                fragmentState!!["searchQuery"]    = searchQuery
+
+                scv_search_scroll.scrollTo(0, 0)
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -430,15 +518,15 @@ class SearchFragment : Fragment() {
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param advertsJsonArray Parameter 1.
+         * @param advertsFilterArray Parameter 1.
          * @return A new instance of fragment SearchFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(advertsJsonArray: JSONArray) =
+        fun newInstance(advertsFilterArray: String) =
             SearchFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, advertsJsonArray.toString())
+                    putString(ARG_PARAM1, advertsFilterArray)
                 }
             }
 

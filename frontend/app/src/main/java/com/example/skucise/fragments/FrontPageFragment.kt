@@ -61,46 +61,18 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             val filters = FilterArray()
             filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Purchase.ordinal)
 
-            val params = HashMap<String, String>()
-            params["filterArray"] = filters.getFilters()
-
-            ReqSender.sendRequestArray(
-                this.requireActivity(),
-                Request.Method.POST,
-                "http://10.0.2.2:5000/api/advert/search_adverts",
-                params,
-                { response ->
-                    val args = Bundle()
-                    args.putString("advertsJsonArray", response.toString())
-                    findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
-                },
-                { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
-                }
-            )
+            val args = Bundle()
+            args.putString("advertsFilterArray", filters.getFilters())
+            findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
         }
 
         btn_search_rent_options.setOnClickListener {
             val filters = FilterArray()
             filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Rent.ordinal)
 
-            val params = HashMap<String, String>()
-            params["filterArray"] = filters.getFilters()
-
-            ReqSender.sendRequestArray(
-                this.requireActivity(),
-                Request.Method.POST,
-                "http://10.0.2.2:5000/api/advert/search_adverts",
-                params,
-                { response ->
-                    val args = Bundle()
-                    args.putString("advertsJsonArray", response.toString())
-                    findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
-                },
-                { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
-                }
-            )
+            val args = Bundle()
+            args.putString("advertsFilterArray", filters.getFilters())
+            findNavController().navigate(requireActivity().nav_bottom_navigator.menu[1].itemId, args)
         }
 
     }

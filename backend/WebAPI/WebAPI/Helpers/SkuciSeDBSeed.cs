@@ -177,7 +177,9 @@ namespace WebAPI.Helpers
                     AdvertId = 1,
                     VisitorId = 2,
                     Time = DateTime.Now,
-                    AgreedUpon = true,
+                    AgreedVisitor = true,
+                    AgreedOwner = true,
+                    DateCreated = DateTime.Now,
                     Concluded = true
                 });
 
