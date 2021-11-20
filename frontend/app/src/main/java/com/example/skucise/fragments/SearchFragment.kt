@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
@@ -34,6 +35,11 @@ private const val ARG_PARAM1 = "advertsFilterArray"
 class SearchFragment : Fragment() {
 
     private var adverts: ArrayList<Advert> = ArrayList()
+    private var currentPage: Int = 1
+    private var numberOfPages: Int = 1
+    private var advertsPerPage: Int = 10
+    private var sortBy: String = "Sortiraj po"
+
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
 
@@ -49,7 +55,11 @@ class SearchFragment : Fragment() {
 
         // load previous state if it exists
         if (fragmentState != null) {
-            filterArray = fragmentState!!["filterArray"] as String
+            filterArray    = fragmentState!!["filterArray"]    as String
+            currentPage    = fragmentState!!["currentPage"]    as Int
+            numberOfPages  = fragmentState!!["numberOfPages"]  as Int
+            advertsPerPage = fragmentState!!["advertsPerPage"] as Int
+            sortBy         = fragmentState!!["sortBy"]         as String
         } else {
             fragmentState = HashMap()
             fragmentState!!["filterArray"] = "[]"
@@ -78,6 +88,7 @@ class SearchFragment : Fragment() {
     }
 
     override fun onResume() {
+        // Sort dropdown menu
         val sortOptions = arrayOf(
             "Cena opadajuća",
             "Cena rastuća",
@@ -86,8 +97,18 @@ class SearchFragment : Fragment() {
             "Staros opadajuća",
             "Staros rastuća"
         )
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_sort_by_dropdown, sortOptions)
-        atv_sort_by.setAdapter(arrayAdapter)
+        val sortArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_sort_by_dropdown, sortOptions)
+        atv_sort_by.setAdapter(sortArrayAdapter)
+
+        // Ads per page dropdown menu
+        val numberOfAds = arrayOf(
+            "10",
+            "15",
+            "25",
+            "50"
+        )
+        val adNumArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_ads_per_page_dropdown, numberOfAds)
+        atv_paging_ads_per_page.setAdapter(adNumArrayAdapter)
 
         return super.onResume()
     }
@@ -106,6 +127,7 @@ class SearchFragment : Fragment() {
         rcv_search_adverts.apply {
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
+            isNestedScrollingEnabled = false
         }
 
         // Construct Filters
@@ -122,8 +144,31 @@ class SearchFragment : Fragment() {
         }
 
         // Preform sorting when necessary
+        atv_sort_by.setText(sortBy)
         atv_sort_by.doOnTextChanged { _, _, _, _ ->
+            sortBy = atv_sort_by.text.toString()
             performAdvertsRequest(fragmentState!!["filterArray"] as String)
+        }
+
+        // change ads per page
+        atv_paging_ads_per_page.setText(advertsPerPage.toString())
+        atv_paging_ads_per_page.doOnTextChanged { _, _, _, _ ->
+            advertsPerPage = atv_paging_ads_per_page.text.toString().toInt()
+            performAdvertsRequest(fragmentState!!["filterArray"] as String)
+        }
+
+        // Paging buttons
+        btn_paging_next.setOnClickListener {
+            if (currentPage < numberOfPages) {
+                currentPage += 1
+                performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            }
+        }
+        btn_paging_previous.setOnClickListener {
+            if (currentPage > 1) {
+                currentPage -= 1
+                performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            }
         }
     }
 
@@ -147,6 +192,12 @@ class SearchFragment : Fragment() {
         return adverts
     }
 
+    private fun updatePaging() {
+        et_paging_current.setText(currentPage.toString())
+        btn_paging_previous.visibility = if (currentPage == 1) View.INVISIBLE else View.VISIBLE
+        btn_paging_next.visibility = if (currentPage == numberOfPages) View.INVISIBLE else View.VISIBLE
+    }
+
     private fun createCheckbox(into: ConstraintLayout, name: String, checked: Boolean = false) : CheckBox {
         val checkBox = CheckBox(context)
         checkBox.id = View.generateViewId()
@@ -156,7 +207,7 @@ class SearchFragment : Fragment() {
         params.setMargins(px, 0, 0, 0)
         checkBox.layoutParams = params
         checkBox.setBackgroundResource(R.drawable.checkbox_selector_shape)
-        checkBox.setTextColor(resources.getColorStateList(R.color.selector_color))
+        checkBox.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
         //checkBox.setTextColor(R.drawable.checkbox_selector_text_color)
         into.addView(checkBox)
         return checkBox
@@ -192,7 +243,7 @@ class SearchFragment : Fragment() {
         for (option in options) {
             val radioButton = RadioButton(context)
             radioButton.text = option
-            radioButton.setTextColor(resources.getColorStateList(R.color.selector_color))
+            radioButton.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
             val params = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             params.setMargins(px, 0, 0, 0)
             radioButton.layoutParams = params
@@ -379,24 +430,30 @@ class SearchFragment : Fragment() {
         }
 
         // make request
-        performAdvertsRequest(filters.getFilters())
+        performAdvertsRequest(filters.getFilters(), true)
     }
 
-    private fun performAdvertsRequest(filterArray: String) {
+    private fun performAdvertsRequest(filterArray: String, resetToPageOne: Boolean = false) {
         val params = HashMap<String, String>()
+
+        // send filters
         params["filterArray"] = filterArray
 
-        if (atv_sort_by != null) {
-            when (atv_sort_by.text.toString().split(" ")[0]) {
-                "Cena" -> params["orderBy"] = "Price"
-                "Kvadratura" -> params["orderBy"] = "Price"
-                "Staros" -> params["orderBy"] = "DateCreated"
-            }
-            when (atv_sort_by.text.toString().split(" ")[1]) {
-                "opadajuća" -> params["ascending"] = "false"
-                "rastuća" -> params["ascending"] = "true"
-            }
+        // send sorting parameters
+        when (sortBy.split(" ")[0]) {
+            "Cena"       -> params["orderBy"] = "Price"
+            "Kvadratura" -> params["orderBy"] = "Price"
+            "Staros"     -> params["orderBy"] = "DateCreated"
         }
+        when (sortBy.split(" ")[1]) {
+            "opadajuća" -> params["ascending"] = "false"
+            "rastuća"   -> params["ascending"] = "true"
+        }
+
+        // send paging parameters
+        if (resetToPageOne) currentPage = 1
+        params["pageNum"]    = currentPage.toString()
+        params["adsPerPage"] = advertsPerPage.toString()
 
         ReqSender.sendRequest(
             this.requireActivity(),
@@ -404,13 +461,22 @@ class SearchFragment : Fragment() {
             "http://10.0.2.2:5000/api/advert/search_adverts",
             params,
             { response ->
-                fragmentState!!["filterArray"] = filterArray
-
                 val advertCount = response.getInt("count")
                 tv_number_of_ads.text = "$advertCount oglasa"
 
+                numberOfPages = if (advertCount == 0) 1 else (advertCount - 1) / advertsPerPage + 1
+                updatePaging()
+
                 adverts = loadAdverts(response.getJSONArray("result"))
                 advertAdapter.updateAdverts(adverts)
+
+                fragmentState!!["filterArray"]    = filterArray
+                fragmentState!!["currentPage"]    = currentPage
+                fragmentState!!["numberOfPages"]  = numberOfPages
+                fragmentState!!["advertsPerPage"] = advertsPerPage
+                fragmentState!!["sortBy"]         = sortBy
+
+                scv_search_scroll.scrollTo(0, 0)
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
