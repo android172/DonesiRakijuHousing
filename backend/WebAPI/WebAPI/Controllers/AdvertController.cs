@@ -122,19 +122,19 @@ namespace WebAPI.Controllers
 
             Dictionary<string, Func<Advert, dynamic>> orderByDict = new Dictionary<string, Func<Advert, dynamic>>
             {
-                ["Id"] = (ad => ad.Id.ToString()),
-                ["ResidenceType"] = (ad => ad.ResidenceType.ToString()),
-                ["SaleType"] = (ad => ad.SaleType.ToString()),
-                ["StructureType"] = (ad => ad.StructureType.ToString()),
+                ["Id"] = (ad => ad.Id),
+                ["ResidenceType"] = (ad => ad.ResidenceType),
+                ["SaleType"] = (ad => ad.SaleType),
+                ["StructureType"] = (ad => ad.StructureType),
                 ["Title"] = (ad => ad.Title.ToString()),
                 ["City"] = (ad => ad.City.ToString()),
-                ["Size"] = (ad => ad.Size.ToString()),
-                ["Price"] = (ad => ad.Price.ToString()),
-                ["NumBedrooms"] = (ad => ad.NumBedrooms.ToString()),
-                ["NumBathrooms"] = (ad => ad.NumBathrooms.ToString()),
-                ["Furnished"] = (ad => ad.Furnished.ToString()),
-                ["YearOfMake"] = (ad => ad.YearOfMake.ToString()),
-                ["DateCreated"] = (ad => ad.DateCreated.ToString()),
+                ["Size"] = (ad => ad.Size),
+                ["Price"] = (ad => ad.Price),
+                ["NumBedrooms"] = (ad => ad.NumBedrooms),
+                ["NumBathrooms"] = (ad => ad.NumBathrooms),
+                ["Furnished"] = (ad => ad.Furnished),
+                ["YearOfMake"] = (ad => ad.YearOfMake),
+                ["DateCreated"] = (ad => ad.DateCreated),
             };
             
             IEnumerable<Advert> result = ctx.Adverts;
