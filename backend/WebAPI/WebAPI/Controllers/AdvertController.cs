@@ -57,17 +57,17 @@ namespace WebAPI.Controllers
 
         [HttpPost]      
         [Route("get_advert")]
-        public ActionResult<Advert> GetAdvert(int advertId)
+        public ActionResult<object> GetAdvert(uint advertId)
         {
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active.");
 
-            var exists = ctx.Adverts.Where(ad => ad.Id == advertId);        // CHANGE LATER
+            var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();        // CHANGE LATER
 
-            if (exists.Any())
-                return exists.FirstOrDefault();
+            if (result != null)
+                return new { AdvertData = result, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId) };
             else
                 return NotFound("Advert doesn't exist.");
         }
@@ -161,7 +161,7 @@ namespace WebAPI.Controllers
             {
                 //result = result.Where(ad => ad.Title.ToLower().Contains(searchParam) || ad.Description.ToLower().Contains(searchParam));
 
-                string[] searchTerms = searchParam.Split(' ').Select(s => s.ToLowerInvariant()).ToArray();
+                string[] searchTerms = searchParam.Split(' ').Select(s => s.ToLower()).ToArray();
                 searchTerms = SearchHelper.RemoveNoise(searchTerms);
 
                 result = result.Where(ad => searchTerms.Any(ad.Title.ToLower().Contains));

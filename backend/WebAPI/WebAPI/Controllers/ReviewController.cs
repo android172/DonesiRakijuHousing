@@ -38,10 +38,10 @@ namespace WebAPI.Controllers
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active.");
 
-            var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId).FirstOrDefault();
+            var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true).FirstOrDefault();
 
             if (result == null)
-                return NotFound("You can't post a review because meeting does not exist.");
+                return NotFound("You can't post a review because meeting does not exist or is not concluded.");
 
             Review newReview = new Review { MeetingId = result.Id, Rating = rating, Text = text };
 
@@ -73,19 +73,14 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("calculate_advert_rating")]
-        public ActionResult<decimal> CalculateAdvertRating(uint advertId)
+        public ActionResult<string> CalculateAdvertRating(uint advertId)
         {
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active.");
 
-            var result = ctx.Meetings.Where(m => m.AdvertId == advertId)
-                            .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => r);
-
-            if(result.Any())
-                return (decimal)result.Average(r => r.Rating);
-            return 0;
+            return AverageAdvertRating(ctx, advertId);
         }
 
         [HttpPost]
@@ -107,6 +102,26 @@ namespace WebAPI.Controllers
                 return (decimal)result.Average(x => x.AverageRating);
             else
                 return 0;
+        }
+
+        public static string AverageAdvertRating(SkuciSeDBContext ctx, uint advertId)
+        {
+            var result = ctx.Meetings.Where(m => m.AdvertId == advertId)
+                            .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => r);
+
+            if (result.Any())
+                return result.Average(r => r.Rating).ToString();
+            return "Not rated.";
+        }
+
+        public static bool CanLeaveReview(SkuciSeDBContext ctx, uint advertId, uint userId)
+        {
+            var result = ctx.Meetings.Where(m => m.VisitorId == userId && m.AdvertId == advertId && m.Concluded == true).FirstOrDefault();
+
+            if (result != null)
+                return true;
+
+            return false;
         }
     }
 }
