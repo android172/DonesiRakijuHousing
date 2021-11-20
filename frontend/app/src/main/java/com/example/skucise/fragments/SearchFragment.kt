@@ -35,10 +35,11 @@ private const val ARG_PARAM1 = "advertsFilterArray"
 class SearchFragment : Fragment() {
 
     private var adverts: ArrayList<Advert> = ArrayList()
-    private var currentPage: Int = 1
-    private var numberOfPages: Int = 1
+    private var currentPage:    Int = 1
+    private var numberOfPages:  Int = 1
     private var advertsPerPage: Int = 10
-    private var sortBy: String = "Sortiraj po"
+    private var sortBy:      String = "Sortiraj po"
+    private var searchQuery: String = ""
 
     private var filterViews: HashMap<String, Any>? = null
     private val advertAdapter : AdvertAdapter = AdvertAdapter(adverts)
@@ -60,9 +61,15 @@ class SearchFragment : Fragment() {
             numberOfPages  = fragmentState!!["numberOfPages"]  as Int
             advertsPerPage = fragmentState!!["advertsPerPage"] as Int
             sortBy         = fragmentState!!["sortBy"]         as String
+            searchQuery    = fragmentState!!["searchQuery"]    as String
         } else {
             fragmentState = HashMap()
-            fragmentState!!["filterArray"] = "[]"
+            fragmentState!!["filterArray"]    = "[]"
+            fragmentState!!["currentPage"]    = currentPage
+            fragmentState!!["numberOfPages"]  = numberOfPages
+            fragmentState!!["advertsPerPage"] = advertsPerPage
+            fragmentState!!["sortBy"]         = sortBy
+            fragmentState!!["searchQuery"]    = searchQuery
         }
 
         // if there have been new arguments sent they take priority
@@ -170,6 +177,24 @@ class SearchFragment : Fragment() {
                 performAdvertsRequest(fragmentState!!["filterArray"] as String)
             }
         }
+
+        // Dealing with query's
+        sv_adverts.setQuery("\u200B", false)
+        sv_adverts.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if(newText == null || newText.isEmpty())
+                    sv_adverts.setQuery("\u200B", false)
+                return true
+            }
+
+            override fun onQueryTextSubmit(newText: String?): Boolean {
+                searchQuery = newText!!.replace("\u200B","")
+                performAdvertsRequest(fragmentState!!["filterArray"] as String, true)
+                return false
+            }
+        })
     }
 
     @SuppressLint("NewApi")
@@ -455,6 +480,9 @@ class SearchFragment : Fragment() {
         params["pageNum"]    = currentPage.toString()
         params["adsPerPage"] = advertsPerPage.toString()
 
+        // search query
+        params["searchParam"] = searchQuery
+
         ReqSender.sendRequest(
             this.requireActivity(),
             Request.Method.POST,
@@ -475,6 +503,7 @@ class SearchFragment : Fragment() {
                 fragmentState!!["numberOfPages"]  = numberOfPages
                 fragmentState!!["advertsPerPage"] = advertsPerPage
                 fragmentState!!["sortBy"]         = sortBy
+                fragmentState!!["searchQuery"]    = searchQuery
 
                 scv_search_scroll.scrollTo(0, 0)
             },
