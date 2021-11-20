@@ -22,7 +22,7 @@ class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationV
     : RecyclerView.Adapter<CityTilesAdapter.CityTilesViewHolder>() {
 
     class CityTilesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    val img = CityImageMap()
+    private val img = CityImageMap()
     lateinit var parent : ViewGroup
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityTilesViewHolder {
@@ -63,23 +63,8 @@ class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationV
         val filters = FilterArray()
         filters.applyFilter(FilterArray.FilterNames.City, arrayListOf(city))
 
-        val params = HashMap<String, String>()
-        params["filterArray"] = filters.getFilters()
-
-        ReqSender.sendRequestArray(
-            parent.context,
-            Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/search_adverts",
-            params,
-            { response ->
-                val args = Bundle()
-                args.putString("advertsJsonArray", response.toString())
-                parent.findNavController().navigate(navigationView.menu[1].itemId, args)
-//                Toast.makeText(parent.context, , Toast.LENGTH_LONG).show()
-            },
-            { error ->
-                Toast.makeText(parent.context, "error:\n$error", Toast.LENGTH_LONG).show()
-            }
-        )
+        val args = Bundle()
+        args.putString("advertsFilterArray", filters.getFilters())
+        parent.findNavController().navigate(navigationView.menu[1].itemId, args)
     }
 }

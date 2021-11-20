@@ -15,21 +15,22 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/sv_adverts"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/search_shape"
             android:ems="10"
-            android:inputType="textPersonName"
             android:hint="Traži po ..."
+            android:inputType="textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/btn_filters"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_filters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Filteri"
+            android:src="@drawable/ic_filter_alt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,31 +38,120 @@
             android:id="@+id/tv_number_of_ads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Broj pronadjenih oglasa: x"
+            android:text="x oglasa"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+            app:layout_constraintTop_toBottomOf="@+id/sv_adverts" />
 
-        <Button
-            android:id="@+id/btn_sort_by"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sortiraj po"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_filters" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_filters" >
+
+            <AutoCompleteTextView
+                android:id="@+id/atv_sort_by"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Sortiraj po" >
+
+            </AutoCompleteTextView>
+
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcv_search_adverts"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scv_search_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/csl_search_box"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_search_adverts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+            </androidx.recyclerview.widget.RecyclerView>
 
-    </androidx.recyclerview.widget.RecyclerView>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@id/rcv_search_adverts"
+                app:layout_constraintLeft_toLeftOf="parent"
+                >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_paging_ads_per_page"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/atv_paging_ads_per_page"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="none"
+                        android:text="10" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/btn_paging_previous"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:text="L"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/til_paging_ads_per_page"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btn_paging_next"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:text="R"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/et_paging_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:text="1"
+                    app:layout_constraintStart_toEndOf="@id/btn_paging_previous"
+                    app:layout_constraintEnd_toStartOf="@id/btn_paging_next"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/csl_filters"
@@ -79,37 +169,37 @@
             android:layout_height="wrap_content"
             android:text="Primeni"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_filters_apply"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/btn_filters_apply">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/csl_filters_scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content" >
 
                 <TextView
                     android:id="@+id/tv_filters_residence_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Vrsta nekretnine:"
-                    android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csl_filters_residence_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="20dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_filters_residence_type"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_filters_residence_type">
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,9 +209,10 @@
                     android:layout_height="wrap_content"
                     android:text="Tip oglasa:"
                     android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_residence_type" />
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csl_filters_sale_type"
@@ -138,48 +229,60 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Klasa nekretnine:"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_sale_type" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_structure_type"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_structure_type"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_structure_type"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_structure_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_city"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Grad:"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_structure_type" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_structure_type" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_city"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_city"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_city"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/csl_filters_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="20dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Kvadratura:"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_city" />
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_city" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/csl_filters_size"
@@ -194,50 +297,48 @@
                         android:layout_width="1dp"
                         android:layout_height="18dp"
                         android:background="?android:attr/listDivider"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_filters_size_from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Od:"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
                         android:id="@+id/et_filters_size_from"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        app:layout_constraintStart_toEndOf="@id/tv_filters_size_from"
                         app:layout_constraintEnd_toEndOf="@id/divider_filters_size"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintStart_toEndOf="@id/tv_filters_size_from"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_filters_size_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Do:"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@id/divider_filters_size"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
                         android:id="@+id/et_filters_size_to"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        app:layout_constraintStart_toEndOf="@id/tv_filters_size_to"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintStart_toEndOf="@id/tv_filters_size_to"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
@@ -245,9 +346,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Cena:"
-                    android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_size" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -255,58 +356,56 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="20dp"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_filters_price"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_filters_price">
 
                     <View
                         android:id="@+id/divider_filters_price"
                         android:layout_width="1dp"
                         android:layout_height="18dp"
                         android:background="?android:attr/listDivider"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_filters_price_from"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Od:"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
                         android:id="@+id/et_filters_price_from"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        app:layout_constraintStart_toEndOf="@id/tv_filters_price_from"
                         app:layout_constraintEnd_toEndOf="@id/divider_filters_price"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintStart_toEndOf="@id/tv_filters_price_from"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_filters_price_to"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Do:"
-                        android:textSize="16dp"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@id/divider_filters_price"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
                         android:id="@+id/et_filters_price_to"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        app:layout_constraintStart_toEndOf="@id/tv_filters_price_to"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintStart_toEndOf="@id/tv_filters_price_to"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
@@ -314,57 +413,82 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Broj spavaćih soba:"
-                    android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/csl_filters_price" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_number_of_rooms"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_number_of_rooms"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_rooms"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_filters_number_of_rooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:minHeight="20dp">
+                    </LinearLayout>
+                </HorizontalScrollView>
 
                 <TextView
                     android:id="@+id/tv_filters_number_of_bathrooms"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Broj kupatila:"
-                    android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_number_of_rooms" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_number_of_rooms" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_number_of_bathrooms"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_number_of_bathrooms"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_number_of_bathrooms"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_filters_number_of_bathrooms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:minHeight="20dp">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
 
                 <TextView
                     android:id="@+id/tv_filters_furnished"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Sa nameštajem:"
-                    android:textSize="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/csl_filters_number_of_bathrooms" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/hsv_filters_number_of_bathrooms" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/csl_filters_furnished"
-                    android:layout_width="match_parent"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_filters_furnished"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minHeight="20dp"
+                    android:scrollbars="none"
                     app:layout_constraintTop_toBottomOf="@+id/tv_filters_furnished"
                     app:layout_constraintStart_toStartOf="parent">
-                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_filters_furnished"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:minHeight="20dp">
+                    </LinearLayout>
+                </HorizontalScrollView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

@@ -33,9 +33,10 @@ class AdvertImagesAdapter (
         holder.itemView.apply {
             //img_advert.setImageResource(R.drawable.beograd)
             img_advert.clipToOutline = true
+            img_advert.minimumHeight = img_advert.measuredHeight * 2
             Glide.with(context)
                 .load(image)
-
+                    .centerCrop()
                 .placeholder(R.drawable.beograd)
                 .into(img_advert)
         }

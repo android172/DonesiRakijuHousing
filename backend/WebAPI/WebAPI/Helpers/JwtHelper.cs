@@ -62,6 +62,19 @@ namespace WebAPI.Helpers
             return null;
         }
 
+        public static bool CheckActiveToken(string token)
+        {
+            foreach ((uint, string) t in activeTokens)
+            {
+                if (t.Item2 == token)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static void AddActiveToken(uint userId, string token)
         {
             string temp = CheckActiveToken(userId);
@@ -82,19 +95,6 @@ namespace WebAPI.Helpers
                     return;
                 }
             }
-        }
-
-        public static bool CheckActiveToken(string token)
-        {
-            foreach ((uint, string) t in activeTokens)
-            {
-                if (t.Item2 == token)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

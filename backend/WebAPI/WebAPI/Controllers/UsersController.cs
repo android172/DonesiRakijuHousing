@@ -50,6 +50,11 @@ namespace WebAPI.Controllers
         [Route("send_pass_reset_email")]
         public ActionResult ResetPassword()
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
             try
             {
@@ -66,6 +71,11 @@ namespace WebAPI.Controllers
         [Route("change_email")]
         public ActionResult ChangeEmail(string newEmail)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             Regex emailReg = new Regex(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 
             if (!emailReg.IsMatch(newEmail))
@@ -90,6 +100,11 @@ namespace WebAPI.Controllers
         [Route("change_password")]
         public ActionResult ChangePassword(string oldPassword, string newPassword)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             User result = ctx.Users.Where(u => u.Id == userId && u.Password == oldPassword).FirstOrDefault();
 
             if (result == null)
