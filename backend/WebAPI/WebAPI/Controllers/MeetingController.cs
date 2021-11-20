@@ -31,52 +31,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("change_user_info")]
-        public ActionResult ChangeInfo(string newUsername, string newFirstName, string newLastName)
-        {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
-
-            Regex imePrezimeReg = new Regex(@"^([ \u00c0-\u01ffa-zA-Z'\-])+$");
-            Regex usernameReg = new Regex(@"^[A-Za-z0-9_-]{4,16}$");
-
-            User result = ctx.Users.Where(u => u.Id == userId).FirstOrDefault();
-
-            if (newUsername != null)
-            {
-                if (!usernameReg.IsMatch(newUsername))
-                    return BadRequest("Regex does not match.");
-
-                result.Username = newUsername;
-            }
-
-
-            if (newFirstName != null)
-            {
-                if (!imePrezimeReg.IsMatch(newFirstName))
-                    return BadRequest("Regex does not match.");
-
-                result.FirstName = newFirstName;
-            }
-
-
-            if (newLastName != null)
-            {
-                if (!imePrezimeReg.IsMatch(newLastName))
-                    return BadRequest("Regex does not match.");
-
-                result.LastName = newLastName;
-            }
-
-            ctx.Users.Update(result);
-            ctx.SaveChanges();
-
-            return Ok("Info changed.");
-        }
-
-        [HttpPost]
         [Route("arrange_meeting")]
         public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
         {
@@ -85,7 +39,7 @@ namespace WebAPI.Controllers
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active.");
 
-            Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId };
+            Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
 
             try
             {
@@ -93,7 +47,7 @@ namespace WebAPI.Controllers
                 ctx.SaveChanges();
                 return Ok("Meeting proposal sent.");
             }
-            catch(Exception e)
+            catch
             {
                 return StatusCode(500, "Failed to arrange meeting.");
             }
@@ -104,6 +58,11 @@ namespace WebAPI.Controllers
         [Route("get_my_meetings")]
         public ActionResult<IEnumerable<object>> GetMyMeetings()
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
                 Where(m => m.OwnerId == userId || m.m.VisitorId == userId).ToList();
@@ -123,7 +82,7 @@ namespace WebAPI.Controllers
             if (meeting == null)
                 return NotFound("Meeting does not exist.");
 
-            meeting.AgreedUpon = true;
+            meeting.AgreedOwner = true;
 
             try
             {
@@ -152,13 +111,24 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
-            if (result.AgreedUpon == true)
+            if (result.AgreedOwner == true && result.AgreedVisitor == true)
                 return BadRequest("Meeting time is already agreed upon.");
 
             if (result.Concluded == true)
                 return BadRequest("Meeting has already been concluded.");
 
             result.Time = newTime;
+            
+            if(result.VisitorId == userId)
+            {
+                result.AgreedOwner = false;
+                result.AgreedVisitor = true;
+            }
+            else
+            {
+                result.AgreedOwner = true;
+                result.AgreedVisitor = false;
+            }
 
             try
             {
@@ -183,7 +153,7 @@ namespace WebAPI.Controllers
 
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
-                Where(m => m.OwnerId == userId && m.m.Time <= DateTime.Now).Select(j => j.m).ToList();
+                Where(j => j.OwnerId == userId && j.m.Concluded == false && j.m.Time <= DateTime.Now).Select(j => j.m).ToList();
         }
 
         [HttpPost]

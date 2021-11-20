@@ -125,6 +125,11 @@ namespace WebAPI.Controllers
         [Route("change_user_info")]
         public ActionResult ChangeInfo(string newUsername, string newFirstName, string newLastName)
         {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
             Regex imePrezimeReg = new Regex(@"^([ \u00c0-\u01ffa-zA-Z'\-])+$");
             Regex usernameReg = new Regex(@"^[A-Za-z0-9_-]{4,16}$");
 
@@ -160,59 +165,6 @@ namespace WebAPI.Controllers
             ctx.SaveChanges();
 
             return Ok("Info changed.");
-        }
-
-        [HttpPost]
-        [Route("arrange_meeting")]
-        public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
-        {
-            Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
-
-            try
-            {
-                ctx.Meetings.Add(newMeeting);
-                ctx.SaveChanges();
-                return Ok("Meeting proposal sent.");
-            }
-            catch
-            {
-                return StatusCode(500, "Failed to arrange meeting.");
-            }
-            
-        }
-
-        [HttpPost]
-        [Route("get_my_meetings")]
-        public ActionResult<IEnumerable<object>> GetMyMeetings()
-        {
-            //return ctx.Adverts.Where(ad => ad.OwnerId == userId).Join(ctx.Meetings, ad => ad.Id, m => m.AdvertId, (m, ad) => m);
-            return ctx.Meetings.
-                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
-                Where(m => m.OwnerId == userId || m.m.VisitorId == userId).ToList();
-        }
-
-        [HttpPost]
-        [Route("confirm_meeting")]
-        public ActionResult<string> ConfirmMeeting(uint meetingId)
-        {
-            Meeting meeting = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
-
-            if (meeting == null)
-                return NotFound("Meeting does not exist.");
-
-            meeting.AgreedOwner = true;
-
-            try
-            {
-                ctx.Meetings.Update(meeting);
-                ctx.SaveChanges();
-
-                return Ok("Meeting confirmed.");
-            }
-            catch
-            {
-                return StatusCode(500, "Failed to confirm meeting.");
-            }
         }
     }
 }
