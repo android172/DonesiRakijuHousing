@@ -151,7 +151,7 @@ namespace WebAPI.Controllers
         [Route("arrange_meeting")]
         public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
         {
-            Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId };
+            Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
 
             try
             {
@@ -185,7 +185,7 @@ namespace WebAPI.Controllers
             if (meeting == null)
                 return NotFound("Meeting does not exist.");
 
-            meeting.AgreedUpon = true;
+            meeting.AgreedOwner = true;
 
             try
             {

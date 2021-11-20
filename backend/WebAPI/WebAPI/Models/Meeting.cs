@@ -15,7 +15,9 @@ namespace WebAPI.Models
         public uint AdvertId { get; set; }
         public uint VisitorId { get; set; }
         public DateTime Time { get; set; }
-        public bool AgreedUpon { get; set; }
+        public DateTime DateCreated { get; set; }
+        public bool AgreedVisitor { get; set; }
+        public bool AgreedOwner { get; set; }
         public bool Concluded { get; set; }
     }
 }
