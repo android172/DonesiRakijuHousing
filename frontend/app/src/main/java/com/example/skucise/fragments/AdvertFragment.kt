@@ -12,6 +12,7 @@ import com.example.skucise.*
 import kotlinx.android.synthetic.main.fragment_advert.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "advertId"
@@ -24,6 +25,8 @@ private const val ARG_PARAM1 = "advertId"
 class AdvertFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var advert: Advert? = null
+    private var averageScore: String = "Bez ocena"
+    private var canLeaveReview: Boolean = false
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,24 +43,30 @@ class AdvertFragment : Fragment() {
                 "http://10.0.2.2:5000/api/advert/get_advert",
                 params,
                 { response ->
+//                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
+//                    return@sendRequest
+                    val advertData = response.getJSONObject("advertData")
                     advert = Advert(
-                        id = response.getInt("id").toUInt(),
-                        residenceType     = ResidenceType.values()[response.getInt("residenceType")],
-                        saleType          = SaleType.values()[response.getInt("saleType")],
-                        structureType     = StructureType.values()[response.getInt("structureType")],
-                        title             = response.getString("title"),
-                        description       = response.getString("description"),
-                        city              = response.getString("city"),
-                        address           = response.getString("address"),
-                        size              = response.getDouble("size"),
-                        price             = response.getDouble("price"),
-                        ownerId           = response.getInt("ownerId").toUInt(),
-                        numberOfBedrooms  = response.getInt("numBedrooms").toUInt(),
-                        numberOfBathrooms = response.getInt("numBathrooms").toUInt(),
-                        furnished         = response.getBoolean("furnished"),
-                        yearOfMake        = response.getInt("yearOfMake").toUInt(),
-                        dateCreated       = LocalDateTime.parse(response.getString("dateCreated"))
+                        id                = advertData.getInt("id").toUInt(),
+                        residenceType     = ResidenceType.values()[advertData.getInt("residenceType")],
+                        saleType          = SaleType.values()[advertData.getInt("saleType")],
+                        structureType     = StructureType.values()[advertData.getInt("structureType")],
+                        title             = advertData.getString("title"),
+                        description       = advertData.getString("description"),
+                        city              = advertData.getString("city"),
+                        address           = advertData.getString("address"),
+                        size              = advertData.getDouble("size"),
+                        price             = advertData.getDouble("price"),
+                        ownerId           = advertData.getInt("ownerId").toUInt(),
+                        numberOfBedrooms  = advertData.getInt("numBedrooms").toUInt(),
+                        numberOfBathrooms = advertData.getInt("numBathrooms").toUInt(),
+                        furnished         = advertData.getBoolean("furnished"),
+                        yearOfMake        = advertData.getInt("yearOfMake").toUInt(),
+                        dateCreated       = LocalDateTime.parse(advertData.getString("dateCreated"))
                     )
+                    averageScore = response.getString("averageScore")
+                    if (averageScore == "Not rated.") averageScore = "Bez ocena"
+                    canLeaveReview = response.getBoolean("canLeaveReview")
 
                     if (tv_advert_page_sale_type != null)
                         updateAdvertInfo()
@@ -91,8 +100,8 @@ class AdvertFragment : Fragment() {
 
         tv_advert_page_sale_type.text = if (advert!!.saleType == SaleType.Prodaja) "NA PRODAJU" else "IZDAJE SE"
         tv_advert_page_title.text     = advert!!.title
-        tv_advert_page_avr_rew.text   = "3.9"
-        tv_advert_page_date.text      = advert!!.dateCreated.format(DateTimeFormatter.ISO_DATE)
+        tv_advert_page_avr_rew.text   = averageScore
+        tv_advert_page_date.text      = advert!!.dateCreated.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
         tv_advert_page_city.text      = "${advert!!.city},"
         tv_advert_page_address.text   = advert!!.address
         tv_advert_page_type.text      = "${advert!!.residenceType} iz ${advert!!.yearOfMake}; ${advert!!.structureType}"

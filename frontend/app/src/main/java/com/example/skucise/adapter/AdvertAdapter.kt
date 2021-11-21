@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.item_advert.view.*
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class AdvertAdapter(
     private var adverts: ArrayList<Advert> = ArrayList(),
@@ -56,7 +57,7 @@ class AdvertAdapter(
                 parentFragment.findNavController().navigate(R.id.advertFragment, args)
             }
             tv_advert_title.text = currentAdvert.title
-            tv_advert_date.text = currentAdvert.dateCreated.format(DateTimeFormatter.ISO_DATE)
+            tv_advert_date.text = currentAdvert.dateCreated.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
             tv_advert_residence_type.text = currentAdvert.residenceType.toString()
             tv_advert_city.text = "${currentAdvert.city}, ${currentAdvert.address}"
             tv_advert_type.text = currentAdvert.saleType.toString()
