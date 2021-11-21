@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.adapter.AdvertAdapter
+import kotlinx.android.synthetic.main.activity_navigation.view.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -132,6 +133,7 @@ class SearchFragment : Fragment() {
 
         // Connecting adverts recycler view
         rcv_search_adverts.apply {
+            advertAdapter.setupNavMenu(requireActivity().findViewById(R.id.nav_bottom_navigator))
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
             isNestedScrollingEnabled = false
