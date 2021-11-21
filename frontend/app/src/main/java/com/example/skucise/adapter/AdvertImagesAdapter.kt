@@ -31,7 +31,6 @@ class AdvertImagesAdapter (
     override fun onBindViewHolder(holder: AdvertImageViewHolder, position: Int) {
         val image = images[position]
         holder.itemView.apply {
-            //img_advert.setImageResource(R.drawable.beograd)
             img_advert.clipToOutline = true
             img_advert.minimumHeight = img_advert.measuredHeight * 2
             Glide.with(context)

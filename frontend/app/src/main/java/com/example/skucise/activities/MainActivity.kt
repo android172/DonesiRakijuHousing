@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.skucise.R
-import com.example.skucise.ReqSender
 import com.example.skucise.SessionManager
 import com.example.skucise.adapter.LoginScrolerAdapter
 import com.example.skucise.fragments.LoginFragment
@@ -42,9 +41,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frc_login_or_register, LoginFragment())
             .commit()
 
-        val bg_images = arrayListOf(R.drawable.login_bg1, R.drawable.login_bg2, R.drawable.login_bg3, R.drawable.login_bg4)
+        val bg_images = arrayListOf(R.drawable.blured_login_bg1, R.drawable.blured_login_bg2, R.drawable.blured_login_bg3, R.drawable.blured_login_bg4)
 
         vpg_background_slider.adapter = LoginScrolerAdapter(bg_images, vpg_background_slider)
+        vpg_background_slider.isUserInputEnabled = false;
 
         sliderHandler = Handler()
         vpg_background_slider.registerOnPageChangeCallback(
@@ -73,11 +73,6 @@ class MainActivity : AppCompatActivity() {
             vpg_background_slider.currentItem = vpg_background_slider.currentItem + 1
             blur_layout.startBlur()
         }
-
-    override fun onStart() {
-        super.onStart()
-        blur_layout.startBlur()
-    }
 
     private fun changeActiveLRFragment(fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
