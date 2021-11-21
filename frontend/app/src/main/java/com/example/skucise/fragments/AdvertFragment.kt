@@ -1,12 +1,16 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
+import android.widget.TimePicker
 import android.widget.Toast
 import com.android.volley.Request
 import com.example.skucise.*
@@ -18,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_advert.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.*
+import kotlin.collections.HashMap
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "advertId"
@@ -27,10 +33,14 @@ private const val ARG_PARAM1 = "advertId"
  * Use the [AdvertFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AdvertFragment : Fragment(), OnMapReadyCallback {
+class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener {
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
     private var canLeaveReview: Boolean = false
+    
+    private var selectedYear: Int = 1
+    private var selectedMonth: Int = 1
+    private var selectedDay: Int = 1
 
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +111,49 @@ class AdvertFragment : Fragment(), OnMapReadyCallback {
 
         // Update page look
         updateAdvertInfo()
+
+        // Meeting arrangement
+        calv_advert_page_calender.setOnDateChangeListener { calendarView, year, month, day ->
+            calendarView.date = System.currentTimeMillis()
+
+            selectedYear = year
+            selectedMonth = month
+            selectedDay = day
+
+            val calender = Calendar.getInstance()
+            val hour = calender.get(Calendar.HOUR)
+            val minute = calender.get(Calendar.MINUTE)
+
+            TimePickerDialog(requireContext(), this, hour, minute, true).show()
+        }
+    }
+
+    @SuppressLint("NewApi")
+    override fun onTimeSet(view: TimePicker?, hour: Int, minute: Int) {
+
+        // inform the user that the request is being sent
+        tv_advert_page_arrange_meeting_response.visibility = View.VISIBLE
+        tv_advert_page_arrange_meeting_response.text = "Zahtev je salje ..."
+
+        val time = LocalDateTime.of(selectedYear, selectedMonth, selectedDay, hour, minute)
+
+        val params = HashMap<String, String>()
+        params["advertId"] = advert!!.id.toString()
+        params["time"] = time.toString()
+
+        ReqSender.sendRequestString(
+            requireContext(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/meeting/arrange_meeting",
+            params,
+            { _ ->
+                tv_advert_page_arrange_meeting_response.text = "Zahtev sastanka je uspešno poslat." +
+                        "\nSastanak je predložen za ${time.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM))}"
+            },
+            { error ->
+                tv_advert_page_arrange_meeting_response.text = "GREŠKA: ${error.message}"
+            }
+        )
     }
 
     override fun onResume() {
@@ -129,7 +182,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         with(map) {
-            val position = LatLng(-33.920455, 18.466941)
+            val position = LatLng(0.0, 0.0)
             moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13f))
             addMarker(MarkerOptions().position(position))
             mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -183,7 +236,6 @@ class AdvertFragment : Fragment(), OnMapReadyCallback {
          * @param advertId Parameter 1.
          * @return A new instance of fragment AdvertFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(advertId: Int) =
             AdvertFragment().apply {
