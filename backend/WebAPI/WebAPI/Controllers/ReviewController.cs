@@ -103,7 +103,20 @@ namespace WebAPI.Controllers
             else
                 return 0;
         }
+        
+        [HttpPost]
+        [Route("get_advert_reviews")]
+        public ActionResult<IEnumerable<object>> GetAdvertReviews(uint advertId)
+        {
+            string token = JwtHelper.CheckActiveToken(userId);
 
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
+            return ctx.Meetings.Where(m => m.AdvertId == advertId)
+                    .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => new { m.VisitorId, r })
+                    .Join(ctx.Users, j => j.VisitorId, u => u.Id, (j, u) => new { UserId = u.Id, Username = u.Username, Rating = j.r.Rating, Text = j.r.Text }).ToList();
+        }
         public static string AverageAdvertRating(SkuciSeDBContext ctx, uint advertId)
         {
             var result = ctx.Meetings.Where(m => m.AdvertId == advertId)
