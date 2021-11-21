@@ -1,6 +1,7 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
+import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,6 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.android.volley.Request
 import com.example.skucise.*
+import com.example.skucise.R
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_advert.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -22,8 +27,7 @@ private const val ARG_PARAM1 = "advertId"
  * Use the [AdvertFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AdvertFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+class AdvertFragment : Fragment(), OnMapReadyCallback {
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
     private var canLeaveReview: Boolean = false
@@ -31,6 +35,7 @@ class AdvertFragment : Fragment() {
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
             val advertId = it.getInt(ARG_PARAM1)
 
@@ -43,8 +48,6 @@ class AdvertFragment : Fragment() {
                 "http://10.0.2.2:5000/api/advert/get_advert",
                 params,
                 { response ->
-//                    Toast.makeText(activity, "response:\n$response", Toast.LENGTH_LONG).show()
-//                    return@sendRequest
                     val advertData = response.getJSONObject("advertData")
                     advert = Advert(
                         id                = advertData.getInt("id").toUInt(),
@@ -83,7 +86,14 @@ class AdvertFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_advert, container, false)
+        val view = inflater.inflate(R.layout.fragment_advert, container, false)
+
+        // Initialize map
+        val mapView = view.findViewById(R.id.map_advert_page_location) as MapView
+        mapView.onCreate(null)
+        mapView.getMapAsync(this)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,13 +101,49 @@ class AdvertFragment : Fragment() {
 
         // Update page look
         updateAdvertInfo()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        if (map_advert_page_location != null)
+            map_advert_page_location.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (map_advert_page_location != null)
+            map_advert_page_location.onPause()
+    }
+
+    override fun onDestroy() {
+        if (map_advert_page_location != null)
+            map_advert_page_location.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        if (map_advert_page_location != null)
+            map_advert_page_location.onLowMemory()
+    }
+
+    override fun onMapReady(map: GoogleMap) {
+        with(map) {
+            val position = LatLng(-33.920455, 18.466941)
+            moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13f))
+            addMarker(MarkerOptions().position(position))
+            mapType = GoogleMap.MAP_TYPE_NORMAL
+            setOnMapClickListener {
+                Toast.makeText(requireContext(), "Clicked on map", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     @SuppressLint("NewApi")
     private fun updateAdvertInfo() {
         if (advert == null) return
 
+        // Updating text
         tv_advert_page_sale_type.text = if (advert!!.saleType == SaleType.Prodaja) "NA PRODAJU" else "IZDAJE SE"
         tv_advert_page_title.text     = advert!!.title
         tv_advert_page_avr_rew.text   = averageScore
@@ -111,6 +157,22 @@ class AdvertFragment : Fragment() {
         tv_advert_page_size.text      = "${advert!!.size} kvadrata"
         tv_advert_page_furnished.text = if (advert!!.furnished) "Sa nameštajem" else "Bez nameštaja"
         tv_advert_page_details.text   = advert!!.description
+
+        // Updating map
+        val geocoder = Geocoder(requireContext())
+        val searchQuery = "${advert!!.city}, ${advert!!.address}"
+        val addressList = geocoder.getFromLocationName(searchQuery, 1)
+        if (addressList.size > 0) {
+            val address = addressList[0]
+            val position = LatLng(address.latitude, address.longitude)
+            map_advert_page_location.getMapAsync { map ->
+                with(map) {
+                    moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13f))
+                    addMarker(MarkerOptions().position(position))
+                    mapType = GoogleMap.MAP_TYPE_NORMAL
+                }
+            }
+        }
     }
 
     companion object {
