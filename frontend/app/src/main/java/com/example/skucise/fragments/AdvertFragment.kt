@@ -12,17 +12,21 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.R
+import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_advert.*
+import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,6 +87,9 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
 
                     if (tv_advert_page_sale_type != null)
                         updateAdvertInfo()
+
+                    // load reviews
+                    loadReviews()
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -125,6 +132,30 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             val minute = calender.get(Calendar.MINUTE)
 
             TimePickerDialog(requireContext(), this, hour, minute, true).show()
+        }
+
+        // send review
+        btn_advert_page_submit_review.setOnClickListener {
+            val rating = skb_advert_page_review.progress
+            val comment = et_advert_page_review_text.text.toString()
+
+            val params = HashMap<String, String>()
+            params["advertId"] = advert!!.id.toString()
+            params["rating"] = rating.toString()
+            params["text"] = comment
+
+            ReqSender.sendRequestString(
+                requireContext(),
+                Request.Method.POST,
+                "http://10.0.2.2:5000/api/review/post_review",
+                params,
+                { response ->
+                    Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()
+                },
+                { error ->
+                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
         }
     }
 
@@ -214,18 +245,54 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         // Updating map
         val geocoder = Geocoder(requireContext())
         val searchQuery = "${advert!!.city}, ${advert!!.address}"
-        val addressList = geocoder.getFromLocationName(searchQuery, 1)
-        if (addressList.size > 0) {
-            val address = addressList[0]
-            val position = LatLng(address.latitude, address.longitude)
-            map_advert_page_location.getMapAsync { map ->
-                with(map) {
-                    moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13f))
-                    addMarker(MarkerOptions().position(position))
-                    mapType = GoogleMap.MAP_TYPE_NORMAL
+        try {
+            val addressList = geocoder.getFromLocationName(searchQuery, 1)
+            if (addressList.size > 0) {
+                val address = addressList[0]
+                val position = LatLng(address.latitude, address.longitude)
+                map_advert_page_location.getMapAsync { map ->
+                    with(map) {
+                        moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13f))
+                        addMarker(MarkerOptions().position(position))
+                        mapType = GoogleMap.MAP_TYPE_NORMAL
+                    }
                 }
             }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "error:\n$e", Toast.LENGTH_LONG).show()
         }
+
+    }
+
+    private fun loadReviews() {
+        val params = HashMap<String, String>()
+        params["advertId"] = advert!!.id.toString()
+
+        ReqSender.sendRequestArray(
+            requireContext(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/review/get_advert_reviews",
+            params,
+            { response ->
+                val reviews = ArrayList<Review>()
+                for (i in 0 until response.length()) {
+                    val review = response[i] as JSONObject
+                    reviews.add(Review(
+                        username = review.getString("username"),
+                        rating   = review.getInt("rating"),
+                        comment  = review.getString("text")
+                    ))
+                }
+
+                rcv_advert_page_reviews.apply {
+                    adapter = ReviewAdapter(reviews)
+                    layoutManager = LinearLayoutManager(activity)
+                }
+            },
+            { error ->
+                Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
     }
 
     companion object {
