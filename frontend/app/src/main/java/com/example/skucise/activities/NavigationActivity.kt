@@ -8,15 +8,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
-import com.example.skucise.fragments.FrontPageFragment
-import com.example.skucise.fragments.MyAccountFragment
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : AppCompatActivity() {
@@ -109,7 +106,7 @@ class NavigationActivity : AppCompatActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    fun navigateToOutsideFragment(fragment: Int) {
+    private fun navigateToOutsideFragment(fragment: Int) {
         nav_bottom_navigator.menu.setGroupCheckable(0, true, false)
         for (i in 0 until nav_bottom_navigator.menu.size()) {
             nav_bottom_navigator.menu.getItem(i).isChecked = false

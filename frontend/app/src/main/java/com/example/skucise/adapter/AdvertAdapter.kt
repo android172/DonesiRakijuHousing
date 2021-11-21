@@ -2,26 +2,33 @@ package com.example.skucise.adapter
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skucise.Advert
 import com.example.skucise.R
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.item_advert.view.*
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 class AdvertAdapter(
-    private var adverts: ArrayList<Advert> = ArrayList()
+    private var adverts: ArrayList<Advert> = ArrayList(),
 ) : RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
 
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    private var navigationView: BottomNavigationView? = null
+    private lateinit var parentFragment : ViewGroup
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdvertViewHolder {
 
-        //val imgAdvert = parent.findViewById<ImageView>(R.id.img_advert)
-        //imgAdvert.minimumHeight = imgAdvert.measuredHeight * 2
+        this.parentFragment = parent
 
         return AdvertViewHolder(
                 LayoutInflater.from(parent.context).inflate(
@@ -36,8 +43,21 @@ class AdvertAdapter(
     override fun onBindViewHolder(holder: AdvertViewHolder, position: Int) {
         val currentAdvert = adverts[position]
         holder.itemView.apply {
+            csl_advert_item.setOnClickListener {
+                if (navigationView == null) return@setOnClickListener
+
+                navigationView!!.menu.setGroupCheckable(0, true, false)
+                for (i in 0 until navigationView!!.menu.size()) {
+                    navigationView!!.menu.getItem(i).isChecked = false
+                }
+                navigationView!!.menu.setGroupCheckable(0, true, true)
+
+                val args = Bundle()
+                args.putInt("advertId", currentAdvert.id.toInt())
+                parentFragment.findNavController().navigate(R.id.advertFragment, args)
+            }
             tv_advert_title.text = currentAdvert.title
-            tv_advert_date.text = currentAdvert.dateCreated.format(DateTimeFormatter.ISO_DATE)
+            tv_advert_date.text = currentAdvert.dateCreated.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL))
             tv_advert_residence_type.text = currentAdvert.residenceType.toString()
             tv_advert_city.text = "${currentAdvert.city}, ${currentAdvert.address}"
             tv_advert_type.text = currentAdvert.saleType.toString()
@@ -59,6 +79,10 @@ class AdvertAdapter(
     fun updateAdverts(adverts: ArrayList<Advert>) {
         this.adverts = adverts
         notifyDataSetChanged()
+    }
+
+    fun setupNavMenu(bottomNavigationView: BottomNavigationView) {
+        this.navigationView = bottomNavigationView
     }
 
     override fun getItemCount(): Int {

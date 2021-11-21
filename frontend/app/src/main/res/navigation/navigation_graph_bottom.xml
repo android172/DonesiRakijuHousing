@@ -39,4 +39,9 @@
         android:name="com.example.skucise.fragments.CalendarFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/advertFragment"
+        android:name="com.example.skucise.fragments.AdvertFragment"
+        android:label="fragment_advert"
+        tools:layout="@layout/fragment_advert" />
 </navigation>

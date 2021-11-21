@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkuciSe">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBzsftntvyB8bs9yVBEhoLYvvyYak06pm0" />
+
         <!--<activity
             android:name=".activities.TestActivity"
             android:exported="true" >
@@ -40,12 +44,6 @@
             android:exported="true"
             android:theme="@style/Theme.SkuciSe.FrontpageTheme"
             android:windowSoftInputMode="adjustResize">
-
-<!--            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-
         </activity>
 
     </application>

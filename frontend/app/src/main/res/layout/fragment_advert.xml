@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imv_advert_page_images"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@drawable/beograd"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <TextView
+                android:id="@+id/tv_advert_page_sale_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Na prodaju"
+                android:textSize="16sp"
+                android:background="@color/white"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:layout_constraintTop_toBottomOf="@id/imv_advert_page_images"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+                <TextView
+                    android:id="@+id/tv_advert_page_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_avr_rew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4.9"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="2. Novembar 2021"
+                    android:textSize="16sp"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_advert_page_city"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City,"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Address"
+                    android:textSize="16sp"
+                    android:layout_marginStart="4sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_advert_page_city"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew"
+                    />
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    android:layout_marginTop="36dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_city"
+                    />
+
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView1"
+                    android:layout_width="120dp"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mockView0"
+                    app:layout_constraintBottom_toTopOf="@id/mockView2"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Stan iz 1992, garosnjera:"
+                    app:layout_constraintTop_toBottomOf="@id/mockView0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/mockView1"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="30.000eur"
+                    android:textSize="36sp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_type"
+                    app:layout_constraintBottom_toTopOf="@id/mockView2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/mockView1" />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_bedrooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3 bedrooms"
+                    app:layout_constraintStart_toEndOf="@id/mockView1"
+                    app:layout_constraintTop_toBottomOf="@id/mockView0"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_bathrooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3 bathrooms"
+                    app:layout_constraintStart_toEndOf="@id/mockView1"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bedrooms"/>
+
+                <TextView
+                    android:id="@+id/tv_advert_page_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="400 m^2"
+                    app:layout_constraintStart_toEndOf="@id/mockView1"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bathrooms"/>
+
+                <TextView
+                    android:id="@+id/tv_advert_page_furnished"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Namesten"
+                    app:layout_constraintStart_toEndOf="@id/mockView1"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_size"/>
+
+                <androidx.constraintlayout.utils.widget.MockView
+                    android:id="@+id/mockView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:visibility="invisible"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_furnished"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_location_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Lokacija na mapi:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="36dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mockView2" />
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/map_advert_page_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_advert_page_location_header" />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_details_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Vise informacija:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/map_advert_page_location" />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_details"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:minHeight="150sp"
+                    android:text="Nema vise informacija"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_details_header" />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_calender_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Zakazi sastanak:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_details" />
+
+                <CalendarView
+                    android:id="@+id/calv_advert_page_calender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_advert_page_calender_header" />
+
+                <TextView
+                    android:id="@+id/tv_advert_page_reviews_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ocene:"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/calv_advert_page_calender" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv_advert_page_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_reviews_header"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
