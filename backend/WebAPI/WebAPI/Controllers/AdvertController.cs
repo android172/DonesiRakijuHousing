@@ -206,6 +206,52 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("add_favourite_advert")]
+        public ActionResult<string> AddFavouriteAdvert(uint advertId)
+        {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
+            FavouriteAdvert newFavourite = new FavouriteAdvert { UserId = userId, AdvertId = advertId };
+
+            try
+            {
+                ctx.FavouriteAdverts.Add(newFavourite);
+                ctx.SaveChanges();
+
+                return Ok("Advert added.");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Failed to add advert.");
+            }
+        }
+
+        [HttpPost]
+        [Route("remove_favourite_advert")]
+        public ActionResult<string> RemoveFavouritAdvert(uint advertId)
+        {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active.");
+
+            var result = ctx.FavouriteAdverts.Where(ad => ad.AdvertId == advertId && ad.UserId == userId).FirstOrDefault();
+
+            if (result != null)
+            {
+                ctx.FavouriteAdverts.Remove(result);
+                ctx.SaveChanges();
+
+                return Ok("Advert removed.");
+            }
+
+            return NotFound("Advert does not exist.");
+        }
+
+        [HttpPost]
         [Route("add_advert")]
         public ActionResult<string> AddAdvert(string advertJson)
         {

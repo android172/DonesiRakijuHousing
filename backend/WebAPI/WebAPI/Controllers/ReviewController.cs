@@ -124,7 +124,7 @@ namespace WebAPI.Controllers
 
             if (result.Any())
                 return result.Average(r => r.Rating).ToString();
-            return "Not rated.";
+            return "Nije ocenjeno.";
         }
 
         public static bool CanLeaveReview(SkuciSeDBContext ctx, uint advertId, uint userId)
