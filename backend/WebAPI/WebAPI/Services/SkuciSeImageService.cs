@@ -12,17 +12,33 @@ namespace WebAPI.Services
         private FileService fs;
         private IConfiguration config;
 
-        private const string advertPath = "Advert";
-        private const string userPath = "User";
-        private string defaultUserImagePath;
+        private readonly string basePath;
+        private readonly string advertPath = "Advert";
+        private readonly string userPath = "User";
+        private readonly string defaultUserImagePath;
+
+        public string GetUserPath(uint userId)
+        {
+            return $"{basePath}\\{userPath}\\{userId}";
+        }
+
+        public string GetDefaultUserImagePath()
+        {
+            return $"{basePath}\\{userPath}\\{defaultUserImagePath}";
+        }
+
+        public string GetAdvertPath(uint advertId)
+        {
+            return $"{basePath}\\{advertPath}\\{advertId}";
+        }
 
         public SkuciSeImageService(IConfiguration _config)
         {
             config = _config;
             var filesConfig = config.GetSection("FileHosting");
-            var path = filesConfig.GetValue("ImagePath", @".\Files\Images_Default");
+            basePath = filesConfig.GetValue("ImagePath", @".\Files\Images_Default");
             defaultUserImagePath = filesConfig.GetValue("DefaultUserImage", "default_user.jpg");
-            fs = new FileService(path, new string[] { advertPath, userPath });
+            fs = new FileService(basePath, new string[] { advertPath, userPath });
         }
 
         public FileData GetUserImage(uint userId)

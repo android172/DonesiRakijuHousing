@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
+using System.IO;
+using Microsoft.Extensions.Hosting.Internal;
 
 namespace WebAPI.Controllers
 {
@@ -43,18 +45,84 @@ namespace WebAPI.Controllers
             }
         }
 
+
+        [HttpPost]
+        //[AllowAnonymous]
+        [Route("get_user_image_file")]
+        public IActionResult GetUserImageFile(uint userId = 0)
+        {
+            if (userId == 0)
+                userId = currentUserId;
+            try
+            {
+                string dir = img.GetUserPath(userId);
+                string file = img.GetDefaultUserImagePath();
+                if (Directory.Exists(dir))
+                {
+                    string foundFile = Directory.GetFiles(dir).FirstOrDefault();
+                    if (foundFile != null)
+                        file = foundFile;
+                }
+                FileInfo fi = new FileInfo(file);
+
+                string ext = fi.Extension.Trim(trimChar: '.');
+                if (ext == "jpg") ext = "jpeg";
+
+                return PhysicalFile(fi.FullName, $"image/{ext}");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpPost]
+        [Route("get_advert_image_file")]
+        public IActionResult GetAdvertImageFile(uint advertId, string imageName)
+        {
+            try
+            {
+                string dir = img.GetAdvertPath(advertId);
+                FileInfo fi = new FileInfo(imageName);
+
+                return PhysicalFile(fi.FullName, $"image/{fi.Extension}");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
+        [HttpPost]
+        [Route("get_advert_image_names")]
+        public ActionResult<IEnumerable<string>> GetAdvertImageNames(uint advertId)
+        {
+            try
+            {
+                string dir = img.GetAdvertPath(advertId);
+                if (Directory.Exists(dir))
+                    return Directory.GetFiles(dir);
+                else
+                    return NotFound();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e);
+            }
+        }
+
         [HttpPut]
         [Route("set_user_image")]
-        public ActionResult SetUserImage(string image)
+        public ActionResult SetUserImage([FromBody] FileData image)
         {
-            if (image == null) { return BadRequest("Object must not be null!"); }
+            //if (image == null) { return BadRequest("Object must not be null!"); }
 
             try
             {
-                FileData imageData = JsonSerializer.Deserialize<FileData>(image);
+                //FileData imageData = JsonSerializer.Deserialize<FileData>(image);
                 try
                 {
-                    img.SetUserImage(currentUserId, imageData);
+                    img.SetUserImage(currentUserId, image);
                 }catch(Exception e)
                 {
                     return StatusCode(500, e);
@@ -134,13 +202,13 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Route("add_advert_images")]
-        public ActionResult AddAdvertImages(uint advertId, string images)
+        public ActionResult AddAdvertImages(uint advertId,[FromBody] List<FileData> images)
         {
-            if (images == null) { return BadRequest("Object must not be null!"); }
+            //if (images == null) { return BadRequest("Object must not be null!"); }
             try
             {
-                List<FileData> imageData = JsonSerializer.Deserialize<List<FileData>>(images);
-                return TryEditAdvert(advertId, () => img.AddAdvertImages(advertId, imageData));
+                //List<FileData> imageData = JsonSerializer.Deserialize<List<FileData>>(images);
+                return TryEditAdvert(advertId, () => img.AddAdvertImages(advertId, images));
             }
             catch (Exception e)
             {
