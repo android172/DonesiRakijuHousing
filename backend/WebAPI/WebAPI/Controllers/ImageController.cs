@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
         [Route("get_user_image")]
         public ActionResult<FileData> GetUserImage(uint userId = 0)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             if (userId == 0) 
@@ -96,13 +96,11 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
+        [AllowAnonymous]
         [Route("get_advert_image_names")]
         public ActionResult<IEnumerable<string>> GetAdvertImageNames(uint advertId)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
-                return Unauthorized();
-
             try
             {
                 string dir = img.GetAdvertPath(advertId);
@@ -121,7 +119,7 @@ namespace WebAPI.Controllers
         [Route("set_user_image")]
         public ActionResult SetUserImage([FromBody] FileData image)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             if (image == null) { return BadRequest("Object must not be null!"); }
@@ -148,7 +146,7 @@ namespace WebAPI.Controllers
         [Route("delete_user_image")]
         public ActionResult DeleteUserImage()
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             try
@@ -166,7 +164,7 @@ namespace WebAPI.Controllers
         [Route("get_advert_images")]
         public ActionResult<List<FileData>> GetAdvertImages(uint advertId)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             try
@@ -181,7 +179,7 @@ namespace WebAPI.Controllers
 
         private ActionResult TryEditAdvert(uint advertId, Action edit)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             if (ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault().OwnerId == currentUserId)
@@ -206,7 +204,7 @@ namespace WebAPI.Controllers
         [Route("add_advert_image")]
         public ActionResult AddAdvertImage(uint advertId, [FromBody] FileData image)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             if (image == null) { return BadRequest("Object must not be null!"); }
@@ -225,7 +223,7 @@ namespace WebAPI.Controllers
         [Route("add_advert_images")]
         public ActionResult AddAdvertImages(uint advertId,[FromBody] List<FileData> images)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             //if (images == null) { return BadRequest("Object must not be null!"); }
@@ -245,7 +243,7 @@ namespace WebAPI.Controllers
         [Route("delete_advert_image")]
         public ActionResult DeleteAdvertImage(uint advertId, string imageName = null)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             return TryEditAdvert(advertId, () => img.DeleteAdvertImage(advertId, imageName));
@@ -255,7 +253,7 @@ namespace WebAPI.Controllers
         [Route("delete_advert_images")]
         public ActionResult DeleteAdvertImages(uint advertId)
         {
-            if (JwtHelper.VerifyToken(currentUserId, Request))
+            if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
 
             return TryEditAdvert(advertId, () => img.DeleteAdvertImage(advertId));

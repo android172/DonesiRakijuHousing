@@ -28,7 +28,7 @@ namespace WebAPI.Controllers
         [Route("get_chats")]
         public ActionResult<IEnumerable<object>> GetChats() // Returns a list of users who have sent or received messages from the currrent user, and the latest message in the chat
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var chats = ctx.Messages
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
         [Route("get_chat")]
         public ActionResult<IEnumerable<object>> GetChat(uint otherUserId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var messages = ctx.Messages
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
         [Route("send_message")]
         public IActionResult SendMessage(uint otherUserId, string content)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             if (otherUserId == userId)
@@ -111,7 +111,7 @@ namespace WebAPI.Controllers
         [Route("check_messages")]
         public ActionResult<bool> CheckMessages()
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var exists = ctx.Messages.Where(m => m.ReceiverId == userId && m.Seen == false).FirstOrDefault();
@@ -125,7 +125,7 @@ namespace WebAPI.Controllers
         [Route("get_user_info")]
         public ActionResult<object> GetUserInfo(uint otherUserId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             User user = ctx.Users.Find(otherUserId);

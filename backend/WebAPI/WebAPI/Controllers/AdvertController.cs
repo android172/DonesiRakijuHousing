@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         [Route("get_recent_adverts")]
         public ActionResult<IEnumerable<object>> GetRecentAdverts(int numOfAdverts)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
@@ -57,7 +57,7 @@ namespace WebAPI.Controllers
         [Route("get_advert")]
         public ActionResult<object> GetAdvert(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();        // CHANGE LATER
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
         [Route("search_adverts")]
         public ActionResult<object> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
@@ -176,7 +176,7 @@ namespace WebAPI.Controllers
         [Route("get_my_adverts")]
         public ActionResult<IEnumerable<Advert>> GetMyAdverts()
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             return ctx.Adverts.Where(a => a.OwnerId == userId).ToList();
@@ -186,7 +186,7 @@ namespace WebAPI.Controllers
         [Route("get_favourite_adverts")]
         public ActionResult<IEnumerable<object>> GetFavouriteAdverts()
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.FavouriteAdverts.Where(f => f.UserId == userId)
@@ -199,7 +199,7 @@ namespace WebAPI.Controllers
         [Route("add_favourite_advert")]
         public ActionResult<string> AddFavouriteAdvert(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             FavouriteAdvert newFavourite = new FavouriteAdvert { UserId = userId, AdvertId = advertId };
@@ -221,7 +221,7 @@ namespace WebAPI.Controllers
         [Route("remove_favourite_advert")]
         public ActionResult<string> RemoveFavouritAdvert(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.FavouriteAdverts.Where(ad => ad.AdvertId == advertId && ad.UserId == userId).FirstOrDefault();
@@ -241,7 +241,7 @@ namespace WebAPI.Controllers
         [Route("add_advert")]
         public ActionResult<string> AddAdvert(string advertJson)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
@@ -264,7 +264,7 @@ namespace WebAPI.Controllers
         [Route("remove_advert")]
         public ActionResult<string> RemoveAdvert(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
@@ -341,7 +341,7 @@ namespace WebAPI.Controllers
         [Route("edit_advert")]
         public ActionResult<string> EditAdvert(string editJson)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Advert editAdvert = JsonSerializer.Deserialize<Advert>(editJson);

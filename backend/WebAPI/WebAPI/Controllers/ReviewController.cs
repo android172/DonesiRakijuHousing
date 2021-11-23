@@ -33,7 +33,7 @@ namespace WebAPI.Controllers
         [Route("post_review")]
         public ActionResult<string> PostReview(uint advertId, uint rating, string text)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true).FirstOrDefault();
@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
         [Route("get_my_available_reviews")]
         public ActionResult<IEnumerable<Meeting>> AvailableReviews()
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             return ctx.Meetings.Where(m => m.VisitorId == userId && m.Concluded == true).ToList();
@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
         [Route("calculate_advert_rating")]
         public ActionResult<string> CalculateAdvertRating(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             return AverageAdvertRating(ctx, advertId);
@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
         [Route("calculate_user_rating")]
         public ActionResult<decimal> CalculateUserRating(uint idUser)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.OwnerId == idUser)
@@ -100,7 +100,7 @@ namespace WebAPI.Controllers
         [Route("get_advert_reviews")]
         public ActionResult<IEnumerable<object>> GetAdvertReviews(uint advertId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             return ctx.Meetings.Where(m => m.AdvertId == advertId)

@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         [Route("arrange_meeting")]
         public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
         [Route("get_my_meetings")]
         public ActionResult<IEnumerable<object>> GetMyMeetings()
         {
-            JwtHelper.VerifyToken(userId, Request);
+            JwtHelper.TokenUnverified(userId, Request);
 
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
         [Route("confirm_meeting")]
         public ActionResult<string> ConfirmMeeting(uint meetingId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Meeting meeting = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
@@ -94,7 +94,7 @@ namespace WebAPI.Controllers
         [Route("edit_meeting_proposal")]        // PROMENITI
         public ActionResult<string> EditMeeting(uint meetingId, DateTime newTime)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
@@ -137,7 +137,7 @@ namespace WebAPI.Controllers
         [Route("get_ended_meetings")]
         public ActionResult<IEnumerable<Meeting>> GetMyEndedMeetings()
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             return ctx.Meetings.
@@ -149,7 +149,7 @@ namespace WebAPI.Controllers
         [Route("conclude_meeting")]
         public ActionResult<string> ConcludeMeeting(uint meetingId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
@@ -175,7 +175,7 @@ namespace WebAPI.Controllers
         [Route("delete_meeting")]
         public ActionResult<string> DeleteMeeting(uint meetingId)
         {
-            if (JwtHelper.VerifyToken(userId, Request))
+            if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
