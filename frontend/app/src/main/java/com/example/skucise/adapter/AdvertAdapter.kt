@@ -23,11 +23,12 @@ import java.time.format.FormatStyle
 
 class AdvertAdapter(
     private var adverts: ArrayList<Advert> = ArrayList(),
+    private var allFavorites: Boolean = false
 ) : RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
 
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    private var isFavorite: ArrayList<Boolean> = adverts.map { _ -> false } as ArrayList<Boolean>
+    private var isFavorite: ArrayList<Boolean> = adverts.map { allFavorites } as ArrayList<Boolean>
 
     private var navigationView: BottomNavigationView? = null
     private lateinit var parentFragment : ViewGroup
@@ -82,7 +83,7 @@ class AdvertAdapter(
                     Request.Method.POST,
                     "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
                     hashMapOf(Pair("advertId", currentAdvert.id.toString())),
-                    { _ ->
+                    {
                         isFavorite[position] = !isFavorite[position]
                         notifyItemChanged(position)
                     },
@@ -106,7 +107,7 @@ class AdvertAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun updateAdverts(adverts: ArrayList<Advert>) {
         this.adverts = adverts
-        isFavorite = adverts.map { _ -> false } as ArrayList<Boolean>
+        isFavorite = adverts.map { allFavorites } as ArrayList<Boolean>
         notifyDataSetChanged()
     }
 
