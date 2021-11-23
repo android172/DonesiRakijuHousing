@@ -28,10 +28,8 @@ namespace WebAPI.Controllers
         [Route("get_chats")]
         public ActionResult<IEnumerable<object>> GetChats() // Returns a list of users who have sent or received messages from the currrent user, and the latest message in the chat
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var chats = ctx.Messages
                 .Where(msg => msg.SenderId == userId || msg.ReceiverId == userId)
@@ -63,10 +61,8 @@ namespace WebAPI.Controllers
         [Route("get_chat")]
         public ActionResult<IEnumerable<object>> GetChat(uint otherUserId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var messages = ctx.Messages
                 .Where(m => (m.SenderId == otherUserId && m.ReceiverId == userId) || (m.SenderId == userId && m.ReceiverId == otherUserId))
@@ -90,10 +86,8 @@ namespace WebAPI.Controllers
         [Route("send_message")]
         public IActionResult SendMessage(uint otherUserId, string content)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             if (otherUserId == userId)
                 return BadRequest("You cannot send messages to yourself!");
@@ -117,10 +111,8 @@ namespace WebAPI.Controllers
         [Route("check_messages")]
         public ActionResult<bool> CheckMessages()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var exists = ctx.Messages.Where(m => m.ReceiverId == userId && m.Seen == false).FirstOrDefault();
             if (exists != null)
@@ -133,10 +125,8 @@ namespace WebAPI.Controllers
         [Route("get_user_info")]
         public ActionResult<object> GetUserInfo(uint otherUserId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             User user = ctx.Users.Find(otherUserId);
 

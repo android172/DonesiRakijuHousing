@@ -34,10 +34,8 @@ namespace WebAPI.Controllers
         [Route("arrange_meeting")]
         public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
 
@@ -58,10 +56,7 @@ namespace WebAPI.Controllers
         [Route("get_my_meetings")]
         public ActionResult<IEnumerable<object>> GetMyMeetings()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            JwtHelper.VerifyToken(userId, Request);
 
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
@@ -72,10 +67,8 @@ namespace WebAPI.Controllers
         [Route("confirm_meeting")]
         public ActionResult<string> ConfirmMeeting(uint meetingId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Meeting meeting = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
@@ -101,10 +94,8 @@ namespace WebAPI.Controllers
         [Route("edit_meeting_proposal")]        // PROMENITI
         public ActionResult<string> EditMeeting(uint meetingId, DateTime newTime)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
@@ -146,10 +137,8 @@ namespace WebAPI.Controllers
         [Route("get_ended_meetings")]
         public ActionResult<IEnumerable<Meeting>> GetMyEndedMeetings()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
@@ -160,10 +149,8 @@ namespace WebAPI.Controllers
         [Route("conclude_meeting")]
         public ActionResult<string> ConcludeMeeting(uint meetingId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
@@ -188,10 +175,8 @@ namespace WebAPI.Controllers
         [Route("delete_meeting")]
         public ActionResult<string> DeleteMeeting(uint meetingId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
