@@ -36,10 +36,8 @@ namespace WebAPI.Controllers
         [Route("get_recent_adverts")]
         public ActionResult<IEnumerable<object>> GetRecentAdverts(int numOfAdverts)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
 
@@ -59,10 +57,8 @@ namespace WebAPI.Controllers
         [Route("get_advert")]
         public ActionResult<object> GetAdvert(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();        // CHANGE LATER
 
@@ -82,10 +78,8 @@ namespace WebAPI.Controllers
         [Route("search_adverts")]
         public ActionResult<object> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
@@ -182,10 +176,8 @@ namespace WebAPI.Controllers
         [Route("get_my_adverts")]
         public ActionResult<IEnumerable<Advert>> GetMyAdverts()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             return ctx.Adverts.Where(a => a.OwnerId == userId).ToList();
         }
@@ -194,10 +186,8 @@ namespace WebAPI.Controllers
         [Route("get_favourite_adverts")]
         public ActionResult<IEnumerable<object>> GetFavouriteAdverts()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.FavouriteAdverts.Where(f => f.UserId == userId)
                 .Join(ctx.Adverts,f => f.AdvertId,ad => ad.Id,(f, ad) => Listing.AdListing(ad));
@@ -209,10 +199,8 @@ namespace WebAPI.Controllers
         [Route("add_favourite_advert")]
         public ActionResult<string> AddFavouriteAdvert(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             FavouriteAdvert newFavourite = new FavouriteAdvert { UserId = userId, AdvertId = advertId };
 
@@ -233,10 +221,8 @@ namespace WebAPI.Controllers
         [Route("remove_favourite_advert")]
         public ActionResult<string> RemoveFavouritAdvert(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.FavouriteAdverts.Where(ad => ad.AdvertId == advertId && ad.UserId == userId).FirstOrDefault();
 
@@ -255,10 +241,8 @@ namespace WebAPI.Controllers
         [Route("add_advert")]
         public ActionResult<string> AddAdvert(string advertJson)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
             newAdvert.DateCreated = DateTime.Now;
@@ -280,10 +264,8 @@ namespace WebAPI.Controllers
         [Route("remove_advert")]
         public ActionResult<string> RemoveAdvert(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
             
@@ -359,10 +341,8 @@ namespace WebAPI.Controllers
         [Route("edit_advert")]
         public ActionResult<string> EditAdvert(string editJson)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             Advert editAdvert = JsonSerializer.Deserialize<Advert>(editJson);
             Advert result = ctx.Adverts.Where(ad => editAdvert.Id == ad.Id).FirstOrDefault();

@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,6 +25,17 @@ namespace WebAPI.Helpers
 
         public BinaryReader JwtRegisterClaimNames { get; private set; }
         public object SymetricSecurityKey { get; private set; }
+
+        public static bool VerifyToken(uint userId, HttpRequest request)
+        {
+            string expectedToken = CheckActiveToken(userId);
+            string receivedToken = request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
+
+            if (expectedToken == null || !expectedToken.Equals(receivedToken))
+                return false;
+
+            return true;
+        }
 
         public string CreateToken(User model)
         {

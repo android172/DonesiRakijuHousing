@@ -33,10 +33,8 @@ namespace WebAPI.Controllers
         [Route("post_review")]
         public ActionResult<string> PostReview(uint advertId, uint rating, string text)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true).FirstOrDefault();
 
@@ -61,10 +59,8 @@ namespace WebAPI.Controllers
         [Route("get_my_available_reviews")]
         public ActionResult<IEnumerable<Meeting>> AvailableReviews()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             return ctx.Meetings.Where(m => m.VisitorId == userId && m.Concluded == true).ToList();
 
@@ -75,10 +71,8 @@ namespace WebAPI.Controllers
         [Route("calculate_advert_rating")]
         public ActionResult<string> CalculateAdvertRating(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             return AverageAdvertRating(ctx, advertId);
         }
@@ -87,10 +81,8 @@ namespace WebAPI.Controllers
         [Route("calculate_user_rating")]
         public ActionResult<decimal> CalculateUserRating(uint idUser)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             var result = ctx.Adverts.Where(ad => ad.OwnerId == idUser)
                             .Join(ctx.Meetings, ad => ad.Id, m => m.AdvertId, (ad, m) => new { ad.Id, m })
@@ -108,10 +100,8 @@ namespace WebAPI.Controllers
         [Route("get_advert_reviews")]
         public ActionResult<IEnumerable<object>> GetAdvertReviews(uint advertId)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.VerifyToken(userId, Request))
+                return Unauthorized();
 
             return ctx.Meetings.Where(m => m.AdvertId == advertId)
                     .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => new { m.VisitorId, r })
