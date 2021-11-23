@@ -158,7 +158,7 @@ class SearchFragment : Fragment() {
         atv_paging_ads_per_page.setText(advertsPerPage.toString())
         atv_paging_ads_per_page.doOnTextChanged { _, _, _, _ ->
             advertsPerPage = atv_paging_ads_per_page.text.toString().toInt()
-            performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            performAdvertsRequest(fragmentState!!["filterArray"] as String, true)
         }
 
         // Paging buttons
