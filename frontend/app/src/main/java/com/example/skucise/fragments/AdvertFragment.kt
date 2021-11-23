@@ -136,7 +136,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
 
         // send review
         btn_advert_page_submit_review.setOnClickListener {
-            val rating = skb_advert_page_review.progress
+            val rating = rbr_advert_page_review.progress
             val comment = et_advert_page_review_text.text.toString()
 
             val params = HashMap<String, String>()

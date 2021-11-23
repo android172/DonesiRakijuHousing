@@ -20,21 +20,23 @@
                 android:layout_height="300dp"
                 android:background="@drawable/beograd"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/tv_advert_page_sale_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Na prodaju"
-                android:textSize="16sp"
-                android:background="@color/white"
+                android:textSize="18sp"
+                android:textColor="?attr/colorPrimary"
+                android:textStyle="bold"
+                android:padding="5dp"
+                android:background="@drawable/advert_type_shape"
+                android:shadowColor="@color/black"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -49,11 +51,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Title"
-                    android:textSize="22sp"
+                    android:textSize="32sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_avr_rew"
@@ -62,8 +63,7 @@
                     android:text="4.9"
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_date"
@@ -116,11 +116,10 @@
                     android:layout_width="120dp"
                     android:layout_height="0dp"
                     android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/mockView0"
                     app:layout_constraintBottom_toTopOf="@id/mockView2"
-                    />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mockView0" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_type"
@@ -137,7 +136,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="30.000eur"
-                    android:textSize="36sp"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
                     app:layout_constraintTop_toBottomOf="@id/tv_advert_page_type"
                     app:layout_constraintBottom_toTopOf="@id/mockView2"
                     app:layout_constraintStart_toStartOf="parent"
@@ -149,8 +149,7 @@
                     android:layout_height="wrap_content"
                     android:text="3 bedrooms"
                     app:layout_constraintStart_toEndOf="@id/mockView1"
-                    app:layout_constraintTop_toBottomOf="@id/mockView0"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/mockView0" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_bathrooms"
@@ -202,6 +201,7 @@
                     android:id="@+id/map_advert_page_location"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_advert_page_location_header" />
 
@@ -290,21 +290,19 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Ocena nekretnine:"
+                        app:layout_constraintBottom_toBottomOf="@+id/rbr_advert_page_review"
+                        app:layout_constraintEnd_toStartOf="@id/rbr_advert_page_review"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/skb_advert_page_review"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <SeekBar
-                        android:id="@+id/skb_advert_page_review"
-                        style="@style/Widget.AppCompat.SeekBar.Discrete"
-                        android:layout_width="150dp"
+                    <RatingBar
+                        android:id="@+id/rbr_advert_page_review"
+                        android:numStars="5"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:max="5"
                         android:progress="1"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        />
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <EditText
                         android:id="@+id/et_advert_page_review_text"
@@ -313,7 +311,7 @@
                         android:lines="10"
                         android:minLines="5"
                         android:gravity="start|top"
-                        app:layout_constraintTop_toBottomOf="@id/skb_advert_page_review"
+                        app:layout_constraintTop_toBottomOf="@id/rbr_advert_page_review"
                         app:layout_constraintStart_toStartOf="parent"
                         />
 
@@ -323,12 +321,36 @@
                         android:layout_height="wrap_content"
                         android:text="Postavi"
                         app:layout_constraintTop_toBottomOf="@+id/et_advert_page_review_text"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        />
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintEnd_toEndOf="@id/imv_advert_page_images"
+                app:layout_constraintBottom_toBottomOf="@id/imv_advert_page_images"
+                android:background="@drawable/number_of_images_shape">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_image_24"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="15"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center_vertical"/>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

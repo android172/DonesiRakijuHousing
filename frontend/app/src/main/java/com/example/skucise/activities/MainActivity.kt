@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity() {
     private val threadSlider =
         Runnable {
             vpg_background_slider.currentItem = vpg_background_slider.currentItem + 1
-            blur_layout.startBlur()
         }
 
     private fun changeActiveLRFragment(fragment: Fragment) {
