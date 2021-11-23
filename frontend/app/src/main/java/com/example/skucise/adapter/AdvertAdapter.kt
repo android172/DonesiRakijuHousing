@@ -6,22 +6,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
 import com.example.skucise.Advert
 import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.item_advert.*
 import kotlinx.android.synthetic.main.item_advert.view.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 class AdvertAdapter(
     private var adverts: ArrayList<Advert> = ArrayList(),
+    private var allFavorites: Boolean = false
 ) : RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
 
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    private var isFavorite: ArrayList<Boolean> = adverts.map { allFavorites } as ArrayList<Boolean>
 
     private var navigationView: BottomNavigationView? = null
     private lateinit var parentFragment : ViewGroup
@@ -31,11 +38,11 @@ class AdvertAdapter(
         this.parentFragment = parent
 
         return AdvertViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                        R.layout.item_advert,
-                        parent,
-                        false
-                )
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.item_advert,
+                parent,
+                false
+            )
         )
     }
 
@@ -64,6 +71,28 @@ class AdvertAdapter(
             tv_advert_size.text = "${currentAdvert.size} kvadrata"
             tv_advert_price.text = "${currentAdvert.price} €"
 
+            // favorite
+            if (isFavorite[position])
+                btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_24)
+            else
+                btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_gray_24)
+            btn_add_to_favourites.setOnClickListener {
+                val action = if(isFavorite[position]) "remove" else "add"
+                ReqSender.sendRequestString(
+                    context,
+                    Request.Method.POST,
+                    "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                    hashMapOf(Pair("advertId", currentAdvert.id.toString())),
+                    {
+                        isFavorite[position] = !isFavorite[position]
+                        notifyItemChanged(position)
+                    },
+                    { error ->
+                        Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
+
             val images = mutableListOf(
                 "https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg",
                 "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/6b/4b/85/caption.jpg?w=500&h=300&s=1&cx=2980&cy=1592&chk=v1_4c086a3f0079164b576b",
@@ -78,11 +107,17 @@ class AdvertAdapter(
     @SuppressLint("NotifyDataSetChanged")
     fun updateAdverts(adverts: ArrayList<Advert>) {
         this.adverts = adverts
+        isFavorite = adverts.map { allFavorites } as ArrayList<Boolean>
         notifyDataSetChanged()
     }
 
     fun setupNavMenu(bottomNavigationView: BottomNavigationView) {
         this.navigationView = bottomNavigationView
+    }
+
+    fun addToFavorites(position: Int) {
+        isFavorite[position] = true
+        notifyItemChanged(position)
     }
 
     override fun getItemCount(): Int {

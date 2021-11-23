@@ -14,13 +14,19 @@ import com.android.volley.Request
 import com.example.skucise.FilterArray
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.adapter.AdvertAdapter
 import com.example.skucise.frontpageTiles.CityTilesAdapter
 import com.example.skucise.frontpageTiles.TileSet
+import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
+import kotlinx.android.synthetic.main.fragment_frontpage.view.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
+
+    private val advertAdapter: AdvertAdapter = AdvertAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +57,29 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         else {
             loadCities(SearchFragment.allCities!!, view)
         }
+
+        // Load new adverts
+        ReqSender.sendRequestArray(
+            requireActivity(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/advert/get_recent_adverts",
+            hashMapOf(Pair("numOfAdverts", "10")),
+            { results ->
+                val adverts = loadAdverts(results)
+                advertAdapter.updateAdverts(adverts)
+            },
+            { error ->
+                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        // Setup new adverts recycler view
+        view.rcv_new_adverts.apply {
+            advertAdapter.setupNavMenu(requireActivity().findViewById(R.id.nav_bottom_navigator))
+            adapter = advertAdapter
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        }
+
         return view
     }
 
@@ -88,11 +117,11 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         for (i in 0 until min(cities.size / 3, 5)) {
             tileSet.add(
                 TileSet(
-                    cities[3 * i].toString(),
+                    cities[3 * i],
                     3 * i,
-                    cities[3 * i + 1].toString(),
+                    cities[3 * i + 1],
                     3 * i + 1,
-                    cities[3 * i + 2].toString(),
+                    cities[3 * i + 2],
                     3 * i + 2
                 )
             )

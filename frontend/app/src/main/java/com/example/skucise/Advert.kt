@@ -1,5 +1,8 @@
 package com.example.skucise
 
+import android.annotation.SuppressLint
+import org.json.JSONArray
+import org.json.JSONObject
 import java.time.LocalDateTime
 
 data class Advert(
@@ -20,6 +23,26 @@ data class Advert(
     val furnished: Boolean = false,
     val dateCreated: LocalDateTime
 )
+
+@SuppressLint("NewApi")
+fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
+    val adverts = ArrayList<Advert>()
+    for (i in 0 until jsonArray.length()) {
+        val json = jsonArray[i] as JSONObject
+        adverts.add( Advert(
+            id            = json.getInt("id").toUInt(),
+            title         = json.getString("title"),
+            price         = json.getDouble("price"),
+            city          = json.getString("city"),
+            address       = json.getString("address"),
+            saleType      = SaleType.values()[json.getInt("saleType")],
+            residenceType = ResidenceType.values()[json.getInt("residenceType")],
+            size          = json.getDouble("size"),
+            dateCreated   = LocalDateTime.parse(json.getString("dateCreated"))
+        ))
+    }
+    return adverts
+}
 
 enum class ResidenceType { Stan, Kuća }
 enum class StructureType { Garsonjera, Jednosobna, JednaIpoSoba, Dvosobna, DveIpoSobe }

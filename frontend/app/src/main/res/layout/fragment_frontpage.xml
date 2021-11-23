@@ -196,16 +196,38 @@
 
             <TextView
                 android:id="@+id/tiles_title"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:layout_marginTop="16dp"
                 android:textSize="30sp"
-                android:text="Istražite smeštaj u SkućiSe aplikaciji"
+                android:text="Najnoviji oglasi"
                 app:layout_constraintTop_toBottomOf="@id/hv_layout_container1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_new_adverts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tiles_title" />
+
+            <TextView
+                android:id="@+id/tiles_title3"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="Istražite smeštaj u SkućiSe aplikaciji"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rcv_new_adverts" />
 
             <TextView
                 android:id="@+id/tiles_flavor"
@@ -217,7 +239,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tiles_title" />
+                app:layout_constraintTop_toBottomOf="@id/tiles_title3" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_city_tiles"

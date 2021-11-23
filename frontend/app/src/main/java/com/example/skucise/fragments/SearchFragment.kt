@@ -1,6 +1,5 @@
 package com.example.skucise.fragments
 
-import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.TypedValue
@@ -17,11 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.adapter.AdvertAdapter
-import kotlinx.android.synthetic.main.activity_navigation.view.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import org.json.JSONArray
-import org.json.JSONObject
-import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -163,7 +158,7 @@ class SearchFragment : Fragment() {
         atv_paging_ads_per_page.setText(advertsPerPage.toString())
         atv_paging_ads_per_page.doOnTextChanged { _, _, _, _ ->
             advertsPerPage = atv_paging_ads_per_page.text.toString().toInt()
-            performAdvertsRequest(fragmentState!!["filterArray"] as String)
+            performAdvertsRequest(fragmentState!!["filterArray"] as String, true)
         }
 
         // Paging buttons
@@ -197,26 +192,6 @@ class SearchFragment : Fragment() {
                 return false
             }
         })
-    }
-
-    @SuppressLint("NewApi")
-    private fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
-        val adverts = ArrayList<Advert>()
-        for (i in 0 until jsonArray.length()) {
-            val json = jsonArray[i] as JSONObject
-            adverts.add( Advert(
-                id            = json.getInt("id").toUInt(),
-                title         = json.getString("title"),
-                price         = json.getDouble("price"),
-                city          = json.getString("city"),
-                address       = json.getString("address"),
-                saleType      = SaleType.values()[json.getInt("saleType")],
-                residenceType = ResidenceType.values()[json.getInt("residenceType")],
-                size          = json.getDouble("size"),
-                dateCreated   = LocalDateTime.parse(json.getString("dateCreated"))
-            ))
-        }
-        return adverts
     }
 
     private fun updatePaging() {
@@ -500,6 +475,9 @@ class SearchFragment : Fragment() {
                 adverts = loadAdverts(response.getJSONArray("result"))
                 advertAdapter.updateAdverts(adverts)
 
+                // load favorites
+                loadFavorites()
+
                 fragmentState!!["filterArray"]    = filterArray
                 fragmentState!!["currentPage"]    = currentPage
                 fragmentState!!["numberOfPages"]  = numberOfPages
@@ -508,6 +486,26 @@ class SearchFragment : Fragment() {
                 fragmentState!!["searchQuery"]    = searchQuery
 
                 scv_search_scroll.scrollTo(0, 0)
+            },
+            { error ->
+                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
+    }
+
+    private fun loadFavorites() {
+        ReqSender.sendRequestArray(
+            this.requireActivity(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/advert/get_favourite_adverts",
+            null,
+            { response ->
+                val favoriteAdverts = loadAdverts(response).map { advert -> advert.id }
+                for (i in 0 until adverts.size) {
+                    if (favoriteAdverts.contains(adverts[i].id)) {
+                        advertAdapter.addToFavorites(i)
+                    }
+                }
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -531,7 +529,6 @@ class SearchFragment : Fragment() {
                     putString(ARG_PARAM1, advertsFilterArray)
                 }
             }
-
 
         var fragmentState : HashMap<String, Any>? = null
         var allCities : Array<String>? = null
