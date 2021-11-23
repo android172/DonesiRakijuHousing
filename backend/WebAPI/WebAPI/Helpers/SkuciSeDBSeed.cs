@@ -85,6 +85,11 @@ namespace WebAPI.Helpers
                 "STEVANA SIMIĆA"
             };
 
+            Dictionary<SaleType, string> titleSaleType = new Dictionary<SaleType, string> { 
+                [SaleType.Purchase] = "prodaju", 
+                    [SaleType.Rent] = "najam" 
+            };
+
             for (uint i = 1; i < numApartments + 1; i++)
             {
                 var structureType = PickOne(rgen, structureTypeOptionsApartment);
@@ -100,7 +105,7 @@ namespace WebAPI.Helpers
                         ResidenceType = ResidenceType.Apartment,
                         SaleType = saleType,
                         StructureType = structureType,
-                        Title = "Stan na prodaju!",
+                        Title = $"Stan na {titleSaleType[saleType]}!",
                         Description = @"Opis oglasa. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
                         City = $"{PickOne(rgen, SkuciSeDBContext.CityNames.ToArray())}",
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
@@ -111,34 +116,37 @@ namespace WebAPI.Helpers
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, trueOrFalse),
                         YearOfMake = (uint)(1970 + (rgen.Next() % 50)),
-                        DateCreated = DateTime.Now
+                        DateCreated = DateTime.Now - new TimeSpan(days: rgen.Next() % 365, 0, 0, 0)
                     });
             }
 
             for (uint i = 1; i < numHouses + 1; i++)
             {
-                var st = PickOne(rgen, structureTypeOptionsHouse);
-                var size = sizeByStructureType[st] + rgen.Next() % 6;
+                var structureType = PickOne(rgen, structureTypeOptionsHouse);
+                var saleType = PickOne(rgen, saleTypeOptions);
+                var size = sizeByStructureType[structureType] + rgen.Next() % 6;
+
+                var price = size * priceBySaleType[saleType];
 
                 modelBuilder.Entity<Advert>().HasData(
                     new Advert
                     {
                         Id = i + numApartments,
                         ResidenceType = ResidenceType.House,
-                        SaleType = PickOne(rgen, saleTypeOptions),
-                        StructureType = st,
-                        Title = "Kuća na prodaju!",
+                        SaleType = saleType,
+                        StructureType = structureType,
+                        Title = $"Kuća na {titleSaleType[saleType]}!",
                         Description = @"Opis oglasa. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
                         City = $"{PickOne(rgen, SkuciSeDBContext.CityNames.ToArray())}",
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
-                        Size = size,
-                        Price = size * 1234,
+                        Size = size * 3,
+                        Price = price,
                         OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 4) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
                         Furnished = PickOne(rgen, trueOrFalse),
                         YearOfMake = (uint)(1950 + (rgen.Next() % 70)),
-                        DateCreated = DateTime.Now
+                        DateCreated = DateTime.Now - new TimeSpan(days: rgen.Next() % 365, 0, 0, 0)
                     });
             }
 
@@ -202,7 +210,7 @@ namespace WebAPI.Helpers
 
             string[] review = new string[] { "veoma loš", "loš", "ok", "dobar", "odličan" };
 
-            for (uint i = 1; i < 11; i++)
+            for (uint i = 1; i < 41; i++)
             {
                 bool concluded = PickOne(rgen, trueOrFalse);
 

@@ -13,6 +13,7 @@ using System.Text.Json.Serialization;
 using WebAPI.Helpers;
 using Microsoft.Net.Http.Headers;
 using System.Reflection;
+using WebAPI.Services;
 
 namespace WebAPI.Controllers
 {
@@ -22,14 +23,18 @@ namespace WebAPI.Controllers
     public class AdvertController : Controller
     {
         private readonly SkuciSeDBContext ctx;
+        private readonly SkuciSeImageService img;
         private readonly string username;
         private readonly uint userId;
 
-        public AdvertController(SkuciSeDBContext _ctx, IHttpContextAccessor httpContextAccessor)
+        public AdvertController(SkuciSeDBContext _ctx, SkuciSeImageService _img, IHttpContextAccessor httpContextAccessor)
         {
             ctx = _ctx;
+            img = _img;
             username = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             uint.TryParse(httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out userId);
+
+            Listing.img = img;
         }
 
         [HttpPost]
