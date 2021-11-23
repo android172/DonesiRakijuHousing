@@ -14,15 +14,39 @@ namespace WebAPI.Helpers
             Random rgen = new Random(seed);
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "John", LastName = "Doe", DateCreated = DateTime.Now, Confirmed = true });
+                new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "Pera", LastName = "Peric", DateCreated = DateTime.Now, Confirmed = true });
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Jack", LastName = "Daniels", DateCreated = DateTime.Now, Confirmed = false });
+                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Mika", LastName = "Mikic", DateCreated = DateTime.Now, Confirmed = false });
+
+            string[] names = new[]
+            {
+                "Stefan", "Vladimir", "Boris", "Stanislav", "Petar", "Aleksandar", "Mihajlo", "Milica", "Sara", "Aleksandra"
+            };
+
+            string[] lastNames = new[]
+            {
+                "Gabarević", "Gavranić", "Abramović", "Aksić", "Aleksić", "Kazimirović", "Ugrenović", "Miličević", "Babović", "Babić"
+            };
+
+            for(uint i=1; i<11; i++)
+            {
+                modelBuilder.Entity<User>().HasData(
+                new User { 
+                    Id = i+2, 
+                    Username = $"rgen{i}", 
+                    Password = $"Password{i}", 
+                    Email = $"rgen{i}@hotmail.com", 
+                    FirstName = PickOne(rgen, names),
+                    LastName = PickOne(rgen, lastNames), 
+                    DateCreated = DateTime.Now, 
+                    Confirmed = true });
+            }
 
             uint numApartments = 35;
             uint numHouses = 20;
 
-            var furnishedOptions = new[] { true, false };
+            var trueOrFalse = new[] { true, false };
             var saleTypeOptions = new[] { SaleType.Purchase, SaleType.Rent };
             var structureTypeOptionsHouse = new[] { StructureType.OneRoom, StructureType.OneAndAHalfRoom, StructureType.TwoRoom, StructureType.TwoAndAHalfRoom };
             var structureTypeOptionsApartment = new[] { StructureType.Studio, StructureType.OneRoom, StructureType.OneAndAHalfRoom, StructureType.TwoRoom, StructureType.TwoAndAHalfRoom };
@@ -82,10 +106,10 @@ namespace WebAPI.Helpers
                         Address = $"{PickOne(rgen, streetNames)} {(rgen.Next() % 30)}",
                         Size = size,
                         Price = price,
-                        OwnerId = (uint)rgen.Next() % 2 + 1,
+                        OwnerId = (uint)rgen.Next() % 10 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 3) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
-                        Furnished = PickOne(rgen, furnishedOptions),
+                        Furnished = PickOne(rgen, trueOrFalse),
                         YearOfMake = (uint)(1970 + (rgen.Next() % 50)),
                         DateCreated = DateTime.Now
                     });
@@ -112,7 +136,7 @@ namespace WebAPI.Helpers
                         OwnerId = (uint)rgen.Next() % 2 + 1,
                         NumBedrooms = (uint)(rgen.Next() % 4) + 1,
                         NumBathrooms = (uint)(rgen.Next() % 2) + 1,
-                        Furnished = PickOne(rgen, furnishedOptions),
+                        Furnished = PickOne(rgen, trueOrFalse),
                         YearOfMake = (uint)(1950 + (rgen.Next() % 70)),
                         DateCreated = DateTime.Now
                     });
@@ -131,25 +155,30 @@ namespace WebAPI.Helpers
 
             for (uint i = 2; i <= 11; i++)
             {
+                uint uId1 = (uint)rgen.Next() % 10 + 1;
+                uint uId2 = (uint)rgen.Next() % 10 + 1;
+                if (uId1 == uId2)
+                    uId2 = (uId1 + 1) % 10 + 1;
+
                 modelBuilder.Entity<Message>().HasData(
                     new Message
                     {
                         Id = i,
-                        SenderId = 1,
-                        ReceiverId = 2,
-                        Content = $"Hello world! ({i})",
+                        SenderId = uId1,
+                        ReceiverId = uId2,
+                        Content = $"Hello user:{uId2}!",
                         SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365*45 + rgen.Next() % 2000, 0, 0, 0),
-                        Seen = PickOne(rgen, furnishedOptions)
+                        Seen = PickOne(rgen, trueOrFalse)
                     });
                 modelBuilder.Entity<Message>().HasData(
                     new Message
                     {
                         Id = i + 10,
-                        SenderId = 2,
-                        ReceiverId = 1,
-                        Content = $"Hello! ({i + 10})",
+                        SenderId = uId2,
+                        ReceiverId = uId1,
+                        Content = $"Hello to you too, user:{uId2}!",
                         SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365 * 45 + rgen.Next() % 2000, 0, 0, 0),
-                        Seen = PickOne(rgen, furnishedOptions)
+                        Seen = PickOne(rgen, trueOrFalse)
                     });
             }
 
@@ -159,37 +188,65 @@ namespace WebAPI.Helpers
                     new FavouriteAdvert
                     {
                         UserId = 1,
-                        AdvertId = (uint)rgen.Next() % 51 + 1
-                    });
+                        AdvertId = i
+                    }) ;
 
                 modelBuilder.Entity<FavouriteAdvert>().HasData(
                     new FavouriteAdvert
                     {
                         UserId = 2,
-                        AdvertId = (uint)rgen.Next() % 51 + 1
+                        AdvertId = i+10
                     });
             }
 
-            modelBuilder.Entity<Meeting>().HasData(
-                new Meeting
-                {
-                    Id = 1,
-                    AdvertId = 1,
-                    VisitorId = 2,
-                    Time = DateTime.Now,
-                    AgreedVisitor = true,
-                    AgreedOwner = true,
-                    DateCreated = DateTime.Now,
-                    Concluded = true
-                });
 
-            modelBuilder.Entity<Review>().HasData(
-                new Review
+            string[] review = new string[] { "veoma loš", "loš", "ok", "dobar", "odličan" };
+
+            for (uint i = 1; i < 11; i++)
+            {
+                bool concluded = PickOne(rgen, trueOrFalse);
+
+                if (concluded)
                 {
-                    MeetingId = 1,
-                    Rating = 4,
-                    Text = "Mesto je OK!"
-                });
+                    modelBuilder.Entity<Meeting>().HasData(
+                        new Meeting
+                        {
+                            Id = i,
+                            AdvertId = i,
+                            VisitorId = (uint)rgen.Next()%10,
+                            Time = DateTime.Now,
+                            AgreedVisitor = true,
+                            AgreedOwner = true,
+                            DateCreated = DateTime.Now,
+                            Concluded = true
+                        });
+
+                    uint rating = PickOne(rgen, new uint[] { 1, 2, 3, 4, 5 });
+
+                    modelBuilder.Entity<Review>().HasData(
+                        new Review
+                        {
+                            MeetingId = i,
+                            Rating = rating,
+                            Text = $"Moj utisak je {review[rating-1]}!"
+                        });
+                }
+                else
+                {
+                    modelBuilder.Entity<Meeting>().HasData(
+                        new Meeting
+                        {
+                            Id = i,
+                            AdvertId = i,
+                            VisitorId = (uint)rgen.Next() % 10,
+                            Time = DateTime.Now + new TimeSpan(days: rgen.Next()%7, 0, 0, 0),
+                            AgreedVisitor = true,
+                            AgreedOwner = false,
+                            DateCreated = DateTime.Now,
+                            Concluded = false
+                        });
+                }
+            }
         }
 
         private static T PickOne<T>(Random r, T[] options)
