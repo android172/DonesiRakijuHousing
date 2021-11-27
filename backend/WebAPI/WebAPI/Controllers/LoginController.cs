@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("user_login")]
-        public ActionResult<string> UserLogin(string usernameOrEmail, string password)
+        public ActionResult<object> UserLogin(string usernameOrEmail, string password)
         {
             if (String.IsNullOrWhiteSpace(usernameOrEmail) || String.IsNullOrWhiteSpace(password))
                 return BadRequest("Username or password is blank or empty.");
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
                 string token = jwtHelper.CreateToken(user);
                 JwtHelper.AddActiveToken(user.Id, token);
 
-                return Ok(new { token });
+                return Ok(new { Token = token, UserId =  user.Id});
             }
 
             return NotFound("User does not exist.");
