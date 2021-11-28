@@ -93,11 +93,12 @@ class AdvertAdapter(
                 )
             }
 
-            val images = mutableListOf(
-                "https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg",
-                "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/1d/6b/4b/85/caption.jpg?w=500&h=300&s=1&cx=2980&cy=1592&chk=v1_4c086a3f0079164b576b",
-                "https://rs.n1info.com/wp-content/uploads/2021/04/KRAGUJEVAC-PANORAMA-IZVOR-N1-MILAN-NIKIC-scaled.jpg"
-            )
+            var images = currentAdvert.images.map { image ->
+                "http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${currentAdvert.id}&imageName=$image"
+            }
+            if (images.isEmpty())
+                images = arrayListOf("https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg")
+
             val adapter = AdvertImagesAdapter(images)
             vpg_advert_images.adapter = adapter
             indicator_vpg.setViewPager(vpg_advert_images)

@@ -21,7 +21,8 @@ data class Advert(
     val numberOfBathrooms: UInt = 0u,
     val yearOfMake: UInt = 0u,
     val furnished: Boolean = false,
-    val dateCreated: LocalDateTime
+    val dateCreated: LocalDateTime,
+    val images: ArrayList<String> = ArrayList()
 )
 
 @SuppressLint("NewApi")
@@ -29,6 +30,12 @@ fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
     val adverts = ArrayList<Advert>()
     for (i in 0 until jsonArray.length()) {
         val json = jsonArray[i] as JSONObject
+        // load images
+        val imagesJson = json.getJSONArray("images")
+        val images = ArrayList<String>()
+        for (j in 0 until imagesJson.length())
+            images.add(imagesJson[j] as String)
+
         adverts.add( Advert(
             id            = json.getInt("id").toUInt(),
             title         = json.getString("title"),
@@ -38,7 +45,8 @@ fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
             saleType      = SaleType.values()[json.getInt("saleType")],
             residenceType = ResidenceType.values()[json.getInt("residenceType")],
             size          = json.getDouble("size"),
-            dateCreated   = LocalDateTime.parse(json.getString("dateCreated"))
+            dateCreated   = LocalDateTime.parse(json.getString("dateCreated")),
+            images        = images
         ))
     }
     return adverts

@@ -8,11 +8,9 @@ import kotlinx.android.synthetic.main.fragment_login.*
 import org.json.JSONException
 import com.android.volley.Request
 import android.text.InputFilter
+import com.example.skucise.*
 import com.example.skucise.activities.NavigationActivity
-import com.example.skucise.R
-import com.example.skucise.ReqSender
-import com.example.skucise.SessionManager
-import com.example.skucise.Util
+import kotlinx.android.synthetic.main.activity_navigation.*
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -48,7 +46,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 { response ->
                     try {
                         val token = response.getString("token")
-                        SessionManager.startSession(token)
+                        val id = response.getInt("userId")
+                        SessionManager.startSession(token, User(id = id))
 
                         startActivity(Intent(this.activity, NavigationActivity::class.java))
                         this.activity?.finish()

@@ -86,9 +86,13 @@ namespace WebAPI.Controllers
             try
             {
                 string dir = img.GetAdvertPath(advertId);
-                FileInfo fi = new FileInfo(imageName);
+                
+                FileInfo fi = new FileInfo(Path.Join(dir, imageName));
 
-                return PhysicalFile(fi.FullName, $"image/{fi.Extension}");
+                string ext = fi.Extension.Trim(trimChar: '.');
+                if (ext == "jpg") ext = "jpeg";
+
+                return PhysicalFile(fi.FullName, $"image/{ext}");
             }
             catch (Exception e)
             {

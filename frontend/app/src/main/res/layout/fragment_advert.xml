@@ -24,7 +24,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
             <ImageButton
-                android:id="@+id/btn_add_to_favourites"
+                android:id="@+id/btn_advert_page_favourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -54,9 +54,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                app:layout_constraintTop_toBottomOf="@id/imv_advert_page_images"
                 app:layout_constraintStart_toStartOf="parent"
-                >
+                app:layout_constraintTop_toBottomOf="@id/imv_advert_page_images">
 
                 <TextView
                     android:id="@+id/tv_advert_page_title"
@@ -65,8 +64,8 @@
                     android:text="Title"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_avr_rew"
@@ -74,20 +73,19 @@
                     android:layout_height="wrap_content"
                     android:text="4.9"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="2. Novembar 2021"
-                    android:textSize="16sp"
                     android:textAlignment="textEnd"
+                    android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_advert_page_city"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_city"
@@ -95,32 +93,29 @@
                     android:layout_height="wrap_content"
                     android:text="City,"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_address"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4sp"
                     android:text="Address"
                     android:textSize="16sp"
-                    android:layout_marginStart="4sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_advert_page_city"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_avr_rew" />
 
                 <androidx.constraintlayout.utils.widget.MockView
                     android:id="@+id/mockView0"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:visibility="invisible"
                     android:layout_marginTop="36dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_city"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_city" />
 
 
                 <androidx.constraintlayout.utils.widget.MockView
@@ -138,10 +133,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Stan iz 1992, garosnjera:"
-                    app:layout_constraintTop_toBottomOf="@id/mockView0"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/mockView1"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mockView0" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_price"
@@ -150,10 +144,10 @@
                     android:text="30.000eur"
                     android:textSize="30sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_type"
                     app:layout_constraintBottom_toTopOf="@id/mockView2"
+                    app:layout_constraintEnd_toEndOf="@id/mockView1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/mockView1" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_type" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_bedrooms"
@@ -169,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:text="3 bathrooms"
                     app:layout_constraintStart_toEndOf="@id/mockView1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bedrooms"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bedrooms" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_size"
@@ -177,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:text="400 m^2"
                     app:layout_constraintStart_toEndOf="@id/mockView1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bathrooms"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_bathrooms" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_furnished"
@@ -185,28 +179,27 @@
                     android:layout_height="wrap_content"
                     android:text="Namesten"
                     app:layout_constraintStart_toEndOf="@id/mockView1"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_size"/>
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_size" />
 
                 <androidx.constraintlayout.utils.widget.MockView
                     android:id="@+id/mockView2"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_furnished"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_furnished" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_location_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
                     android:text="Lokacija na mapi:"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="36dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mockView2" />
 
                 <com.google.android.gms.maps.MapView
@@ -221,12 +214,12 @@
                     android:id="@+id/tv_advert_page_details_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="Vise informacija:"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/map_advert_page_location" />
 
                 <TextView
@@ -235,20 +228,20 @@
                     android:layout_height="wrap_content"
                     android:minHeight="150sp"
                     android:text="Nema vise informacija"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_advert_page_details_header" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_calender_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="Zakazi sastanak:"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_advert_page_details" />
 
                 <CalendarView
@@ -264,21 +257,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/calv_advert_page_calender"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/calv_advert_page_calender" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_reviews_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="Ocene:"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_advert_page_arrange_meeting_response" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -286,9 +278,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_reviews_header"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_reviews_header" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -310,13 +301,13 @@
                         android:id="@+id/rbr_advert_page_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="74dp"
+                        android:layout_marginEnd="-55dp"
                         android:numStars="5"
                         android:progress="1"
                         android:scaleX="0.5"
                         android:scaleY="0.5"
                         app:layout_constraintBottom_toBottomOf="@id/tv_rate_label"
-                        app:layout_constraintStart_toEndOf="@+id/tv_rate_label"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@id/tv_rate_label" />
 
                     <EditText
