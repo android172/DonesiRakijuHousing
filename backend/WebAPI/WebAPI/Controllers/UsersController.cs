@@ -35,15 +35,27 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("get_user_info")]
-        public ActionResult<object> GetUserInfo()
+        [Route("get_my_info")]
+        public ActionResult<object> GetMyInfo()
         {
             string token = JwtHelper.CheckActiveToken(userId);
 
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active");
 
-            return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated }).FirstOrDefault();
+            return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated, NumberOfAdverts = UsersController.NumOfAdverts(ctx, userId), UserScore = ReviewController.AverageUserRating(ctx, userId) }).FirstOrDefault();
+        }
+
+        [HttpPost]
+        [Route("get_user_info")]
+        public ActionResult<object> GetUserInfo(uint idUser)
+        {
+            string token = JwtHelper.CheckActiveToken(userId);
+
+            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
+                return Unauthorized("Token is not active");
+
+            return ctx.Users.Where(u => u.Id == idUser).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, NumberOfAdverts = UsersController.NumOfAdverts(ctx, idUser), UserScore = ReviewController.AverageUserRating(ctx, idUser) }).FirstOrDefault();
         }
 
         [HttpPost]
@@ -165,6 +177,12 @@ namespace WebAPI.Controllers
             ctx.SaveChanges();
 
             return Ok("Info changed.");
+        }
+
+        public static int NumOfAdverts(SkuciSeDBContext ctx, uint idUser)
+        {
+            return ctx.Adverts.Where(ad => ad.OwnerId == idUser).Count();
+
         }
     }
 }
