@@ -101,6 +101,7 @@ class AdvertAdapter(
 
             val adapter = AdvertImagesAdapter(images)
             vpg_advert_images.adapter = adapter
+            vpg_advert_images.offscreenPageLimit = 2
             indicator_vpg.setViewPager(vpg_advert_images)
         }
     }

@@ -39,8 +39,8 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         // set account image
+        btn_account_dd_toggle.clipToOutline = true;
         if (SessionManager.currentUser != null)
-            btn_account_dd_toggle.clipToOutline = true;
             Glide.with(this)
                 .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
                 .centerCrop()
