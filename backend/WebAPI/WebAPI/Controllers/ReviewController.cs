@@ -79,21 +79,12 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("calculate_user_rating")]
-        public ActionResult<decimal> CalculateUserRating(uint idUser)
+        public ActionResult<string> CalculateUserRating(uint idUser)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var result = ctx.Adverts.Where(ad => ad.OwnerId == idUser)
-                            .Join(ctx.Meetings, ad => ad.Id, m => m.AdvertId, (ad, m) => new { ad.Id, m })
-                            .Join(ctx.Reviews, j => j.m.Id, r => r.MeetingId, (j, r) => new { j.Id, r })
-                            .GroupBy(j => j.Id)
-                            .Select(j => new { Advert = j.Key, AverageRating = j.Average(x => x.r.Rating)});
-
-            if (result.Any())
-                return (decimal)result.Average(x => x.AverageRating);
-            else
-                return 0;
+            return AverageUserRating(ctx, idUser);
         }
         
         [HttpPost]
@@ -115,6 +106,19 @@ namespace WebAPI.Controllers
             if (result.Any())
                 return result.Average(r => r.Rating).ToString();
             return "Nije ocenjeno.";
+        }
+
+        public static string AverageUserRating(SkuciSeDBContext ctx, uint idUser)
+        {
+            var result = ctx.Adverts.Where(ad => ad.OwnerId == idUser)
+                            .Join(ctx.Meetings, ad => ad.Id, m => m.AdvertId, (ad, m) => new { ad.Id, m })
+                            .Join(ctx.Reviews, j => j.m.Id, r => r.MeetingId, (j, r) => new { j.Id, r })
+                            .GroupBy(j => j.Id)
+                            .Select(j => new { Advert = j.Key, AverageRating = j.Average(x => x.r.Rating) });
+
+            if (result.Any())
+                return result.Average(x => x.AverageRating).ToString();
+            return "Korisnik nije ocenjen.";
         }
 
         public static bool CanLeaveReview(SkuciSeDBContext ctx, uint advertId, uint userId)

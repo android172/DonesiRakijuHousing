@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
             JwtHelper.TokenUnverified(userId, Request);
 
             return ctx.Meetings.
-                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
+                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
                 Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
         }
 

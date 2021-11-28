@@ -65,7 +65,8 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();        // CHANGE LATER
+            var result = ctx.Adverts.Where(ad => ad.Id == advertId)
+                .Join(ctx.Users, ad => ad.OwnerId, u => u.Id, (ad, u) => new { ad, u.Username}).FirstOrDefault();        // CHANGE LATER
 
             if (result != null)
                 return new { AdvertData = result, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId) };
