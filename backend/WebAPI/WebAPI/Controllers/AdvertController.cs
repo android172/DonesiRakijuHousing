@@ -39,12 +39,12 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("get_recent_adverts")]
-        public ActionResult<IEnumerable<object>> GetRecentAdverts(int numOfAdverts)
+        public ActionResult<IEnumerable<object>> GetRecentAdverts(uint numOfAdverts)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take(numOfAdverts).Select(Listing.AdListing);
+            var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take((int)numOfAdverts).Select(Listing.AdListing);
 
             return adverts.ToList();
 
@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
         
         [HttpPost]
         [Route("search_adverts")]
-        public ActionResult<object> SearchAdverts(string filterArray, string searchParam, int adsPerPage, int pageNum, string orderBy, bool ascending)
+        public ActionResult<object> SearchAdverts(string filterArray, string searchParam, uint adsPerPage, uint pageNum, string orderBy, bool ascending)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
@@ -172,7 +172,7 @@ namespace WebAPI.Controllers
                 pageNum = 1;
 
             int count = result.Count();
-            result = result.Skip(adsPerPage * (pageNum - 1)).Take(adsPerPage);
+            result = result.Skip((int)adsPerPage * ((int)pageNum - 1)).Take((int)adsPerPage);
 
             return new { Count = count, Result = result.Select(Listing.AdListing).ToList() };
         }
@@ -276,6 +276,9 @@ namespace WebAPI.Controllers
             
             if(result != null)
             {
+                if (result.OwnerId != userId)
+                    return BadRequest("You are not an owner of this advert.");
+
                 ctx.Adverts.Remove(result);
                 ctx.SaveChanges();
 
@@ -354,6 +357,9 @@ namespace WebAPI.Controllers
 
             if(result != null)
             {
+                if (result.OwnerId != userId)
+                    return BadRequest("You are not an owner of this advert.");
+
                 try
                 {
                     PropertyInfo[] properties = typeof(Advert).GetProperties();

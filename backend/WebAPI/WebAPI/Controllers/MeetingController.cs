@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
 
             return ctx.Meetings.
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
-                Where(m => m.OwnerId == userId || m.m.VisitorId == userId).ToList();
+                Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
         }
 
         [HttpPost]
@@ -91,7 +91,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("edit_meeting_proposal")]        // PROMENITI
+        [Route("edit_meeting_proposal")]
         public ActionResult<string> EditMeeting(uint meetingId, DateTime newTime)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
@@ -157,6 +157,9 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
+            if (result.Time > DateTime.Now)
+                return BadRequest("Meeting has not started.");
+
             result.Concluded = true;
 
             try
@@ -183,8 +186,8 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
-            if (result.Time <= DateTime.Now)
-                return BadRequest("Meeting is not done yet.");
+            if (result.Time > DateTime.Now)
+                return BadRequest("Meeting has not started.");
 
             try
             {
