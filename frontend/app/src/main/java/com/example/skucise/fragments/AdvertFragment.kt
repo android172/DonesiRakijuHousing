@@ -62,35 +62,34 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 "http://10.0.2.2:5000/api/advert/get_advert",
                 params,
                 { response ->
-                    Toast.makeText(activity, "$response", Toast.LENGTH_LONG).show()
-//                    val advertData = response.getJSONObject("advertData")
-//                    advert = Advert(
-//                        id                = advertData.getInt("id").toUInt(),
-//                        residenceType     = ResidenceType.values()[advertData.getInt("residenceType")],
-//                        saleType          = SaleType.values()[advertData.getInt("saleType")],
-//                        structureType     = StructureType.values()[advertData.getInt("structureType")],
-//                        title             = advertData.getString("title"),
-//                        description       = advertData.getString("description"),
-//                        city              = advertData.getString("city"),
-//                        address           = advertData.getString("address"),
-//                        size              = advertData.getDouble("size"),
-//                        price             = advertData.getDouble("price"),
-//                        ownerId           = advertData.getInt("ownerId").toUInt(),
-//                        numberOfBedrooms  = advertData.getInt("numBedrooms").toUInt(),
-//                        numberOfBathrooms = advertData.getInt("numBathrooms").toUInt(),
-//                        furnished         = advertData.getBoolean("furnished"),
-//                        yearOfMake        = advertData.getInt("yearOfMake").toUInt(),
-//                        dateCreated       = LocalDateTime.parse(advertData.getString("dateCreated"))
-//                    )
-//                    averageScore = response.getString("averageScore")
-//                    if (averageScore == "Not rated.") averageScore = "Bez ocena"
-//                    canLeaveReview = response.getBoolean("canLeaveReview")
-//
-//                    if (tv_advert_page_sale_type != null)
-//                        updateAdvertInfo()
-//
-//                    // load reviews
-//                    loadReviews()
+                    val advertData = response.getJSONObject("advertData")
+                    advert = Advert(
+                        id                = advertData.getInt("id").toUInt(),
+                        residenceType     = ResidenceType.values()[advertData.getInt("residenceType")],
+                        saleType          = SaleType.values()[advertData.getInt("saleType")],
+                        structureType     = StructureType.values()[advertData.getInt("structureType")],
+                        title             = advertData.getString("title"),
+                        description       = advertData.getString("description"),
+                        city              = advertData.getString("city"),
+                        address           = advertData.getString("address"),
+                        size              = advertData.getDouble("size"),
+                        price             = advertData.getDouble("price"),
+                        ownerId           = advertData.getInt("ownerId").toUInt(),
+                        numberOfBedrooms  = advertData.getInt("numBedrooms").toUInt(),
+                        numberOfBathrooms = advertData.getInt("numBathrooms").toUInt(),
+                        furnished         = advertData.getBoolean("furnished"),
+                        yearOfMake        = advertData.getInt("yearOfMake").toUInt(),
+                        dateCreated       = LocalDateTime.parse(advertData.getString("dateCreated"))
+                    )
+                    averageScore = response.getString("averageScore")
+                    if (averageScore == "Not rated.") averageScore = "Bez ocena"
+                    canLeaveReview = response.getBoolean("canLeaveReview")
+
+                    if (tv_advert_page_sale_type != null)
+                        updateAdvertInfo()
+
+                    // load reviews
+                    loadReviews()
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
