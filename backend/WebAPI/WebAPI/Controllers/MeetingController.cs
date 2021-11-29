@@ -37,6 +37,14 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
+            if (DateTime.Now >= time)
+                return BadRequest("You can not set a date that has passed.");
+
+            var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == false);
+
+            if (result.Any())
+                return BadRequest("You already proposed meeting for this advert.");
+
             Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
 
             try
@@ -58,9 +66,17 @@ namespace WebAPI.Controllers
         {
             JwtHelper.TokenUnverified(userId, Request);
 
-            return ctx.Meetings.
-                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
-                Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
+            //return ctx.Meetings.
+            //    Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
+            //    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
+
+            var result = ctx.Meetings.
+                    Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
+                    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).
+                    Select(j => new { OwnerId = j.OwnerId, MeetingData = j.m, OtherUserId = j.OwnerId == userId ? j.m.VisitorId : j.OwnerId, AdvertTitle = j.Title}).
+                    Join(ctx.Users, j => j.OtherUserId, u => u.Id, (j, u) => new { MeetingData = j.MeetingData, OtherUserId = j.OtherUserId, OtherUsername = u.Username, AdvertTitle = j.AdvertTitle, AmIOwner = j.OwnerId == userId ? true : false }).ToList();
+
+            return result;
         }
 
         [HttpPost]
@@ -135,6 +151,37 @@ namespace WebAPI.Controllers
             catch (Exception e)
             {
                 return StatusCode(500, "Failed to change meeting proposal.");
+            }
+        }
+
+        [HttpPost]
+        [Route("cancel_meeting")]
+        public ActionResult<string> CancelMeeting(uint meetingId)
+        {
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
+
+            var result = ctx.Meetings.Where(m => m.Id == meetingId && m.Concluded == false).
+                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).FirstOrDefault();
+
+            if (result == null)
+                return NotFound("Meeting does not exist or it has been concluded.");
+
+            if (result.m.Time.Date == DateTime.Now.Date)
+                return BadRequest("You can not cancel meeting on the day of it.");
+
+            if (result.m.VisitorId != userId && result.OwnerId != userId)
+                return BadRequest("You are not part of this meeting and can not cancel it.");
+
+            try
+            {
+                ctx.Meetings.Remove(result.m);
+                ctx.SaveChanges();
+                return Ok("Meeting canceled.");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Failed to cancel meeting.");
             }
         }
 
