@@ -75,7 +75,12 @@ namespace WebAPI.Controllers
             if (meeting == null)
                 return NotFound("Meeting does not exist.");
 
-            meeting.AgreedOwner = true;
+
+            if (meeting.VisitorId == userId)
+                meeting.AgreedVisitor = true;
+            else
+                meeting.AgreedOwner = true;
+            
 
             try
             {
@@ -152,13 +157,16 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
+            Meeting result = ctx.Meetings.Where(m => m.Id == meetingId && ctx.Adverts.Any(ad => ad.OwnerId == userId)).FirstOrDefault();
 
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
             if (result.Time > DateTime.Now)
                 return BadRequest("Meeting has not started.");
+
+            if (result.Concluded == true)
+                return BadRequest("Meeting has already been concluded.");
 
             result.Concluded = true;
 
@@ -181,10 +189,10 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
+            Meeting result = ctx.Meetings.Where(m => m.Id == meetingId && ctx.Adverts.Any(ad => ad.OwnerId == userId) && m.Concluded == false).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Meeting does not exist.");
+                return NotFound("Meeting does not exist or it has been concluded.");
 
             if (result.Time > DateTime.Now)
                 return BadRequest("Meeting has not started.");

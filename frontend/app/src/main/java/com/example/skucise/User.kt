@@ -1,7 +1,7 @@
 package com.example.skucise
 
 import android.annotation.SuppressLint
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 @SuppressLint("NewApi")
 data class User(
@@ -11,5 +11,7 @@ data class User(
     var email : String = "",
     var firstname : String = "",
     var lastname : String = "",
-    var creation_date : LocalDate = LocalDate.ofEpochDay(0)
+    val creationDate : LocalDateTime = LocalDateTime.now(),
+    val numberOfAdverts : Int = 0,
+    val averageRating: String = ""
 )

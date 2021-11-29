@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true).FirstOrDefault();
+            var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true && !ctx.Reviews.Any(r => r.MeetingId == m.Id)).FirstOrDefault();
 
             if (result == null)
                 return NotFound("You can't post a review because meeting does not exist or is not concluded.");
@@ -57,14 +57,14 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("get_my_available_reviews")]
-        public ActionResult<IEnumerable<Meeting>> AvailableReviews()
+        public ActionResult<IEnumerable<object>> AvailableReviews()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            return ctx.Meetings.Where(m => m.VisitorId == userId && m.Concluded == true).ToList();
+            var result = ctx.Meetings.Where(m => m.VisitorId == userId && m.Concluded == true && !ctx.Reviews.Any(r => r.MeetingId == m.Id)).ToList();
 
-            
+            return result;
         }
 
         [HttpPost]

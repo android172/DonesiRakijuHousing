@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
                 return Unauthorized("Token is not active");
 
-            return ctx.Users.Where(u => u.Username == username).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated, NumberOfAdverts = UsersController.NumOfAdverts(ctx, userId), UserScore = ReviewController.AverageUserRating(ctx, userId) }).FirstOrDefault();
+            return ctx.Users.Where(u => u.Id == userId).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated, NumberOfAdverts = UsersController.NumOfAdverts(ctx, userId), UserScore = ReviewController.AverageUserRating(ctx, userId) }).FirstOrDefault();
         }
 
         [HttpPost]

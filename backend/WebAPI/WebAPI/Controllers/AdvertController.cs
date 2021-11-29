@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
                 .Join(ctx.Users, ad => ad.OwnerId, u => u.Id, (ad, u) => new { ad, u.Username}).FirstOrDefault();        // CHANGE LATER
 
             if (result != null)
-                return new { AdvertData = result, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId) };
+                return new { AdvertData = result.ad, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId), Username = result.Username };
             else
                 return NotFound("Advert doesn't exist.");
         }
