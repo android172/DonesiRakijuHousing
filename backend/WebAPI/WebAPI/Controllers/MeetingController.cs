@@ -66,9 +66,17 @@ namespace WebAPI.Controllers
         {
             JwtHelper.TokenUnverified(userId, Request);
 
-            return ctx.Meetings.
-                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
-                Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
+            //return ctx.Meetings.
+            //    Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
+            //    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
+
+            var result = ctx.Meetings.
+                    Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
+                    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).
+                    Select(j => new { OwnerId = j.OwnerId, MeetingData = j.m, OtherUserId = j.OwnerId == userId ? j.m.VisitorId : j.OwnerId, AdvertTitle = j.Title}).
+                    Join(ctx.Users, j => j.OtherUserId, u => u.Id, (j, u) => new { MeetingData = j.MeetingData, OtherUserId = j.OtherUserId, OtherUsername = u.Username, AdvertTitle = j.AdvertTitle, AmIOwner = j.OwnerId == userId ? true : false }).ToList();
+
+            return result;
         }
 
         [HttpPost]
