@@ -1,21 +1,25 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.R
+import com.example.skucise.activities.NavigationActivity
 import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -37,7 +41,7 @@ private const val ARG_PARAM1 = "advertId"
  * Use the [AdvertFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener {
+class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
     private var canLeaveReview: Boolean = false
@@ -46,12 +50,15 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
     private var selectedMonth: Int = 1
     private var selectedDay: Int = 1
 
+    private lateinit var intent: Intent
+    private var advertId: Int = 0
+
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            val advertId = it.getInt(ARG_PARAM1)
+            advertId = it.getInt(ARG_PARAM1)
 
             val params = HashMap<String, String>()
             params["advertId"] = advertId.toString()
@@ -96,6 +103,13 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 }
             )
         }
+
+        intent = Intent(activity, AdvertImagesActivity::class.java).apply {
+            putExtra("id", advertId)
+        }
+    }
+    override fun onClick(p0: View?) {
+        startActivity(intent)
     }
 
     override fun onCreateView(
@@ -115,6 +129,10 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        this.csl_image_counter?.setOnClickListener {
+            onClick(view)
+        }
 
         // Update page look
         updateAdvertInfo()

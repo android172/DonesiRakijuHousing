@@ -16,8 +16,6 @@ import com.bumptech.glide.Glide
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*
-import kotlinx.android.synthetic.main.advert_image_item.view.*
-import kotlinx.android.synthetic.main.item_account_dropdown.*
 
 class NavigationActivity : AppCompatActivity() {
 
