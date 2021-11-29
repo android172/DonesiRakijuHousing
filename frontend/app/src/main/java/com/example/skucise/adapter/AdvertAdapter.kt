@@ -99,8 +99,9 @@ class AdvertAdapter(
             if (images.isEmpty())
                 images = arrayListOf("https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg")
 
-            val adapter = AdvertImagesAdapter(images)
+            val adapter = AdvertImagesAdapter(images, 0)
             vpg_advert_images.adapter = adapter
+            vpg_advert_images.offscreenPageLimit = 2
             indicator_vpg.setViewPager(vpg_advert_images)
         }
     }
