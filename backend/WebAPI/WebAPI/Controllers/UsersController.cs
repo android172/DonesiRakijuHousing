@@ -38,10 +38,8 @@ namespace WebAPI.Controllers
         [Route("get_my_info")]
         public ActionResult<object> GetMyInfo()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             return ctx.Users.Where(u => u.Id == userId).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated, NumberOfAdverts = UsersController.NumOfAdverts(ctx, userId), UserScore = ReviewController.AverageUserRating(ctx, userId) }).FirstOrDefault();
         }
@@ -50,10 +48,8 @@ namespace WebAPI.Controllers
         [Route("get_user_info")]
         public ActionResult<object> GetUserInfo(uint idUser)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             return ctx.Users.Where(u => u.Id == idUser).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, NumberOfAdverts = UsersController.NumOfAdverts(ctx, idUser), UserScore = ReviewController.AverageUserRating(ctx, idUser) }).FirstOrDefault();
         }
@@ -62,10 +58,8 @@ namespace WebAPI.Controllers
         [Route("send_pass_reset_email")]
         public ActionResult ResetPassword()
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
             try
@@ -83,10 +77,8 @@ namespace WebAPI.Controllers
         [Route("change_email")]
         public ActionResult ChangeEmail(string newEmail)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             Regex emailReg = new Regex(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 
@@ -112,10 +104,8 @@ namespace WebAPI.Controllers
         [Route("change_password")]
         public ActionResult ChangePassword(string oldPassword, string newPassword)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             User result = ctx.Users.Where(u => u.Id == userId && u.Password == oldPassword).FirstOrDefault();
 
@@ -137,10 +127,8 @@ namespace WebAPI.Controllers
         [Route("change_user_info")]
         public ActionResult ChangeInfo(string newUsername, string newFirstName, string newLastName)
         {
-            string token = JwtHelper.CheckActiveToken(userId);
-
-            if (token == null || !token.Equals(Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "")))
-                return Unauthorized("Token is not active.");
+            if (JwtHelper.TokenUnverified(userId, Request))
+                return Unauthorized();
 
             Regex imePrezimeReg = new Regex(@"^([ \u00c0-\u01ffa-zA-Z'\-])+$");
             Regex usernameReg = new Regex(@"^[A-Za-z0-9_-]{4,16}$");
@@ -182,7 +170,6 @@ namespace WebAPI.Controllers
         public static int NumOfAdverts(SkuciSeDBContext ctx, uint idUser)
         {
             return ctx.Adverts.Where(ad => ad.OwnerId == idUser).Count();
-
         }
     }
 }

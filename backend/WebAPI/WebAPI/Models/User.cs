@@ -20,7 +20,5 @@ namespace WebAPI.Models
         public string Email { get; set; }
         public DateTime DateCreated { get; set; }
         public bool Confirmed { get; set; }
-
-        public string ImageUrl { get; set; }
     }
 }
