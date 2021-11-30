@@ -86,6 +86,10 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        btn_search_sell_options.setOnClickListener {
+            findNavController().navigate(R.id.addAdvertFragment)
+        }
+
         btn_search_buy_options.setOnClickListener {
             val filters = FilterArray()
             filters.applyFilter(FilterArray.FilterNames.SaleType, FilterArray.SaleTypes.Purchase.ordinal)
