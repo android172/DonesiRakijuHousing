@@ -70,10 +70,16 @@ namespace WebAPI.Controllers
             //    Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
             //    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).ToList();
 
+            //var result = ctx.Meetings.
+            //        Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
+            //        Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).
+            //        Select(j => new { OwnerId = j.OwnerId, MeetingData = j.m, OtherUserId = j.OwnerId == userId ? j.m.VisitorId : j.OwnerId, AdvertTitle = j.Title}).
+            //        Join(ctx.Users, j => j.OtherUserId, u => u.Id, (j, u) => new { MeetingData = j.MeetingData, OtherUserId = j.OtherUserId, OtherUsername = u.Username, AdvertTitle = j.AdvertTitle, AmIOwner = j.OwnerId == userId ? true : false }).ToList();
+
             var result = ctx.Meetings.
                     Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId, ad.Title }).
-                    Where(m => (m.OwnerId == userId || m.m.VisitorId == userId) && m.m.Concluded == false).
-                    Select(j => new { OwnerId = j.OwnerId, MeetingData = j.m, OtherUserId = j.OwnerId == userId ? j.m.VisitorId : j.OwnerId, AdvertTitle = j.Title}).
+                    Where(m => (m.OwnerId == userId || (m.m.VisitorId == userId && m.m.Time > DateTime.Now)) && m.m.Concluded == false).
+                    Select(j => new { OwnerId = j.OwnerId, MeetingData = j.m, OtherUserId = j.OwnerId == userId ? j.m.VisitorId : j.OwnerId, AdvertTitle = j.Title }).
                     Join(ctx.Users, j => j.OtherUserId, u => u.Id, (j, u) => new { MeetingData = j.MeetingData, OtherUserId = j.OtherUserId, OtherUsername = u.Username, AdvertTitle = j.AdvertTitle, AmIOwner = j.OwnerId == userId ? true : false }).ToList();
 
             return result;
@@ -185,17 +191,17 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("get_ended_meetings")]
-        public ActionResult<IEnumerable<Meeting>> GetMyEndedMeetings()
-        {
-            if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+        //[HttpPost]
+        //[Route("get_ended_meetings")]
+        //public ActionResult<IEnumerable<Meeting>> GetMyEndedMeetings()
+        //{
+        //    if (JwtHelper.TokenUnverified(userId, Request))
+        //        return Unauthorized();
 
-            return ctx.Meetings.
-                Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
-                Where(j => j.OwnerId == userId && j.m.Concluded == false && j.m.Time <= DateTime.Now).Select(j => j.m).ToList();
-        }
+        //    return ctx.Meetings.
+        //        Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).
+        //        Where(j => j.OwnerId == userId && j.m.Concluded == false && j.m.Time <= DateTime.Now).Select(j => j.m).ToList();
+        //}
 
         [HttpPost]
         [Route("conclude_meeting")]
