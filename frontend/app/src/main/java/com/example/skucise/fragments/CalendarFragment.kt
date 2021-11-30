@@ -6,12 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.Request
 import com.example.skucise.Meeting
 import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.example.skucise.adapter.MeetingAdapter
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import org.json.JSONObject
 import java.time.LocalDateTime
 
 /**
@@ -41,14 +45,41 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // request meetings
+        ReqSender.sendRequestArray(
+            requireContext(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/meeting/get_my_meetings",
+            null,
+            { response ->
+                meetingRequests = ArrayList()
+                for (i in 0 until response.length()) {
+                    val meeting = response[i] as JSONObject
+                    meetingRequests.add(Meeting(
+                        id            = meeting.getJSONObject("meetingData").getInt("id"),
+                        advertId      = meeting.getJSONObject("meetingData").getInt("advertId"),
+                        agreedVisitor = meeting.getJSONObject("meetingData").getBoolean("agreedVisitor"),
+                        agreedOwner   = meeting.getJSONObject("meetingData").getBoolean("agreedOwner"),
+                        concluded     = meeting.getJSONObject("meetingData").getBoolean("concluded"),
+                        otherUser     = meeting.getInt("otherUserId"),
+                        username      = meeting.getString("otherUsername"),
+                        title         = meeting.getString("advertTitle"),
+                        owner         = meeting.getBoolean("amIOwner"),
+                        proposedTime  = LocalDateTime.parse(
+                                meeting.getJSONObject("meetingData").getString("time")),
+                        dateCreated   = LocalDateTime.parse(
+                                meeting.getJSONObject("meetingData").getString("dateCreated"))
+                    ))
+                }
+                meetingRequestAdapter.updateMeetings(meetingRequests)
+            },
+            { error ->
+                Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
+
+        // initialize recycler view
         rcv_calendar_page.apply {
-
-            meetingRequests.addAll(arrayListOf(
-                Meeting(1, "Some title", "User1", LocalDateTime.now(), LocalDateTime.now()),
-                Meeting(2, "Some other title", "User2", LocalDateTime.now(), LocalDateTime.now()),
-                Meeting(3, "None title", "User3", LocalDateTime.now(), LocalDateTime.now())
-            ))
-
             adapter = meetingRequestAdapter
             layoutManager = LinearLayoutManager(context)
         }
