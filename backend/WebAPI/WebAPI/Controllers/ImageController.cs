@@ -109,7 +109,9 @@ namespace WebAPI.Controllers
             {
                 string dir = img.GetAdvertPath(advertId);
                 if (Directory.Exists(dir))
-                    return Directory.GetFiles(dir);
+                {
+                    return Directory.GetFiles(dir).Select(f => (new FileInfo(f)).Name).ToArray();
+                }
                 else
                     return Array.Empty<string>();
             }
