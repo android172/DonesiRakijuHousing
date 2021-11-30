@@ -8,7 +8,11 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -20,8 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@drawable/beograd"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/btn_advert_page_favourite"
@@ -38,15 +42,15 @@
                 android:id="@+id/tv_advert_page_sale_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Na prodaju"
-                android:textSize="18sp"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:padding="5dp"
-                android:background="@drawable/advert_type_shape"
-                android:shadowColor="@color/black"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/advert_type_shape"
+                android:padding="5dp"
+                android:shadowColor="@color/black"
+                android:text="Na prodaju"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,7 +78,8 @@
                     android:text="4.9"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title" />
+                    app:layout_constraintTop_toBottomOf="@id/tv_advert_page_title"
+                    app:drawableEndCompat="@drawable/ic_rating_star_18" />
 
                 <TextView
                     android:id="@+id/tv_advert_page_date"
@@ -141,7 +146,7 @@
                     android:id="@+id/tv_advert_page_price"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="30.000eur"
+                    android:text="30.000&#x20AC;"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/mockView2"
@@ -333,28 +338,32 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/csl_image_counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
-                app:layout_constraintEnd_toEndOf="@id/imv_advert_page_images"
+                android:background="@drawable/number_of_images_shape"
                 app:layout_constraintBottom_toBottomOf="@id/imv_advert_page_images"
-                android:background="@drawable/number_of_images_shape">
+                app:layout_constraintEnd_toEndOf="@id/imv_advert_page_images">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_image_24"
-                    android:layout_margin="5dp"/>
-                <TextView
+                    android:id="@+id/img_image_counter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
+                    android:src="@drawable/ic_baseline_image_24" />
+
+                <TextView
+                    android:id="@+id/tv_image_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"
                     android:text="15"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:layout_gravity="center_vertical"/>
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

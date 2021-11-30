@@ -16,8 +16,6 @@ import com.bumptech.glide.Glide
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*
-import kotlinx.android.synthetic.main.advert_image_item.view.*
-import kotlinx.android.synthetic.main.item_account_dropdown.*
 
 class NavigationActivity : AppCompatActivity() {
 
@@ -39,8 +37,8 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         // set account image
+        btn_account_dd_toggle.clipToOutline = true;
         if (SessionManager.currentUser != null)
-            btn_account_dd_toggle.clipToOutline = true;
             Glide.with(this)
                 .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
                 .centerCrop()
