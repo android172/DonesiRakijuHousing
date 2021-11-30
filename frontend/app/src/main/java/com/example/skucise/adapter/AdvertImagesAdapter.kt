@@ -34,7 +34,6 @@ class AdvertImagesAdapter (
         val image = images[position]
         holder.itemView.apply {
             img_advert?.clipToOutline = true
-            img_advert2?.clipToOutline = true
             Glide.with(context)
                 .load(image)
                     .centerCrop()
