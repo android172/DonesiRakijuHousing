@@ -31,30 +31,20 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var chats = ctx.Messages
+            var otherUsersWithMessages = ctx.Messages
                 .Where(msg => msg.SenderId == userId || msg.ReceiverId == userId)
-                .Select(msg => new { UserId = msg.SenderId != userId ? msg.SenderId : msg.ReceiverId })
+                .Select(msg => new { OtherUserId = msg.SenderId != userId ? msg.SenderId : msg.ReceiverId, Message = msg } )
                 .Distinct();
 
-            var chatsWithMessages = ctx.Messages
-                .Join(chats,
-                    m => true,
-                    c => true,
-                    (m, c) => new { UserId = c.UserId, Message = m })
-                .Where(j => j.Message.ReceiverId == j.UserId || j.Message.ReceiverId == j.UserId);
+            var otherUsersWithLatestMessageDate = otherUsersWithMessages
+                .GroupBy(o => o.OtherUserId)
+                .Select(g => new { OtherUserId = g.Key, MaxDate = g.Max(j => j.Message.SendDate) });
 
-            var chatsWithLatestMessage = chatsWithMessages
-                .Join(
-                    chatsWithMessages
-                    .GroupBy(j => j.UserId)
-                    .Select(g => new { UserId = g.Key, MaxDate = g.Max(j => j.Message.SendDate) }),
-                    c1 => c1.UserId,
-                    c2 => c2.UserId,
-                    (c1, c2) => new { c1.UserId, c1.Message, c2.MaxDate })
-                .Where(j => j.Message.SendDate == j.MaxDate)
-                .Select(w => new { w.UserId, w.Message });
+            var otherUsersWithLatestMessage = otherUsersWithMessages
+                .Where(m => otherUsersWithLatestMessageDate.Any(o => o.OtherUserId == m.OtherUserId && m.Message.SendDate == o.MaxDate))
+                .Select(w => new { w.OtherUserId, w.Message });
 
-            return chatsWithLatestMessage.ToList();
+            return otherUsersWithLatestMessage.ToList();
         }
 
         [HttpPost]
@@ -92,6 +82,16 @@ namespace WebAPI.Controllers
             if (otherUserId == userId)
                 return BadRequest("You cannot send messages to yourself!");
 
+            var hasMeeting = ctx.Meetings
+                .Where(m => m.AgreedOwner && m.AgreedVisitor
+                && ((m.VisitorId == otherUserId 
+                    && ctx.Adverts.Find(m.AdvertId).OwnerId == userId)
+                    || ((m.VisitorId == userId 
+                        && ctx.Adverts.Find(m.AdvertId).OwnerId == otherUserId))));
+
+            if (!hasMeeting.Any())
+                return BadRequest("You must have an arranged meeting before you are able to chat with the recepient!");
+
             Message msg = new Message { SenderId = userId, ReceiverId = otherUserId, Content = content, Seen = false, SendDate = DateTime.Now };
 
             try
@@ -122,7 +122,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("get_user_info")]
+        [Route("get_user_status")]
         public ActionResult<object> GetUserInfo(uint otherUserId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
@@ -132,7 +132,7 @@ namespace WebAPI.Controllers
 
             bool online = JwtHelper.CheckActiveToken(otherUserId) != null;
 
-            return new { user.ImageUrl, user.Username, Online = online };
+            return new { user.Username, Online = online };
         }
     }
 }

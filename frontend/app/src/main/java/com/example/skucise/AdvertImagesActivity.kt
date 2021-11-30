@@ -45,9 +45,5 @@ class AdvertImagesActivity : AppCompatActivity() {
                 Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
             }
         )
-
-
-
-
     }
 }
