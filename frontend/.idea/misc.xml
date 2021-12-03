@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Repos/PMU/DonesiRakijuHousing/frontend/app/src/main/res/layout/add_advert_fragment.xml" value="0.5" />
+        <entry key="..\:/Repos/PMU/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_add_advert.xml" value="0.36666666666666664" />
+        <entry key="..\:/Repos/PMU/DonesiRakijuHousing/frontend/app/src/main/res/layout/fragment_frontpage.xml" value="0.36666666666666664" />
+        <entry key="..\:/Repos/PMU/DonesiRakijuHousing/frontend/app/src/main/res/layout/item_dropdown_add_advert.xml" value="0.36666666666666664" />
+        <entry key="..\:/Repos/PMU/DonesiRakijuHousing/frontend/app/src/main/res/layout/item_sort_by_dropdown.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.275390625" />
         <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/bottom_round_style.xml" value="0.275390625" />
         <entry key="..\:/Users/Pc/AndroidStudioProjects/DonesiRakijuHousing/frontend/app/src/main/res/drawable/btn_style1.xml" value="0.275390625" />
