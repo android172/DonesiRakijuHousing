@@ -48,6 +48,8 @@ class FavoritesFragment : Fragment() {
             { response ->
                 val favoriteAdverts = loadAdverts(response)
                 advertAdapter.updateAdverts(favoriteAdverts)
+                if(favoriteAdverts.size != 0)
+                    tv_favourites_none.visibility = View.INVISIBLE
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()

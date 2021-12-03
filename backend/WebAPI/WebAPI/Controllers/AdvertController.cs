@@ -180,12 +180,14 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("get_my_adverts")]
-        public ActionResult<IEnumerable<Advert>> GetMyAdverts()
+        public ActionResult<IEnumerable<object>> GetMyAdverts()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            return ctx.Adverts.Where(a => a.OwnerId == userId).ToList();
+            var result = ctx.Adverts.Where(ad => ad.OwnerId == userId).Select(ad => Listing.AdListing(ad));
+
+            return result.ToList();
         }
 
         [HttpPost]
