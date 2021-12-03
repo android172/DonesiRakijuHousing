@@ -24,10 +24,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Date and Time"
+        android:textAlignment="textEnd"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@+id/csl_meeting_buttons_new_meeting"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/tv_at_time"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_at_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="At: "
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/csl_meeting_buttons_new_meeting"
+
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/csl_meeting_buttons_new_meeting"
@@ -58,7 +72,7 @@
             android:id="@+id/btn_meeting_accept"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="P"
+            android:text="✓"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -66,7 +80,7 @@
             android:id="@+id/btn_meeting_tweak_time"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:text="c"
+            android:text="🕐"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_meeting_accept" />
 
@@ -74,7 +88,7 @@
             android:id="@+id/btn_meeting_cancel"
             android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:text="O"
+            android:text="❌"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_meeting_tweak_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -94,9 +108,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="Date Created"
+        android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_meeting_username"
-        app:layout_constraintTop_toBottomOf="@+id/tv_meeting_time" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_meeting_time"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
