@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.bumptech.glide.Glide
+import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -37,11 +38,12 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         // set account image
-        btn_account_dd_toggle.clipToOutline = true;
+        btn_account_dd_toggle.clipToOutline = true
         if (SessionManager.currentUser != null)
             Glide.with(this)
                 .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
                 .centerCrop()
+                .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .into(btn_account_dd_toggle)
 
         // List of dropdown options and their functionalities

@@ -55,14 +55,13 @@ namespace WebAPI.Services
             return fd;
         }
 
-        public void SetUserImage(uint userId, FileData image)
-        {
+        public void SetUserImage(uint userId, FileData image) {
             fs.WriteFile($"{userPath}\\{userId}", image);
         }
 
-        public void DeleteUserImage(uint userId, string imageName = null)
+        public void DeleteUserImage(uint userId)
         {
-            fs.DeleteFile($"{userPath}\\{userId}", imageName);
+            fs.DeleteAllFiles($"{userPath}\\{userId}");
         }
 
         public void AddAdvertImage(uint advertId, FileData image)

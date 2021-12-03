@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
                     img.DeleteUserImage(currentUserId);
                     FileData file = new FileData();
                     file.Name = "newImage.jpeg";
-                    file.Content = image.FirstOrDefault();
+                    file.Content = System.Convert.FromBase64String(image.FirstOrDefault());
                     file.Extension = ".jpeg";
                     img.SetUserImage(currentUserId, file);
                 }

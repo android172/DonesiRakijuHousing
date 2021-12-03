@@ -36,7 +36,7 @@ namespace WebAPI.Services
             fd.Extension = fi.Extension;
             using (StreamReader stream = new StreamReader($"{path}\\{folder}\\{fi.Name}"))
             {
-                fd.Content = stream.ReadToEnd();
+                fd.Content = System.Text.Encoding.UTF8.GetBytes(stream.ReadToEnd());
             }
             return fd;
         }
@@ -44,9 +44,9 @@ namespace WebAPI.Services
         public void WriteFile(string folder, FileData file)
         {
             Directory.CreateDirectory($"{path}\\{folder}");
-            using (StreamWriter stream = new StreamWriter($"{path}\\{folder}\\{file.Name}"))
+            using (FileStream stream = new FileStream($"{path}\\{folder}\\{file.Name}", FileMode.Create, FileAccess.Write))
             {
-                stream.Write(file.Content);
+                stream.Write(file.Content, 0, file.Content.Length);
             }
         }
 
@@ -56,15 +56,15 @@ namespace WebAPI.Services
             {
                 fileName = Directory.GetFiles($"{path}\\{folder}").FirstOrDefault();
             }
-            File.Delete($"{path}\\{folder}\\{fileName}");
+            File.Delete($"{fileName}");
         }
 
         public void DeleteAllFiles(string folder)
         {
             var files = Directory.GetFiles($"{path}\\{folder}");
-            foreach(var file in files)
+            foreach (var file in files)
             {
-                File.Delete($"{path}\\{folder}\\{file}");
+                File.Delete($"{file}");
             }
         }
 
@@ -88,10 +88,9 @@ namespace WebAPI.Services
                 fd.Extension = fi.Extension;
                 fd.Name = fi.Name;
 
-                fd.Content = "";
                 using (StreamReader stream = new StreamReader(path))
                 {
-                    fd.Content = stream.ReadToEnd();
+                    fd.Content = System.Text.Encoding.UTF8.GetBytes(stream.ReadToEnd());
                 }
 
                 files.Add(fd);
