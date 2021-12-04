@@ -40,6 +40,7 @@ class MyAdvertsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         rcv_my_adverts.apply {
+            advertAdapter.setupNavMenu(requireActivity().findViewById(R.id.nav_bottom_navigator))
             adapter = advertAdapter
             layoutManager = LinearLayoutManager(activity)
         }
