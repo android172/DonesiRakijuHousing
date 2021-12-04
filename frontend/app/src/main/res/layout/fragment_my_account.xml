@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:theme="@style/Theme.SkuciSe.LoginTheme">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,10 +30,11 @@
 
             <androidx.constraintlayout.utils.widget.ImageFilterView
                 android:id="@+id/img_user_pfp"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/profile_image_shape"
+                android:elevation="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/user_default_image"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +51,150 @@
                 android:layout_marginBottom="32dp"
                 android:background="@drawable/shape_rounded_15_white"
                 android:elevation="10dp"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/img_profile_background">
+
+                <TextView
+                    android:id="@+id/tv_profile_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Username"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Korisničko ime"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_username" />
+
+                <TextView
+                    android:id="@+id/tv_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Pera Peric"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_name_label" />
+
+                <TextView
+                    android:id="@+id/tv_username_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ime i prezime"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_name" />
+
+                <TextView
+                    android:id="@+id/tv_profile_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="neki.email@pmf.kg.ac.rs"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_username_label" />
+
+                <TextView
+                    android:id="@+id/tv_email_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="E-mail"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_email" />
+
+                <TextView
+                    android:id="@+id/tv_profile_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="03.12.2021"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_email_label" />
+
+                <TextView
+                    android:id="@+id/tv_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Član od"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_date" />
+
+                <TextView
+                    android:id="@+id/tv_profile_number_adverts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="9"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date_label" />
+
+                <TextView
+                    android:id="@+id/tv_number_adverts_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Broj postavljenih oglasa"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_number_adverts" />
+
+                <ImageButton
+                    android:id="@+id/btn_edit_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/profile_image_shape"
+                    android:backgroundTint="@color/white"
+                    android:elevation="2dp"
+                    android:padding="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_number_adverts_label"
+                    app:layout_constraintVertical_bias="0.062"
+                    app:srcCompat="@drawable/ic_baseline_edit_32" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/csl_profile_edit_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/shape_rounded_15_white"
+                android:elevation="10dp"
                 android:padding="8dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -61,7 +205,7 @@
                     android:id="@+id/btn_user_edit_username"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/ic_sort"
+                    android:background="@drawable/ic_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/et_user_username" />
 
@@ -72,6 +216,7 @@
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
                     android:text="Username"
+                    android:textColorHighlight="@color/transparent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_username"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -92,7 +237,7 @@
                     android:id="@+id/btn_user_edit_firstname"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/ic_sort"
+                    android:background="@drawable/ic_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/et_user_firstname" />
 
@@ -112,7 +257,7 @@
                     android:id="@+id/btn_user_edit_lastname"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/ic_sort"
+                    android:background="@drawable/ic_edit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/et_user_lastname" />
 
@@ -166,7 +311,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Objavljenih oglasa: 4"
+                    android:text="Postavljenih oglasa: 4"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -230,7 +375,38 @@
                     app:layout_constraintStart_toEndOf="@id/mockView3"
                     app:layout_constraintTop_toBottomOf="@+id/mockView4" />
 
+                <ImageButton
+                    android:id="@+id/btn_end_editting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/profile_image_shape"
+                    android:backgroundTint="@color/white"
+                    android:elevation="2dp"
+                    android:padding="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_user_edit_mail"
+                    app:srcCompat="@drawable/ic_baseline_check_32" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/btn_edit_profile_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/search_shape"
+                android:backgroundTint="@color/white"
+                android:elevation="10dp"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/img_user_pfp"
+                app:layout_constraintEnd_toEndOf="@+id/img_user_pfp"
+                app:srcCompat="@drawable/ic_baseline_add_a_photo_18" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

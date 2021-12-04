@@ -147,8 +147,14 @@ class MyAccountFragment : Fragment() {
             .into(img_user_pfp)
 
         // Change profile picture
-        btn_user_change_pfp.setOnClickListener {
+        btn_edit_profile_picture.setOnClickListener {
             galleryCheckPermission()
+        }
+        btn_edit_user.setOnClickListener {
+            csl_profile_edit_container.visibility = View.VISIBLE
+        }
+        btn_end_editting.setOnClickListener {
+            csl_profile_edit_container.visibility = View.GONE
         }
 
         // Setup edit user
