@@ -36,7 +36,7 @@ namespace WebAPI.Services
             fd.Extension = fi.Extension;
             using (StreamReader stream = new StreamReader($"{path}\\{folder}\\{fi.Name}"))
             {
-                fd.Content = System.Text.Encoding.UTF8.GetBytes(stream.ReadToEnd());
+                fd.Content = stream.ReadToEnd();
             }
             return fd;
         }
@@ -46,7 +46,8 @@ namespace WebAPI.Services
             Directory.CreateDirectory($"{path}\\{folder}");
             using (FileStream stream = new FileStream($"{path}\\{folder}\\{file.Name}", FileMode.Create, FileAccess.Write))
             {
-                stream.Write(file.Content, 0, file.Content.Length);
+                var content = System.Convert.FromBase64String(file.Content);
+                stream.Write(content, 0, content.Length);
             }
         }
 
@@ -90,7 +91,7 @@ namespace WebAPI.Services
 
                 using (StreamReader stream = new StreamReader(path))
                 {
-                    fd.Content = System.Text.Encoding.UTF8.GetBytes(stream.ReadToEnd());
+                    fd.Content = stream.ReadToEnd();
                 }
 
                 files.Add(fd);

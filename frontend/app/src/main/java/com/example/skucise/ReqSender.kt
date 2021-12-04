@@ -115,7 +115,7 @@ open class ReqSender {
             context: Context,
             method : Int,
             url : String,
-            image : String,
+            image : FileData,
             listener: Response.Listener<String>,
             errorListener: Response.ErrorListener?
         ) { sendImage(context, method, url, arrayListOf(image), listener, errorListener) }
@@ -124,7 +124,7 @@ open class ReqSender {
             context: Context,
             method : Int,
             url : String,
-            images : ArrayList<String>,
+            images : ArrayList<FileData>,
             listener: Response.Listener<String>,
             errorListener: Response.ErrorListener?
         ) {
@@ -132,7 +132,7 @@ open class ReqSender {
                 val queue = getRequestQueue(context)
 
                 val jsonArray = JSONArray()
-                for (image in images) jsonArray.put(image)
+                for (image in images) jsonArray.put(FileDataToJson(image))
                 val requestBody = jsonArray.toString()
 
                 val stringRequest: StringRequest = object : StringRequest(

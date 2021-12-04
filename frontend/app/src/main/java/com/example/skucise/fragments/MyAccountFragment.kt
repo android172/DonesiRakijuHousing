@@ -18,10 +18,9 @@ import androidx.annotation.RequiresApi
 import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
-import com.example.skucise.R
-import com.example.skucise.ReqSender
-import com.example.skucise.SessionManager
-import com.example.skucise.User
+import com.example.skucise.*
+import com.example.skucise.Util.Companion.getFileExtension
+import com.example.skucise.Util.Companion.getFileName
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -52,9 +51,13 @@ class MyAccountFragment : Fragment() {
             val uri = result.data?.data
 
             val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
-            val image = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
-//            val imageName = requireActivity().getFileName(uri)
-//            val imageType = requireContext().getFileExtension(uri)
+            val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+
+            val image = FileData(
+                Name = requireContext().getFileName(uri),
+                Extension = requireContext().getFileExtension(uri)!!,
+                Content = contents
+            )
 
             ReqSender.sendImage(
                 requireContext(),
