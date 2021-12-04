@@ -69,7 +69,7 @@ namespace WebAPI.Services
             }
         }
 
-        public void WriteFolder(string folder, List<FileData> files)
+        public void WriteFolder(string folder, IEnumerable<FileData> files)
         {
             Directory.CreateDirectory($"{path}\\{folder}");
             foreach(var file in files)
