@@ -10,8 +10,8 @@ import kotlinx.android.synthetic.main.activity_advert_images.*
 
 class AdvertImagesActivity : AppCompatActivity() {
 
-    var imageNames = ArrayList<String>()
-    var imageUrls = ArrayList<String>()
+    private var imageNames = ArrayList<String>()
+    private var imageUrls = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +31,9 @@ class AdvertImagesActivity : AppCompatActivity() {
                 imageNames = ArrayList()
                 imageUrls = ArrayList()
                 for (i in 0 until response.length()){
-                    val splits = response[i].toString().split("\\")
-                    imageNames.add(splits[splits.size - 1])
-                    val imageName = splits[splits.size - 1]
-                    imageUrls.add("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=$imageName")
+                    val splits = response[i].toString()
+                    imageNames.add(splits)
+                    imageUrls.add("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=$splits")
                 }
                 rcv_advert_images.isNestedScrollingEnabled = false
                 rcv_advert_images.adapter = AdvertImagesAdapter(imageUrls, 2)

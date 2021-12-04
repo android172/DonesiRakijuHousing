@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Route("set_user_image")]
-        public ActionResult SetUserImage([FromBody] IEnumerable<String> image)
+        public ActionResult SetUserImage([FromBody] IEnumerable<FileData> image)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();
@@ -136,10 +136,7 @@ namespace WebAPI.Controllers
                 try
                 {
                     img.DeleteUserImage(currentUserId);
-                    FileData file = new FileData();
-                    file.Name = "newImage.jpeg";
-                    file.Content = image.FirstOrDefault();
-                    file.Extension = ".jpeg";
+                    FileData file = image.FirstOrDefault();
                     img.SetUserImage(currentUserId, file);
                 }
                 catch(Exception e)

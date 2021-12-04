@@ -5,29 +5,21 @@ import android.app.TimePickerDialog
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.example.skucise.*
 import com.example.skucise.R
-import com.example.skucise.activities.NavigationActivity
-import com.example.skucise.adapter.AdvertImagesAdapter
 import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.activity_advert_images.*
 import kotlinx.android.synthetic.main.fragment_advert.*
-import kotlinx.android.synthetic.main.fragment_advert.view.*
-import kotlinx.android.synthetic.main.item_advert_image.view.*
-import kotlinx.android.synthetic.main.item_advert_image2.view.*
 import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -114,7 +106,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 { response ->
                     if (tv_image_counter != null)
                     tv_image_counter.text = response.length().toString()
-                    val firstImageName = response[0].toString().split("\\").last()
+                    val firstImageName = response[0].toString()
                     Glide.with(requireContext())
                         .load("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
                         .centerCrop()
@@ -218,7 +210,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             Request.Method.POST,
             "http://10.0.2.2:5000/api/meeting/arrange_meeting",
             params,
-            { _ ->
+            {
                 tv_advert_page_arrange_meeting_response.text = "Zahtev sastanka je uspešno poslat." +
                         "\nSastanak je predložen za ${time.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM))}"
             },

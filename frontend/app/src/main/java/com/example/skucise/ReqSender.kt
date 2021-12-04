@@ -9,9 +9,13 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
+import org.json.JSONException
+import com.android.volley.VolleyLog
+import com.android.volley.AuthFailureError
+import java.io.UnsupportedEncodingException
 
 
-class ReqSender {
+open class ReqSender {
     companion object {
 
         private val queuedRequests : HashMap<Context, RequestQueue> = HashMap()
@@ -47,11 +51,7 @@ class ReqSender {
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : JsonObjectRequest (
-                method,
-                fullUrl,
-                null,
-                listener,
-                errorListener
+                method, fullUrl, null, listener, errorListener
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -75,10 +75,7 @@ class ReqSender {
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : StringRequest(
-                method,
-                fullUrl,
-                listener,
-                errorListener
+                method, fullUrl, listener, errorListener
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -102,11 +99,7 @@ class ReqSender {
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonArrayRequest(
-                method,
-                fullUrl,
-                null,
-                listener,
-                errorListener
+                method, fullUrl, null, listener, errorListener
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -116,6 +109,63 @@ class ReqSender {
                 }
             }
             queue.add(request)
+        }
+
+        fun sendImage(
+            context: Context,
+            method : Int,
+            url : String,
+            image : FileData,
+            listener: Response.Listener<String>,
+            errorListener: Response.ErrorListener?
+        ) { sendImage(context, method, url, arrayListOf(image), listener, errorListener) }
+
+        fun sendImage(
+            context: Context,
+            method : Int,
+            url : String,
+            images : ArrayList<FileData>,
+            listener: Response.Listener<String>,
+            errorListener: Response.ErrorListener?
+        ) {
+            try {
+                val queue = getRequestQueue(context)
+
+                val jsonArray = JSONArray()
+                for (image in images) jsonArray.put(FileDataToJson(image))
+                val requestBody = jsonArray.toString()
+
+                val stringRequest: StringRequest = object : StringRequest(
+                    method, url, listener, errorListener
+                ) {
+                    override fun getBodyContentType(): String {
+                        return "application/json; charset=utf-8"
+                    }
+
+                    @Throws(AuthFailureError::class)
+                    override fun getBody(): ByteArray? {
+                        return try {
+                            requestBody.toByteArray(charset("utf-8"))
+                        } catch (uee: UnsupportedEncodingException) {
+                            VolleyLog.wtf(
+                                "Unsupported Encoding while trying to get the bytes of %s using %s",
+                                requestBody,
+                                "utf-8"
+                            )
+                            null
+                        }
+                    }
+
+                    override fun getHeaders(): MutableMap<String, String> {
+                        val headers = HashMap<String, String>()
+                        headers["Authorization"] = "Bearer ${SessionManager.token.toString()}"
+                        return headers
+                    }
+                }
+                queue.add(stringRequest)
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
         }
     }
 }

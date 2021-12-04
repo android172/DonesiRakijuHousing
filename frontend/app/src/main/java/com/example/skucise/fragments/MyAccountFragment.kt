@@ -1,22 +1,39 @@
 package com.example.skucise.fragments
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import com.android.volley.Request
 import com.bumptech.glide.Glide
-import com.example.skucise.R
-import com.example.skucise.ReqSender
-import com.example.skucise.User
+import com.bumptech.glide.signature.ObjectKey
+import com.example.skucise.*
+import com.example.skucise.Util.Companion.getFileExtension
+import com.example.skucise.Util.Companion.getFileName
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_my_account.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * A simple [Fragment] subclass.
@@ -26,6 +43,49 @@ import java.time.format.FormatStyle
 class MyAccountFragment : Fragment() {
 
     private var user: User? = null
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    val loadImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri = result.data?.data
+
+            val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
+            val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+
+            val image = FileData(
+                Name = requireContext().getFileName(uri),
+                Extension = requireContext().getFileExtension(uri)!!,
+                Content = contents
+            )
+
+            ReqSender.sendImage(
+                requireContext(),
+                Request.Method.PUT,
+                "http://10.0.2.2:5000/api/image/set_user_image",
+                image,
+                {
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .centerCrop()
+                        .signature(ObjectKey(System.currentTimeMillis().toString()))
+                        .into(img_user_pfp)
+
+                    val accountPfp = requireActivity().btn_account_dd_toggle
+                    accountPfp.clipToOutline = true
+                    if (SessionManager.currentUser != null)
+                        Glide.with(requireContext())
+                            .load(uri)
+                            .centerCrop()
+                            .signature(ObjectKey(System.currentTimeMillis().toString()))
+                            .into(accountPfp)
+                },
+                { error ->
+                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,7 +143,13 @@ class MyAccountFragment : Fragment() {
         Glide.with(this)
             .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${user!!.id}")
             .centerCrop()
+            .signature(ObjectKey(System.currentTimeMillis().toString()))
             .into(img_user_pfp)
+
+        // Change profile picture
+        btn_user_change_pfp.setOnClickListener {
+            galleryCheckPermission()
+        }
 
         // Setup edit user
         val defaultUsername = user!!.username
@@ -147,6 +213,50 @@ class MyAccountFragment : Fragment() {
                 }
             )
         }
+    }
+
+    private fun galleryCheckPermission() {
+        Dexter.withContext(requireContext())
+            .withPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            .withListener(object: PermissionListener {
+                override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
+                    val intent = Intent(Intent.ACTION_PICK)
+                    intent.type = "image/*"
+                    loadImageFromGallery.launch(intent)
+                }
+
+                override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
+                    Toast.makeText(
+                        requireContext(),
+                        "You have denied the storage permission to select image",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    showRotationalDialogForPermission()
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    p0: PermissionRequest?,
+                    p1: PermissionToken?
+                ) {
+                    showRotationalDialogForPermission()
+                }
+
+            }).onSameThread().check()
+    }
+
+    private fun showRotationalDialogForPermission() {
+        AlertDialog.Builder(requireContext())
+            .setMessage("Dozvola za pristup neophodna.")
+            .setPositiveButton("Podešavanja") { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
     }
 
     companion object {

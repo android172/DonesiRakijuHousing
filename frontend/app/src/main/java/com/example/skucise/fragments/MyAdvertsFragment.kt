@@ -5,7 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.Request
 import com.example.skucise.R
+import com.example.skucise.ReqSender
+import com.example.skucise.adapter.AdvertAdapter
+import com.example.skucise.loadAdverts
+import kotlinx.android.synthetic.main.fragment_my_adverts.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,17 +25,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MyAdvertsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val advertAdapter: AdvertAdapter = AdvertAdapter(allFavorites = false)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,23 +36,41 @@ class MyAdvertsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_my_adverts, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        rcv_my_adverts.apply {
+            adapter = advertAdapter
+            layoutManager = LinearLayoutManager(activity)
+        }
+
+        ReqSender.sendRequestArray(
+            this.requireActivity(),
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/advert/get_my_adverts",
+            null,
+            { response ->
+                val myAdverts = loadAdverts(response)
+                advertAdapter.updateAdverts(myAdverts)
+                if(myAdverts.size != 0)
+                    tv_my_adverts_none.visibility = View.INVISIBLE
+            },
+            { error ->
+                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyAdvertsFragment.
+         * @return A new instance of fragment FavoritesFragment.
          */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             MyAdvertsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+                arguments = Bundle().apply {}
             }
     }
 }
