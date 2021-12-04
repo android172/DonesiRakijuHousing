@@ -247,20 +247,22 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("add_advert")]
-        public ActionResult<string> AddAdvert(string advertJson)
+        public ActionResult<uint> AddAdvert(string advertJson)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
             Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
             newAdvert.DateCreated = DateTime.Now;
+            newAdvert.OwnerId = userId;
+            newAdvert.Id = default(uint);
 
             try
             {
                 ctx.Adverts.Add(newAdvert);
                 ctx.SaveChanges();
 
-                return Ok("Advert added.");
+                return newAdvert.Id;
             }
             catch (Exception e)
             {
