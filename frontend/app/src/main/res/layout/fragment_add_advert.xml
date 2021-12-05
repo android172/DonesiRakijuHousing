@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView2"
-        android:layout_width="360dp"
-        android:layout_height="600dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -17,8 +17,10 @@
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="15dp"
+            android:paddingBottom="30dp"
+            android:paddingHorizontal="8dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -105,7 +107,9 @@
                         android:gravity="start|top"
                         android:hint="Opis oglasa:"
                         android:lines="5"
-                        android:maxLines="50" />
+                        android:maxLines="50"
+                        android:nestedScrollingEnabled="true"
+                        android:scrollbars="vertical"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -242,7 +246,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/ti_adress"
                 android:layout_width="match_parent"
-                android:layout_height="27dp"
+                android:layout_height="wrap_content"
                 android:hint="Adresa:" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -434,6 +438,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
