@@ -106,11 +106,13 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 { response ->
                     if (tv_image_counter != null)
                     tv_image_counter.text = response.length().toString()
+
+                    if (response.length() == 0) return@sendRequestArray
+
                     val firstImageName = response[0].toString()
                     Glide.with(requireContext())
                         .load("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
                         .centerCrop()
-
                         .into(imv_advert_page_images)
                 },
                 { error ->
