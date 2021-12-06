@@ -188,9 +188,6 @@ namespace WebAPI.Controllers
 
         private ActionResult TryEditAdvert(uint advertId, Action edit)
         {
-            if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
-
             if (ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault().OwnerId == currentUserId)
             {
                 try
@@ -230,7 +227,7 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Route("add_advert_images")]
-        public ActionResult AddAdvertImages(uint advertId,[FromBody] List<FileData> images)
+        public ActionResult AddAdvertImages(uint advertId,[FromBody] IEnumerable<FileData> images)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
                 return Unauthorized();

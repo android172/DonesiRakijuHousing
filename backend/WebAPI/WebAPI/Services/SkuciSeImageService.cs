@@ -69,7 +69,7 @@ namespace WebAPI.Services
             fs.WriteFile($"{advertPath}\\{advertId}", image);
         }
 
-        public void AddAdvertImages(uint advertId, List<FileData> images)
+        public void AddAdvertImages(uint advertId, IEnumerable<FileData> images)
         {
             fs.WriteFolder($"{advertPath}\\{advertId}", images);
         }
