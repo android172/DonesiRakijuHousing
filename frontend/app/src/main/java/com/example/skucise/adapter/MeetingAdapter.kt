@@ -1,7 +1,8 @@
 package com.example.skucise.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +15,8 @@ import com.example.skucise.Meeting
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import kotlinx.android.synthetic.main.item_meeting_request.view.*
-import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -71,8 +72,9 @@ class MeetingAdapter(
                         "http://10.0.2.2:5000/api/meeting/conclude_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
-                            meetingRequests.drop(position)
-                            notifyItemRemoved(position)
+                            val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
+                            meetingRequests.drop(dropPosition)
+                            notifyItemRemoved(dropPosition)
                         },
                         { error ->
                             Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -87,8 +89,9 @@ class MeetingAdapter(
                         "http://10.0.2.2:5000/api/meeting/delete_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
-                            meetingRequests.drop(position)
-                            notifyItemRemoved(position)
+                            val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
+                            meetingRequests.drop(dropPosition)
+                            notifyItemRemoved(dropPosition)
                         },
                         { error ->
                             Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
@@ -98,25 +101,75 @@ class MeetingAdapter(
 
             }
             else {
+                // Already accepted the meeting
                 if ((currentMeetingRequest.owner && currentMeetingRequest.agreedOwner) ||
                     (!currentMeetingRequest.owner && currentMeetingRequest.agreedVisitor)) {
                     btn_meeting_accept.isEnabled = false
                 }
 
+                // 24h before the meeting cancel and proposed time tweak are disabled
+                if (LocalDateTime.now() > currentMeetingRequest.proposedTime.minusDays(1)) {
+                    btn_meeting_cancel.isEnabled = false
+                    btn_meeting_tweak_time.isEnabled = false
+                }
+
+                // on accept
                 btn_meeting_accept.setOnClickListener {
                     ReqSender.sendRequestString(
                         parentViewGroup!!.context,
                         Request.Method.POST,
                         "http://10.0.2.2:5000/api/meeting/confirm_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
-                        { btn_meeting_accept.isEnabled = false },
+                        {
+                            if (currentMeetingRequest.owner)
+                                currentMeetingRequest.agreedOwner = true
+                            else
+                                currentMeetingRequest.agreedVisitor = true
+                            notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
+                        },
                         { error ->
                             Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
 
-                btn_meeting_tweak_time.setOnClickListener {}
+                // Date Changed
+                btn_meeting_tweak_time.setOnClickListener {
+                    // Callback for when new time is picked
+                    fun changeTime(newTime: LocalDateTime) {
+                        val params: HashMap<String, String> = HashMap()
+                        params["meetingId"] = currentMeetingRequest.id.toString()
+                        params["newTime"] = newTime.toString()
+
+                        ReqSender.sendRequestString(
+                            parentViewGroup!!.context,
+                            Request.Method.POST,
+                            "http://10.0.2.2:5000/api/meeting/edit_meeting_proposal",
+                            params,
+                            {
+                                currentMeetingRequest.proposedTime = newTime
+                                notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
+                            },
+                            { error ->
+                                Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            }
+                        )
+                    }
+
+                    // Call date and time picker
+                    val now = LocalDateTime.now()
+                    val datePickerDialog = DatePickerDialog(parentViewGroup!!.context, {
+                            _, year: Int, month: Int, day: Int ->
+                        TimePickerDialog(parentViewGroup!!.context, {
+                                _, hour: Int, minute: Int ->
+                            changeTime(LocalDateTime.of(year, month + 1, day, hour, minute))
+                        }, now.hour, now.minute, true).show()
+                    }, now.year, now.monthValue - 1, now.dayOfMonth)
+                    val nowZ = now.atZone(ZoneId.systemDefault())
+                    datePickerDialog.datePicker.minDate = nowZ.toInstant().toEpochMilli()
+                    datePickerDialog.datePicker.maxDate = nowZ.plusYears(1).toInstant().toEpochMilli()
+                    datePickerDialog.show()
+                }
 
                 btn_meeting_cancel.setOnClickListener {
                     ReqSender.sendRequestString(
@@ -125,8 +178,9 @@ class MeetingAdapter(
                         "http://10.0.2.2:5000/api/meeting/cancel_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
-                            meetingRequests.drop(position)
-                            notifyItemRemoved(position)
+                            val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
+                            meetingRequests.drop(dropPosition)
+                            notifyItemRemoved(dropPosition)
                         },
                         { error ->
                             Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()

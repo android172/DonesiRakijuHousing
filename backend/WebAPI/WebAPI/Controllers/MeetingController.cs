@@ -129,7 +129,7 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
-            if (DateTime.Now <= result.Time.AddDays(-1))
+            if (DateTime.Now >= result.Time.AddDays(-1))
                 return BadRequest("You can not edit meeting on the day of it.");
 
             //if (result.AgreedOwner == true && result.AgreedVisitor == true)
