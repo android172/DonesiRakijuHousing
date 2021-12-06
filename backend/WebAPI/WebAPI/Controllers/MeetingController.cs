@@ -129,8 +129,11 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist.");
 
-            if (result.AgreedOwner == true && result.AgreedVisitor == true)
-                return BadRequest("Meeting time is already agreed upon.");
+            if (DateTime.Now <= result.Time.AddDays(-1))
+                return BadRequest("You can not edit meeting on the day of it.");
+
+            //if (result.AgreedOwner == true && result.AgreedVisitor == true)
+            //    return BadRequest("Meeting time is already agreed upon.");
 
             if (result.Concluded == true)
                 return BadRequest("Meeting has already been concluded.");
@@ -173,7 +176,7 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Meeting does not exist or it has been concluded.");
 
-            if (result.m.Time.Date == DateTime.Now.Date)
+            if (DateTime.Now <= result.m.Time.AddDays(-1))
                 return BadRequest("You can not cancel meeting on the day of it.");
 
             if (result.m.VisitorId != userId && result.OwnerId != userId)
