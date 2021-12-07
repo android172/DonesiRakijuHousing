@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
                 string token = jwtHelper.CreateToken(user);
                 JwtHelper.AddActiveToken(user.Id, token);
 
-                return Ok(new { Token = token, UserId =  user.Id});
+                return Ok(new { Token = token, UserId =  user.Id, Username = user.Username});
             }
 
             return NotFound("User does not exist.");
