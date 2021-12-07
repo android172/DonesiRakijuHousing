@@ -214,6 +214,12 @@ class MyAccountFragment : Fragment() {
                 "http://10.0.2.2:5000/api/users/change_user_info",
                 params,
                 {
+                    if (et_user_username.isEnabled) {
+                        val newUsername = et_user_username.text.toString()
+                        SessionManager.changeUsername(newUsername)
+                        requireActivity().tv_account_dd_username.text = newUsername
+                    }
+
                     et_user_username.isEnabled = false
                     et_user_firstname.isEnabled = false
                     et_user_lastname.isEnabled = false

@@ -45,6 +45,11 @@ class SessionManager {
             currentUser = user
         }
 
+        fun changeUsername(username: String) {
+            if (currentUser != null)
+                currentUser = User(id = currentUser!!.id, username = username)
+        }
+
         fun isActive() : Boolean {
             return token == null
         }
