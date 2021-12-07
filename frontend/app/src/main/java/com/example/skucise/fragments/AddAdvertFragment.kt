@@ -1,5 +1,6 @@
 package com.example.skucise.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
@@ -8,27 +9,21 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.text.method.ScrollingMovementMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
-import com.bumptech.glide.Glide
-import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
 import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
 import com.example.skucise.adapter.AddAdvertImagesAdapter
 import com.example.skucise.fragments.SearchFragment.Companion.allCities
-import com.google.android.gms.common.util.JsonUtils
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -38,17 +33,11 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_add_advert.*
 import kotlinx.android.synthetic.main.fragment_my_account.*
-import org.json.JSONException
 import org.json.JSONObject
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -148,9 +137,10 @@ class AddAdvertFragment : Fragment() {
         val structureTypeArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_add_advert, StructureType.values())
         atv_structure_type.setAdapter(structureTypeArrayAdapter)
 
-        val cities = allCities!!
-        val cityArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_add_advert, cities)
-        atv_city.setAdapter(cityArrayAdapter)
+        if (allCities != null) {
+            val cityArrayAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown_add_advert, allCities!!)
+            atv_city.setAdapter(cityArrayAdapter)
+        }
 
         rcv_advert_images.adapter = AddAdvertImagesAdapter(imageURIs)
     }
@@ -163,10 +153,11 @@ class AddAdvertFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add_advert, container, false)
     }
 
-    fun makeError(text : String){
-        Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
+    private fun makeError(text : String){
+        Toast.makeText(requireContext(), text, Toast.LENGTH_LONG).show()
     }
 
+    @SuppressLint("InflateParams")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -174,7 +165,8 @@ class AddAdvertFragment : Fragment() {
         atv_residence_type.setText(ResidenceType.values()[0].toString())
         atv_sale_type.setText(SaleType.values()[0].toString())
         atv_structure_type.setText(StructureType.values()[0].toString())
-        atv_city.setText(allCities!![0].toString())
+        if (allCities != null)
+            atv_city.setText(allCities!![0])
 
         btn_add_image.setOnClickListener {
             galleryCheckPermission()
@@ -218,6 +210,17 @@ class AddAdvertFragment : Fragment() {
                 return@setOnClickListener
             }
 
+
+            // all is right send request
+            // start a dialog to prevent the user from further interaction
+            val loadingDialog = AlertDialog
+                .Builder(requireContext())
+                .setView(requireActivity().layoutInflater.inflate(R.layout.dialog_loading, null))
+                .setCancelable(false)
+                .create()
+            loadingDialog.show()
+
+            // send request
             val js = JSONObject()
             js.put("ResidenceType", residenceType)
             js.put("StructureType", structureType )
@@ -252,7 +255,7 @@ class AddAdvertFragment : Fragment() {
                     val images = ArrayList<FileData>()
 
                     for(uri in imageURIs){
-                        val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
+                        val inputStream = requireActivity().contentResolver.openInputStream(uri)
                         val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
 
                         val image = FileData(
@@ -283,13 +286,16 @@ class AddAdvertFragment : Fragment() {
                             val args = Bundle()
                             args.putInt("advertId", advertId.toInt())
                             findNavController().navigate(R.id.advertFragment, args)
+                            loadingDialog.dismiss()
                         },
                         { error ->
+                            loadingDialog.dismiss()
                             Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()
                         }
                     )
                 },
                 errorListener = { error ->
+                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), "textError:\n$error", Toast.LENGTH_LONG).show()
                 },
                 authorization = true
