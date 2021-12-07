@@ -50,6 +50,11 @@
         android:label="fragment_add_advert"
         tools:layout="@layout/fragment_add_advert" />
     <fragment
+        android:id="@+id/chatWithUserFragment"
+        android:name="com.example.skucise.ChatWithUserFragment"
+        android:label="fragment_chat_with_user"
+        tools:layout="@layout/fragment_chat_with_user" />
+    <fragment
         android:id="@+id/editAdvertFragment"
         android:name="com.example.skucise.fragments.EditAdvertFragment"
         android:label="fragment_edit_advert"

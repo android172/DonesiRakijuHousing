@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/frontPageFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="Home"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/ic_search"
-        android:title="Search" />
+        android:title="Search"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/favoritesFragment"
         android:icon="@drawable/ic_favorites"
-        android:title="Favorites" />
+        android:title="Favorites"
+        app:showAsAction="always" />
     <item
         android:id="@+id/chatFragment"
+        android:title="Chat"
         android:icon="@drawable/ic_chat"
-        android:title="Chat" />
+        app:showAsAction="always"/>
 </menu>
