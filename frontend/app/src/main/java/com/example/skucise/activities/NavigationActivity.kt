@@ -26,6 +26,7 @@ class NavigationActivity : AppCompatActivity() {
 
         // Stop navigation menu from reloading same fragment
         nav_bottom_navigator.setOnItemReselectedListener {}
+        tv_account_dd_username.text = SessionManager.currentUser!!.username
 
         // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {

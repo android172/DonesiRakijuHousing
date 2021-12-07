@@ -66,8 +66,8 @@
 
                     <TextView
                         android:id="@+id/tv_sell_real_estate"
-                        android:layout_width="165dp"
-                        android:layout_height="55dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Prodaja nekretnina"
                         android:textAlignment="center"
                         android:textSize="24sp"
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textAlignment="center"
-                        android:text="Postavite vaš oglas ovde!"
+                        android:text="Postavite vaš oglas ovde! "
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -114,8 +114,8 @@
 
                     <TextView
                         android:id="@+id/tv_buy_real_estate"
-                        android:layout_width="195dp"
-                        android:layout_height="65dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Kupovina nekretnina"
                         android:textAlignment="center"
                         android:textSize="24sp"
@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textAlignment="center"
-                        android:text="Brza pretraga svih nekretnina na prodaju."
+                        android:text="Skući se i kupite sebi stan/kuću. Izaberite željenu kvadraturu i strukturu, grad koji vas interesuje i odredite svoj budžet uz pomoć naprednih filtera."
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -162,8 +162,8 @@
 
                     <TextView
                         android:id="@+id/tv_rent_real_estate"
-                        android:layout_width="206dp"
-                        android:layout_height="69dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Iznajmljivanje nekretnina"
                         android:textAlignment="center"
                         android:textSize="24sp"
@@ -177,7 +177,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textAlignment="center"
-                        android:text="Brza pretraga svih nekretnina koje se iznamljuju."
+                        android:text="Pretraga svih nekretnina koje se iznajmljuju. Izaberite željenu kvadraturu i strukturu, grad koji vas interesuje i odredite svoj budžet uz pomoć naprednih filtera."
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +238,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Brza pretraga oglasa po gradovima."
+                android:text="Brza pretraga oglasa po gradovima. Dodatno suzite vaš izbor uz pomoć naprednih filtera"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

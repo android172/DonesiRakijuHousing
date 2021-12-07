@@ -37,6 +37,8 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="6dp"
         android:background="@drawable/drop_down_nav_shape"
+        android:backgroundTint="@color/logo_color"
+        android:elevation="10dp"
         android:padding="4dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +51,7 @@
             android:gravity="center_vertical"
             android:paddingStart="10dp"
             android:text="Username"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -56,6 +59,7 @@
             android:id="@+id/rcv_dd_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_account_dd_username" />
@@ -69,6 +73,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/circle"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
