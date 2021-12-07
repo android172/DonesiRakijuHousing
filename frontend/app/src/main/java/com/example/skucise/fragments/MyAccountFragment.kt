@@ -138,6 +138,15 @@ class MyAccountFragment : Fragment() {
         et_user_date_created.setText(user!!.creationDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)))
         et_user_email.setText(user!!.email)
 
+        tv_profile_username.text = user!!.username
+        val fullname = user!!.firstname + " " + user!!.lastname
+        tv_profile_name.text = fullname
+        tv_profile_email.text = user!!.email
+        val date = "" + user!!.creationDate.dayOfMonth + "." + user!!.creationDate.monthValue + "." + user!!.creationDate.year
+        tv_profile_date.text = date
+        tv_profile_number_adverts.text = user!!.numberOfAdverts.toString()
+        tv_average_rating.text = user!!.averageRating
+
         // Update profile picture
         img_user_pfp.clipToOutline = true
         Glide.with(this)
@@ -153,7 +162,7 @@ class MyAccountFragment : Fragment() {
         btn_edit_user.setOnClickListener {
             csl_profile_edit_container.visibility = View.VISIBLE
         }
-        btn_end_editting.setOnClickListener {
+        btn_end_editing.setOnClickListener {
             csl_profile_edit_container.visibility = View.GONE
         }
 
