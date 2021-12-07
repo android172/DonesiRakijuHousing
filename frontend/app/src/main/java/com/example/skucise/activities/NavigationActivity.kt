@@ -53,26 +53,31 @@ class NavigationActivity : AppCompatActivity() {
             "Moj nalog"
         ) {
             navigateToOutsideFragment(R.id.myAccountFragment)
+            drop_down_account.visibility = View.GONE
         })
         dropdownOptions.add(DropdownOption(
             "Moji oglasi"
         ) {
             navigateToOutsideFragment(R.id.myAdvertsFragment)
+            drop_down_account.visibility = View.GONE
         })
         dropdownOptions.add(DropdownOption(
             "Označeni oglasi"
         ) {
             nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[2].itemId
+            drop_down_account.visibility = View.GONE
         })
         dropdownOptions.add(DropdownOption(
             "Poruke"
         ) {
             nav_bottom_navigator.selectedItemId = nav_bottom_navigator.menu[3].itemId
+            drop_down_account.visibility = View.GONE
         })
         dropdownOptions.add(DropdownOption(
             "Kalendar"
         ) {
             navigateToOutsideFragment(R.id.calendarFragment)
+            drop_down_account.visibility = View.GONE
         })
         dropdownOptions.add(DropdownOption(
             "Odjavi se"
