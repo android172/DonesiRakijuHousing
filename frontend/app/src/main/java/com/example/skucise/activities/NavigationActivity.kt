@@ -3,12 +3,14 @@ package com.example.skucise.activities
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
@@ -16,7 +18,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
 import com.example.skucise.adapter.AccountDropdownAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.item_messages_with_alert.*
 
 class NavigationActivity : AppCompatActivity() {
 
@@ -105,12 +110,58 @@ class NavigationActivity : AppCompatActivity() {
         val accountDropdownAdapter = AccountDropdownAdapter(dropdownOptions)
         rcv_dd_options.adapter = accountDropdownAdapter
         rcv_dd_options.layoutManager = LinearLayoutManager(this)
+
+        // Add badge to chat menu item
+        val bottomNavigationMenuView =
+            nav_bottom_navigator.getChildAt(0) as BottomNavigationMenuView
+        val view = bottomNavigationMenuView.getChildAt(3)
+        val itemView = view as BottomNavigationItemView
+        val chatBadge: View = LayoutInflater.from(this)
+            .inflate(
+                R.layout.item_messages_with_alert,
+                bottomNavigationMenuView, false
+            )
+        itemView.addView(chatBadge)
+
     }
 
     override fun onStart() {
         super.onStart()
-        nav_bottom_navigator.setupWithNavController(findNavController(R.id.frc_page_body))
+        val navController = findNavController(R.id.frc_page_body)
+        nav_bottom_navigator.setupWithNavController(navController)
+
+        getAlerts()
+        nav_bottom_navigator.setOnItemSelectedListener { item ->
+            if(item.itemId == R.id.chatFragment){
+                message_alert.visibility = View.GONE
+            }else
+            {
+                getAlerts()
+            }
+            NavigationUI.onNavDestinationSelected(item, navController)
+        }
     }
+
+    fun getAlerts(){
+        ReqSender.sendRequestString(
+            this,
+            Request.Method.POST,
+            "http://10.0.2.2:5000/api/message/check_messages",
+            null,
+            { response ->
+                //Toast.makeText(this, "response: $response", Toast.LENGTH_LONG).show()
+                tv_alert_count.text = response
+                if(response == "0")
+                    message_alert.visibility = View.GONE
+                else
+                    message_alert.visibility = View.VISIBLE
+            },
+            { error ->
+                Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
+            }
+        )
+    }
+
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (drop_down_account.visibility != View.GONE) {
