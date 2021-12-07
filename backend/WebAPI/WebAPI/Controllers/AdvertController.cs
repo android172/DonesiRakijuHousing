@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var adverts = ctx.Adverts.OrderBy(ad => ad.DateCreated).Take((int)numOfAdverts).Select(Listing.AdListing);
+            var adverts = ctx.Adverts.OrderByDescending(ad => ad.DateCreated).Take((int)numOfAdverts).Select(Listing.AdListing);
 
             return adverts.ToList();
 

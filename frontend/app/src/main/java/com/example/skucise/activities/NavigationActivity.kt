@@ -142,7 +142,7 @@ class NavigationActivity : AppCompatActivity() {
         }
     }
 
-    fun getAlerts(){
+    private fun getAlerts(){
         ReqSender.sendRequestString(
             this,
             Request.Method.POST,

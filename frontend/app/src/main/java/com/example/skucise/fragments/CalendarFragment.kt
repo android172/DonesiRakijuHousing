@@ -1,7 +1,6 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -50,7 +49,7 @@ import kotlin.collections.ArrayList
 
 data class Event(val username: String, val title: String, val time: LocalDateTime)
 
-class EventsAdapter() : RecyclerView.Adapter<EventsAdapter.EventsViewHolder>() {
+class EventsAdapter : RecyclerView.Adapter<EventsAdapter.EventsViewHolder>() {
 
     val events = mutableListOf<Event>()
 
@@ -141,6 +140,7 @@ class CalendarFragment : Fragment() {
 
                 textView.text = day.date.dayOfMonth.toString()
 
+                textView.background = null
                 if (day.owner == DayOwner.THIS_MONTH) {
                     textView.setTextColor(resources.getColor(R.color.black))
                     dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
@@ -150,9 +150,6 @@ class CalendarFragment : Fragment() {
                         }
                         selectedDate -> {
                             textView.setBackgroundResource(R.drawable.bg_calendar_selected)
-                        }
-                        else -> {
-                            textView.background = null
                         }
                     }
                 } else {
@@ -221,9 +218,10 @@ class CalendarFragment : Fragment() {
                         title = meetingRequest.title,
                         time = meetingRequest.proposedTime
                     ))
-                    updateAdapterForDate(eventDate)
                 }
                 meetingRequestAdapter.updateMeetings(meetingRequests)
+                if (selectedDate != null) updateAdapterForDate(selectedDate!!)
+                calv_calendar_page.notifyCalendarChanged()
             },
             { error ->
                 Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
