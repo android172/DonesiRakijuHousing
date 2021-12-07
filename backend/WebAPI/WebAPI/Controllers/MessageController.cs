@@ -44,12 +44,18 @@ namespace WebAPI.Controllers
                 .Where(m => otherUsersWithLatestMessageDate.Any(o => o.OtherUserId == m.OtherUserId && m.Message.SendDate == o.MaxDate))
                 .Select(w => new { w.OtherUserId, w.Message });
 
-            return otherUsersWithLatestMessage.ToList();
+            List<object> rms = new List<object>();
+            foreach(var rm in otherUsersWithLatestMessage)
+            {
+                rms.Add(new { User = GetUserDisplay(rm.OtherUserId), Message = rm.Message });
+            }
+
+            return rms;
         }
 
         [HttpPost]
         [Route("get_chat")]
-        public ActionResult<IEnumerable<object>> GetChat(uint otherUserId)
+        public ActionResult<IEnumerable<Message>> GetChat(uint otherUserId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
@@ -84,13 +90,11 @@ namespace WebAPI.Controllers
 
             var hasMeeting = ctx.Meetings
                 .Where(m => m.AgreedOwner && m.AgreedVisitor
-                && ((m.VisitorId == otherUserId 
-                    && ctx.Adverts.Find(m.AdvertId).OwnerId == userId)
-                    || ((m.VisitorId == userId 
-                        && ctx.Adverts.Find(m.AdvertId).OwnerId == otherUserId))));
+                && ((m.VisitorId == otherUserId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == userId)
+                    || ((m.VisitorId == userId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == otherUserId))));
 
             if (!hasMeeting.Any())
-                return BadRequest("You must have an arranged meeting before you are able to chat with the recepient!");
+                return BadRequest("You must have an arranged meeting before you are able to chat with the recipient!");
 
             Message msg = new Message { SenderId = userId, ReceiverId = otherUserId, Content = content, Seen = false, SendDate = DateTime.Now };
 
@@ -109,30 +113,33 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("check_messages")]
-        public ActionResult<bool> CheckMessages()
+        public ActionResult<int> CheckMessages()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            var exists = ctx.Messages.Where(m => m.ReceiverId == userId && m.Seen == false).FirstOrDefault();
-            if (exists != null)
-                return true;
-            else 
-                return false;
+            return ctx.Messages.Where(m => m.ReceiverId == userId && m.Seen == false).Count();
         }
 
         [HttpPost]
         [Route("get_user_status")]
-        public ActionResult<object> GetUserInfo(uint otherUserId)
+        public ActionResult<UserDisplay> GetUserInfo(uint otherUserId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
-            User user = ctx.Users.Find(otherUserId);
+            return GetUserDisplay(otherUserId);
+        }
 
-            bool online = JwtHelper.CheckActiveToken(otherUserId) != null;
+        public UserDisplay GetUserDisplay(uint id)
+        {
+            UserDisplay display = new UserDisplay();
+            display.Id = id;
+            display.Online = JwtHelper.CheckActiveToken(id) != null;
+            User user = ctx.Users.Find(id);
+            display.DisplayName = (user.FirstName + " " + user.LastName).Trim();
 
-            return new { user.Username, Online = online };
+            return display;
         }
     }
 }
