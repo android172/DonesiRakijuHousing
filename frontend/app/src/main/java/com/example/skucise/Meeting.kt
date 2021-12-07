@@ -8,10 +8,10 @@ data class Meeting(
     val otherUser: Int,
     val username: String,
     val title: String,
-    val proposedTime: LocalDateTime,
+    var proposedTime: LocalDateTime,
     val dateCreated: LocalDateTime,
-    val agreedVisitor: Boolean,
-    val agreedOwner: Boolean,
+    var agreedVisitor: Boolean,
+    var agreedOwner: Boolean,
     val concluded: Boolean,
     val owner: Boolean
 )

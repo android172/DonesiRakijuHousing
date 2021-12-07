@@ -1,11 +1,13 @@
 package com.example.skucise.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.skucise.DropdownOption
 import com.example.skucise.R
+import kotlinx.android.synthetic.main.activity_navigation.view.*
 import kotlinx.android.synthetic.main.item_account_dropdown.view.*
 
 class AccountDropdownAdapter(private val options: List<DropdownOption>)
@@ -27,6 +29,7 @@ class AccountDropdownAdapter(private val options: List<DropdownOption>)
         val currentOption = options[position]
         holder.itemView.apply {
             btn_account_dd_option.text = currentOption.name
+            btn_account_dd_option.setTextColor(getResources().getColor(R.color.white))
             btn_account_dd_option.setOnClickListener(currentOption.action)
         }
     }

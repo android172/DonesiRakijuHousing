@@ -54,4 +54,9 @@
         android:name="com.example.skucise.ChatWithUserFragment"
         android:label="fragment_chat_with_user"
         tools:layout="@layout/fragment_chat_with_user" />
+    <fragment
+        android:id="@+id/editAdvertFragment"
+        android:name="com.example.skucise.fragments.EditAdvertFragment"
+        android:label="fragment_edit_advert"
+        tools:layout="@layout/fragment_edit_advert" />
 </navigation>

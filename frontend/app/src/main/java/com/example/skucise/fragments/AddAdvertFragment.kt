@@ -8,14 +8,18 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.method.ScrollingMovementMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
@@ -268,7 +272,17 @@ class AddAdvertFragment : Fragment() {
                         {
                             Toast.makeText(requireContext(), "response:\n$response", Toast.LENGTH_LONG).show()
 
-                            //TODO show success popup and redirect
+                            val navigationView = requireActivity().nav_bottom_navigator
+
+                            navigationView!!.menu.setGroupCheckable(0, true, false)
+                            for (i in 0 until navigationView.menu.size()) {
+                                navigationView.menu.getItem(i).isChecked = false
+                            }
+                            navigationView.menu.setGroupCheckable(0, true, true)
+
+                            val args = Bundle()
+                            args.putInt("advertId", advertId.toInt())
+                            findNavController().navigate(R.id.advertFragment, args)
                         },
                         { error ->
                             Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()

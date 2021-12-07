@@ -36,6 +36,7 @@ private const val ARG_PARAM1 = "advertId"
  * Use the [AdvertFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@SuppressLint("SetTextI18n")
 class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
@@ -155,14 +156,16 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         updateAdvertInfo()
 
         // Meeting arrangement
+        val calender = Calendar.getInstance()
+        calv_advert_page_calender.minDate = calender.timeInMillis
+        calv_advert_page_calender.firstDayOfWeek = 2
         calv_advert_page_calender.setOnDateChangeListener { calendarView, year, month, day ->
             calendarView.date = System.currentTimeMillis()
 
             selectedYear = year
-            selectedMonth = month
+            selectedMonth = month + 1
             selectedDay = day
 
-            val calender = Calendar.getInstance()
             val hour = calender.get(Calendar.HOUR)
             val minute = calender.get(Calendar.MINUTE)
 
