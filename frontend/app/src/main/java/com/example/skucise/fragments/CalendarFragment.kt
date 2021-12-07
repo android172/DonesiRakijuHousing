@@ -144,6 +144,8 @@ class CalendarFragment : Fragment() {
                 if (day.owner == DayOwner.THIS_MONTH) {
                     textView.setTextColor(resources.getColor(R.color.black))
                     dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
+                    if (dotView.isVisible && day.date < LocalDate.now())
+                        dotView.setBackgroundColor(resources.getColor(R.color.red))
                     when (day.date) {
                         today -> {
                             textView.setBackgroundResource(R.drawable.bg_calender_today)
