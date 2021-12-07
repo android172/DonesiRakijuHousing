@@ -64,6 +64,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
+                    <ImageView
+                        android:id="@+id/image_prodaja"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/skucise_logo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
                     <TextView
                         android:id="@+id/tv_sell_real_estate"
                         android:layout_width="wrap_content"
@@ -73,7 +83,7 @@
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/image_prodaja" />
 
                     <TextView
                         android:id="@+id/tv_sell_real_estate_flavor_text"
@@ -112,6 +122,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/sell_category_layout">
 
+                    <ImageView
+                        android:id="@+id/image_kupovina"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/skucise_logo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
                     <TextView
                         android:id="@+id/tv_buy_real_estate"
                         android:layout_width="wrap_content"
@@ -121,7 +141,7 @@
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/image_kupovina" />
 
                     <TextView
                         android:id="@+id/tv_buy_real_estate_flavor_text"
@@ -160,6 +180,16 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/buy_category_layout">
 
+                    <ImageView
+                        android:id="@+id/image_iznajmi"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/skucise_logo"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        />
+
                     <TextView
                         android:id="@+id/tv_rent_real_estate"
                         android:layout_width="wrap_content"
@@ -169,7 +199,7 @@
                         android:textSize="24sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@id/image_iznajmi" />
 
                     <TextView
                         android:id="@+id/tv_rent_real_estate_flavor_text"

@@ -37,6 +37,11 @@ namespace WebAPI.Controllers
             if (JwtHelper.TokenUnverified(userId, Request))
                 return Unauthorized();
 
+            var result1 = ctx.Adverts.Where(ad => ad.Id == advertId && ad.OwnerId != userId).FirstOrDefault();
+
+            if (result1 == null)
+                return NotFound("Not able to arrange meeting for this advert because it doesn't exist or you are an owner of it.");
+
             if (DateTime.Now >= time)
                 return BadRequest("You can not set a date that has passed.");
 
