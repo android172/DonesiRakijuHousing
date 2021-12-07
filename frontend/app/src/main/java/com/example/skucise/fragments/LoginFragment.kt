@@ -47,7 +47,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     try {
                         val token = response.getString("token")
                         val id = response.getInt("userId")
-                        SessionManager.startSession(token, User(id = id))
+                        val username = response.getString("username")
+                        SessionManager.startSession(token, User(id = id, username = username))
 
                         startActivity(Intent(this.activity, NavigationActivity::class.java))
                         this.activity?.finish()

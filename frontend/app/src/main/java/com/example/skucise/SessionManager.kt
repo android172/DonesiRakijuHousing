@@ -9,14 +9,14 @@ class SessionManager {
         var currentUser: User?
             get() {
                 if (sharedPreferences == null) throw Exception("ERROR :: SessionManager:: Session not loaded!!")
-                val id = sharedPreferences!!.getInt("id", 0)
-                if (id == 0) return null
-                return User(id = id)
+                val userString = sharedPreferences!!.getString("User", "Username:0")?.split(":")
+                return User(id = userString!![1].toInt(), userString[0])
             }
             private set(value) {
                 if (sharedPreferences == null) throw Exception("ERROR :: SessionManager:: Session not loaded!!")
                 sharedPreferences!!.edit().apply {
-                    putInt("id", value?.id ?: 0)
+                    val userString = "${value?.username?:"Username"}:${value?.id?:0}"
+                    putString("User", userString)
                     apply()
                 }
             }

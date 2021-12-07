@@ -31,7 +31,6 @@ class NavigationActivity : AppCompatActivity() {
 
         // Stop navigation menu from reloading same fragment
         nav_bottom_navigator.setOnItemReselectedListener {}
-        tv_account_dd_username.text = SessionManager.currentUser!!.username
 
         // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {
@@ -46,6 +45,8 @@ class NavigationActivity : AppCompatActivity() {
         // set account image
         btn_account_dd_toggle.clipToOutline = true
         if (SessionManager.currentUser != null)
+            tv_account_dd_username.text = SessionManager.currentUser!!.username
+            tv_account_dd_username.visibility = View.VISIBLE
             Glide.with(this)
                 .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
                 .centerCrop()
