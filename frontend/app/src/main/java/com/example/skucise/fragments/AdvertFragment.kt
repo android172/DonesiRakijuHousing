@@ -88,6 +88,9 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     if (averageScore == "Not rated.") averageScore = "Bez ocena"
                     canLeaveReview = response.getBoolean("canLeaveReview")
 
+                    if(canLeaveReview)
+                        LoadReviewWriter()
+
                     if (tv_advert_page_sale_type != null)
                         updateAdvertInfo()
 
@@ -172,29 +175,6 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             TimePickerDialog(requireContext(), this, hour, minute, true).show()
         }
 
-        // send review
-        btn_advert_page_submit_review.setOnClickListener {
-            val rating = rbr_advert_page_review.progress
-            val comment = et_advert_page_review_text.text.toString()
-
-            val params = HashMap<String, String>()
-            params["advertId"] = advert!!.id.toString()
-            params["rating"] = rating.toString()
-            params["text"] = comment
-
-            ReqSender.sendRequestString(
-                requireContext(),
-                Request.Method.POST,
-                "http://10.0.2.2:5000/api/review/post_review",
-                params,
-                { response ->
-                    Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()
-                },
-                { error ->
-                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
-                }
-            )
-        }
     }
 
     @SuppressLint("NewApi")
@@ -331,6 +311,35 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
             }
         )
+    }
+
+    private fun LoadReviewWriter()
+    {
+        cl_post_review.visibility = View.VISIBLE
+
+        // send review
+        btn_advert_page_submit_review.setOnClickListener {
+            val rating = rbr_advert_page_review.progress
+            val comment = et_advert_page_review_text.text.toString()
+
+            val params = HashMap<String, String>()
+            params["advertId"] = advert!!.id.toString()
+            params["rating"] = rating.toString()
+            params["text"] = comment
+
+            ReqSender.sendRequestString(
+                requireContext(),
+                Request.Method.POST,
+                "http://10.0.2.2:5000/api/review/post_review",
+                params,
+                { response ->
+                    Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()
+                },
+                { error ->
+                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
+        }
     }
 
     companion object {

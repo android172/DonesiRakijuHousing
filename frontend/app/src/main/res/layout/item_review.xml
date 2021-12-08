@@ -14,7 +14,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_review_comment"
-        app:layout_constraintEnd_toStartOf="@+id/tv_review_rating"
+        app:layout_constraintEnd_toStartOf="@+id/rbr_advert_page_review"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,12 +25,27 @@
         android:text="4"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/tv_review_comment"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rbr_advert_page_review"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <RatingBar
+        android:id="@+id/rbr_advert_page_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:progress="1"
+        android:progressTint="#FFFAD02C"
+        style="?android:attr/ratingBarStyleSmall"
+        app:layout_constraintEnd_toStartOf="@id/tv_review_rating"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_review_from"
+        app:layout_constraintBottom_toTopOf="@id/rbr_advert_page_review"
+        />
 
     <TextView
         android:id="@+id/tv_review_comment"
-        android:layout_width="200dp"
+        android:layout_width="280dp"
         android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

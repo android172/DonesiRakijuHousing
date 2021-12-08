@@ -32,7 +32,7 @@
 
             <TextView
                 android:id="@+id/tiles_title2"
-                android:layout_width="250dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
@@ -66,9 +66,9 @@
 
                     <ImageView
                         android:id="@+id/image_prodaja"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:src="@drawable/skucise_logo"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/sold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -124,9 +124,9 @@
 
                     <ImageView
                         android:id="@+id/image_kupovina"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:src="@drawable/skucise_logo"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/sale"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -182,9 +182,9 @@
 
                     <ImageView
                         android:id="@+id/image_iznajmi"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:src="@drawable/skucise_logo"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@drawable/rent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

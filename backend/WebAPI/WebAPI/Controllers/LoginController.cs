@@ -49,18 +49,15 @@ namespace WebAPI.Controllers
             if (String.IsNullOrWhiteSpace(usernameOrEmail) || String.IsNullOrWhiteSpace(password))
                 return BadRequest("Username or password is blank or empty.");
 
-            if (usernameOrEmail.Equals("debug"))        // DEBUG
-            {
-                User user = new User { Username = "Debug" };
-                string token = jwtHelper.CreateToken(user);
-                return Ok(new { token });
-            }       ///////////////
-
             var exists = ctx.Users.Where(u => (u.Username == usernameOrEmail || u.Email == usernameOrEmail) && u.Password == password);
 
             if (exists.Any())
             {
                 User user = exists.FirstOrDefault();
+
+                if (user.Confirmed == false)
+                    return BadRequest("Your email is not confirmed.");
+
                 string token = jwtHelper.CreateToken(user);
                 JwtHelper.AddActiveToken(user.Id, token);
 

@@ -96,7 +96,7 @@ namespace WebAPI.Controllers
 
             return ctx.Meetings.Where(m => m.AdvertId == advertId)
                     .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => new { m.VisitorId, r })
-                    .Join(ctx.Users, j => j.VisitorId, u => u.Id, (j, u) => new { UserId = u.Id, Username = u.Username, Rating = j.r.Rating, Text = j.r.Text }).ToList();
+                    .Join(ctx.Users, j => j.VisitorId, u => u.Id, (j, u) => new { UserId = u.Id, Username = u.FirstName + " " + u.LastName, Rating = j.r.Rating, Text = j.r.Text }).ToList();
         }
         public static string AverageAdvertRating(SkuciSeDBContext ctx, uint advertId)
         {
@@ -123,7 +123,8 @@ namespace WebAPI.Controllers
 
         public static bool CanLeaveReview(SkuciSeDBContext ctx, uint advertId, uint userId)
         {
-            var result = ctx.Meetings.Where(m => m.VisitorId == userId && m.AdvertId == advertId && m.Concluded == true).FirstOrDefault();
+            var result = ctx.Meetings.Where(m => m.VisitorId == userId && m.AdvertId == advertId 
+                        && m.Concluded == true && !ctx.Reviews.Any(r => r.MeetingId == m.Id)).FirstOrDefault();
 
             if (result != null)
                 return true;

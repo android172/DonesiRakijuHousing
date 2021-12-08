@@ -185,5 +185,26 @@ namespace WebAPI.Controllers
         {
             return ctx.Reviews.ToList();
         }
+
+        [HttpPost]
+        [Route("delete_user")]
+        public ActionResult<string> DeleteUser(string username)
+        {
+            var result = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
+
+            if (result == null)
+                return NotFound("User does not exist.");
+
+            try
+            {
+                ctx.Users.Remove(result);
+                ctx.SaveChanges();
+                return Ok("User deleted.");
+            }
+            catch
+            {
+                return StatusCode(500, "Failed to delete user");
+            }
+        }
     }
 }

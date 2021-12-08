@@ -30,6 +30,7 @@ class ReviewAdapter(
         holder.itemView.apply {
             tv_review_from.text    = currentReview.username
             tv_review_rating.text  = currentReview.rating.toString()
+            rbr_advert_page_review.rating = currentReview.rating.toFloat()
             tv_review_comment.text = currentReview.comment
         }
     }
