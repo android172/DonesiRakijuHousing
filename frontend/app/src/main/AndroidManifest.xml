@@ -47,7 +47,7 @@
             android:name=".activities.NavigationActivity"
             android:exported="true"
             android:theme="@style/Theme.SkuciSe.FrontpageTheme"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
