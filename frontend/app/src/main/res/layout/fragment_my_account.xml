@@ -216,6 +216,7 @@
                 android:background="@drawable/shape_rounded_15_white"
                 android:elevation="10dp"
                 android:padding="8dp"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -251,6 +252,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
+                    android:inputType="text"
                     android:text="Ime"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_firstname"
                     app:layout_constraintStart_toStartOf="parent"
@@ -272,6 +274,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
+                    android:inputType="text"
                     android:text="Prezime"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_lastname"
                     app:layout_constraintStart_toStartOf="parent"
@@ -370,6 +373,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:enabled="false"
+                    android:inputType="textEmailAddress"
                     android:text="E-mail"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -415,7 +419,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_user_edit_mail"
-                    app:srcCompat="@drawable/ic_baseline_check_32" />
+                    app:srcCompat="@drawable/ic_baseline_check_red_32" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
