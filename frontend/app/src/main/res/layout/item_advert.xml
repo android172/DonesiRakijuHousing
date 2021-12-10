@@ -19,11 +19,39 @@
 
     <ImageButton
         android:id="@+id/btn_add_to_favourites"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/transparent"
-        android:src="@drawable/ic_favourites_star_gray_24"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_btn_circle_white"
+        android:elevation="5dp"
+        android:src="@drawable/ic_favourites_star_gray_32"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/vpg_advert_images"
+        app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
+
+    <ImageButton
+        android:id="@+id/btn_delete_my_advert"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_btn_circle_white"
+        android:elevation="5dp"
+        android:src="@drawable/ic_baseline_edit_32"
+        app:layout_constraintEnd_toEndOf="@+id/vpg_advert_images"
+        app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
+
+    <ImageButton
+        android:id="@+id/btn_edit_my_advert"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_btn_circle_white"
+        android:elevation="5dp"
+        android:src="@drawable/ic_baseline_delete_outline_32"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete_my_advert"
         app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
 
     <me.relex.circleindicator.CircleIndicator3

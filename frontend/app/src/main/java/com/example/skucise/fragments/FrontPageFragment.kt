@@ -26,7 +26,7 @@ import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
-    private val advertAdapter: AdvertAdapter = AdvertAdapter()
+    private val advertAdapter: AdvertAdapter = AdvertAdapter(type = 2)
 
     override fun onCreateView(
         inflater: LayoutInflater,
