@@ -13,6 +13,7 @@ namespace WebAPI.Services
         private readonly Random rgen;
         private string from, smtp, pass;
         private int port;
+        private string domain;
 
         private string confirmTemplate, passwordResetTemplate;
 
@@ -46,7 +47,7 @@ namespace WebAPI.Services
             string token = GenerateToken();
             confirmationRequests[token] = new TimedRequest(email, DateTime.Now);
 
-            string confirmationLink = $"http://localhost:5000/link/confirm_email?token={token}";
+            string confirmationLink = $"{domain}/link/confirm_email?token={token}";
 
             const string title = "SkućiSe: Potvrdite vašu e-mail adresu...";
             string body = string.Format(confirmTemplate, confirmationLink, from);
@@ -59,7 +60,7 @@ namespace WebAPI.Services
             string token = GenerateToken();
             resetRequests.Add(token, new TimedRequest(email, DateTime.Now));
 
-            string resetLink = $"http://localhost:5000/link/reset_password?token={token}";
+            string resetLink = $"{domain}/link/reset_password?token={token}";
 
             const string title = "SkućiSe: Zaboravljena lozinka...";
             string body = string.Format(passwordResetTemplate, resetLink, from);
@@ -140,6 +141,7 @@ namespace WebAPI.Services
             smtp = smtpConfig.GetValue(key: "Server", defaultValue: "smtp.gmail.com");
             port = smtpConfig.GetValue<int>(key: "Port", defaultValue: 587);
             pass = smtpConfig.GetValue(key: "Password", defaultValue: "");
+            domain = smtpConfig.GetValue(key: "Domain", defaultValue: @"http://localhost:5000");
 
             var templates = config.GetSection("Templates");
             confirmTemplate = ReadFromFile(templates.GetValue(key: "ConfirmationEmailBody", defaultValue: "err_no_path"));

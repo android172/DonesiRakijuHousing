@@ -121,9 +121,9 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("send_pass_reset_email")]
-        public ActionResult<string> SendPasswordReset(string username)
+        public ActionResult<string> SendPasswordReset(string usernameOrEmail)
         {
-            User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
+            User user = ctx.Users.Where(u => u.Username == usernameOrEmail || u.Email == usernameOrEmail).FirstOrDefault();
 
             if (user == null)
             {
