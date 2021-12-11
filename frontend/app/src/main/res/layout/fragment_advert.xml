@@ -27,13 +27,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageButton
+                android:id="@+id/btn_delete_my_advert_advert_page"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/shape_btn_circle_white"
+                android:elevation="5dp"
+                android:src="@drawable/ic_baseline_edit_32"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/imv_advert_page_images"
+                app:layout_constraintTop_toTopOf="@+id/imv_advert_page_images" />
+
+            <ImageButton
+                android:id="@+id/btn_edit_my_advert_advert_page"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/shape_btn_circle_white"
+                android:elevation="5dp"
+                android:src="@drawable/ic_baseline_delete_outline_32"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete_my_advert_advert_page"
+                app:layout_constraintTop_toTopOf="@+id/imv_advert_page_images" />
 
             <ImageButton
                 android:id="@+id/btn_add_to_favourites_advert_page"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/shape_btn_circle_white"
                 android:elevation="5dp"
                 android:src="@drawable/ic_favourites_star_gray_32"
