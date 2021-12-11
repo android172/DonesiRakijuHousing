@@ -26,7 +26,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class MyAdvertsFragment : Fragment() {
 
-    private val advertAdapter: AdvertAdapter = AdvertAdapter(allFavorites = false, type = 1)
+    private val advertAdapter: AdvertAdapter = AdvertAdapter(allFavorites = false)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
