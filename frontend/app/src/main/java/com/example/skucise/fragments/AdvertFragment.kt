@@ -245,6 +245,21 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
     private fun updateAdvertInfo() {
         if (advert == null) return
 
+        if (SessionManager.currentUser != null && SessionManager.currentUser!!.id.toUInt() == advert?.ownerId){
+            btn_add_to_favourites_advert_page.visibility = View.GONE
+            btn_edit_my_advert_advert_page.visibility = View.VISIBLE
+            btn_delete_my_advert_advert_page.visibility = View.VISIBLE
+
+            //TODO add functionality
+        }
+        else {
+            btn_add_to_favourites_advert_page.visibility = View.VISIBLE
+            btn_edit_my_advert_advert_page.visibility = View.GONE
+            btn_delete_my_advert_advert_page.visibility = View.GONE
+
+            //TODO add functionality
+        }
+
         // Updating text
         tv_advert_page_sale_type.text = if (advert!!.saleType == SaleType.Prodaja) "NA PRODAJU" else "IZDAJE SE"
         tv_advert_page_title.text     = advert!!.title

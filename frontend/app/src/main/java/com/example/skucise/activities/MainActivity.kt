@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         val bg_images = arrayListOf(R.drawable.blured_login_bg1, R.drawable.blured_login_bg2, R.drawable.blured_login_bg3, R.drawable.blured_login_bg4)
 
+        scv_login_background_container.setOnTouchListener { view, motionEvent -> true }
         vpg_background_slider.adapter = LoginScrolerAdapter(bg_images, vpg_background_slider)
         vpg_background_slider.isUserInputEnabled = false;
 

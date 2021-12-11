@@ -200,7 +200,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_average_rating_label"
                     app:layout_constraintVertical_bias="0.062"
-                    app:srcCompat="@drawable/ic_baseline_edit_32" />
+                    app:srcCompat="@drawable/ic_baseline_edit_red_32" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -228,7 +228,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:backgroundTint="@color/white"
-                    android:src="@drawable/ic_baseline_edit_32"
+                    android:src="@drawable/ic_baseline_edit_red_32"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/et_user_username" />
 
@@ -238,7 +238,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
-                    android:text="Username"
+                    android:inputType="text"
+                    android:text="@string/username_hint"
                     android:textColorHighlight="@color/transparent"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_username"
                     app:layout_constraintStart_toStartOf="parent"
@@ -251,6 +252,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
+                    android:inputType="text"
                     android:text="Ime"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_firstname"
                     app:layout_constraintStart_toStartOf="parent"
@@ -261,7 +263,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:backgroundTint="@color/white"
-                    android:src="@drawable/ic_baseline_edit_32"
+                    android:src="@drawable/ic_baseline_edit_red_32"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/et_user_firstname" />
 
@@ -272,6 +274,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:enabled="false"
+                    android:inputType="text"
                     android:text="Prezime"
                     app:layout_constraintEnd_toStartOf="@+id/btn_user_edit_lastname"
                     app:layout_constraintStart_toStartOf="parent"
@@ -282,7 +285,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:backgroundTint="@color/white"
-                    android:src="@drawable/ic_baseline_edit_32"
+                    android:src="@drawable/ic_baseline_edit_red_32"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/et_user_lastname" />
 
@@ -359,6 +362,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:enabled="false"
+                    android:inputType="text|date"
                     android:text="Date"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -370,6 +374,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:enabled="false"
+                    android:inputType="textEmailAddress"
                     android:text="E-mail"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -415,7 +420,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/btn_user_edit_mail"
-                    app:srcCompat="@drawable/ic_baseline_check_32" />
+                    app:srcCompat="@drawable/ic_baseline_check_red_32" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -28,31 +28,58 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/btn_advert_page_favourite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/transparent"
-                android:src="@drawable/ic_favourites_star_gray_24"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_advert_page_sale_type"
-                app:layout_constraintEnd_toEndOf="@id/imv_advert_page_images"
-                app:layout_constraintTop_toTopOf="@+id/tv_advert_page_sale_type" />
+                android:id="@+id/btn_delete_my_advert_advert_page"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/shape_btn_circle_white"
+                android:elevation="5dp"
+                android:src="@drawable/ic_baseline_edit_32"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="@+id/imv_advert_page_images"
+                app:layout_constraintTop_toTopOf="@+id/imv_advert_page_images" />
+
+            <ImageButton
+                android:id="@+id/btn_edit_my_advert_advert_page"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/shape_btn_circle_white"
+                android:elevation="5dp"
+                android:src="@drawable/ic_baseline_delete_outline_32"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/btn_delete_my_advert_advert_page"
+                app:layout_constraintTop_toTopOf="@+id/imv_advert_page_images" />
+
+            <ImageButton
+                android:id="@+id/btn_add_to_favourites_advert_page"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/shape_btn_circle_white"
+                android:elevation="5dp"
+                android:src="@drawable/ic_favourites_star_gray_32"
+                app:layout_constraintEnd_toEndOf="@+id/imv_advert_page_images"
+                app:layout_constraintTop_toTopOf="@+id/imv_advert_page_images" />
 
             <TextView
                 android:id="@+id/tv_advert_page_sale_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/advert_type_shape"
+                android:elevation="4dp"
                 android:padding="5dp"
                 android:shadowColor="@color/black"
                 android:text="Na prodaju"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="18sp"
+                android:textColor="?attr/colorPrimaryDark"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintBottom_toBottomOf="@+id/csl_image_counter"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

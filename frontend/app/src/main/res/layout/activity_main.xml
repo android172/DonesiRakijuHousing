@@ -7,6 +7,7 @@
     tools:context=".activities.MainActivity">
 
     <ScrollView
+        android:id="@+id/scv_login_background_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"

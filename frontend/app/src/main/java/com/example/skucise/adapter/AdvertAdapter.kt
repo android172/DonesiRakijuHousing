@@ -23,7 +23,8 @@ import java.time.format.FormatStyle
 
 class AdvertAdapter(
     private var adverts: ArrayList<Advert> = ArrayList(),
-    private var allFavorites: Boolean = false
+    private var allFavorites: Boolean = false,
+    private var type: Int = 0
 ) : RecyclerView.Adapter<AdvertAdapter.AdvertViewHolder>() {
 
     class AdvertViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -71,27 +72,47 @@ class AdvertAdapter(
             tv_advert_size.text = "${currentAdvert.size} kvadrata"
             tv_advert_price.text = "${currentAdvert.price} €"
 
-            // favorite
-            btn_add_to_favourites.setOnClickListener {
-                val action = if(isFavorite[position]) "remove" else "add"
-                ReqSender.sendRequestString(
-                    context,
-                    Request.Method.POST,
-                    "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
-                    hashMapOf(Pair("advertId", currentAdvert.id.toString())),
-                    {
-                        if (isFavorite[position])
-                            btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_24)
-                        else
-                            btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_gray_24)
+            if (type == 1){
+                btn_add_to_favourites.visibility = View.GONE
+                btn_delete_my_advert.visibility = View.VISIBLE
+                btn_edit_my_advert.visibility = View.VISIBLE
+            } else if (type == 2){
+                btn_add_to_favourites.visibility = View.VISIBLE
+                btn_delete_my_advert.visibility = View.GONE
+                btn_edit_my_advert.visibility = View.GONE
+                indicator_vpg.visibility = View.GONE
+            }
+            else {
+                // favorite
+                btn_add_to_favourites.visibility = View.VISIBLE
+                btn_delete_my_advert.visibility = View.GONE
+                btn_edit_my_advert.visibility = View.GONE
 
-                        isFavorite[position] = !isFavorite[position]
-                        notifyItemChanged(position)
-                    },
-                    { error ->
-                        Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
-                    }
-                )
+                if (isFavorite[position]){
+                    btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_32)
+                    btn_add_to_favourites.setBackgroundResource(R.drawable.shape_btn_circle_transparent_black)
+                }
+                else{
+                    btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_gray_32)
+                    btn_add_to_favourites.setBackgroundResource(R.drawable.shape_btn_circle_white)
+                }
+
+                btn_add_to_favourites.setOnClickListener {
+                    val action = if(isFavorite[position]) "remove" else "add"
+                    ReqSender.sendRequestString(
+                        context,
+                        Request.Method.POST,
+                        "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                        hashMapOf(Pair("advertId", currentAdvert.id.toString())),
+                        {
+                            isFavorite[position] = !isFavorite[position]
+                            notifyItemChanged(position)
+                        },
+                        { error ->
+                            Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                        }
+                    )
+                }
             }
 
             var images = currentAdvert.images.map { image ->

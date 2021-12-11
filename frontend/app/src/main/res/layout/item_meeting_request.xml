@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cls_meeting_request"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/frontpage_fragment_shape"
     android:padding="8dp">
 
     <TextView
@@ -10,12 +13,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Ttile"
+        android:textAlignment="center"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/csl_meeting_buttons_new_meeting"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/csl_meeting_buttons_new_meeting"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -23,14 +25,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="Date and Time"
         android:textAlignment="textEnd"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/csl_meeting_buttons_new_meeting"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_at_time"
-
-        />
+        app:layout_constraintTop_toBottomOf="@+id/tv_meeting_title" />
 
     <TextView
         android:id="@+id/tv_at_time"
@@ -39,59 +40,7 @@
         android:text="At: "
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/csl_meeting_buttons_new_meeting"
-
-        />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/csl_meeting_buttons_new_meeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/btn_meeting_confirm"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:text="f"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/btn_meeting_delete"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="d"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_meeting_confirm" />
-
-        <Button
-            android:id="@+id/btn_meeting_accept"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:text="✓"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/btn_meeting_tweak_time"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="🕐"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_meeting_accept" />
-
-        <Button
-            android:id="@+id/btn_meeting_cancel"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:text="❌"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btn_meeting_tweak_time" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="@+id/tv_meeting_time" />
 
     <TextView
         android:id="@+id/tv_meeting_username"
@@ -111,8 +60,71 @@
         android:textAlignment="textEnd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_meeting_username"
-        app:layout_constraintTop_toBottomOf="@+id/tv_meeting_time"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/tv_meeting_time" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/csl_meeting_buttons_new_meeting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_meeting_date_created">
+
+        <Button
+            android:id="@+id/btn_meeting_confirm"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="f"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_meeting_delete"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:text="d"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/btn_meeting_confirm"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_meeting_accept"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/meeting_button_shape"
+            android:src="@drawable/ic_baseline_check_32"
+            app:layout_constraintEnd_toStartOf="@+id/btn_meeting_tweak_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_meeting_tweak_time"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/meeting_button_shape"
+            android:src="@drawable/ic_baseline_watch_later_32"
+            app:layout_constraintEnd_toStartOf="@+id/btn_meeting_cancel"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn_meeting_accept"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_meeting_cancel"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_margin="3dp"
+            android:background="@drawable/meeting_button_shape"
+            android:src="@drawable/ic_baseline_clear_32"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn_meeting_tweak_time"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
