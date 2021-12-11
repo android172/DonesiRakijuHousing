@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.DisplayMetrics
+import android.view.Display
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -43,8 +45,14 @@ class MainActivity : AppCompatActivity() {
 
         val bg_images = arrayListOf(R.drawable.blured_login_bg1, R.drawable.blured_login_bg2, R.drawable.blured_login_bg3, R.drawable.blured_login_bg4)
 
+        val display: Display = windowManager.defaultDisplay
+        val screenHeight: DisplayMetrics = DisplayMetrics()
+        display.getRealMetrics(screenHeight)
+
+        //vpg_background_slider.layoutParams.height = screenHeight.heightPixels
+
         scv_login_background_container.setOnTouchListener { view, motionEvent -> true }
-        vpg_background_slider.adapter = LoginScrolerAdapter(bg_images, vpg_background_slider)
+        vpg_background_slider.adapter = LoginScrolerAdapter(bg_images, vpg_background_slider, screenHeight)
         vpg_background_slider.isUserInputEnabled = false;
 
         sliderHandler = Handler()
