@@ -4,16 +4,20 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.example.skucise.Meeting
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.item_meeting_request.view.*
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -27,6 +31,7 @@ class MeetingAdapter(
     class MeetingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private var parentViewGroup: ViewGroup? = null
+    private var navigationView: BottomNavigationView? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MeetingViewHolder {
         parentViewGroup = parent
@@ -56,6 +61,36 @@ class MeetingAdapter(
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
             tv_meeting_date_created.text = currentMeetingRequest.dateCreated.format(
                 DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT))
+
+            // User button
+            tv_meeting_username.setOnClickListener {
+                if (navigationView == null) return@setOnClickListener
+
+                navigationView!!.menu.setGroupCheckable(0, true, false)
+                for (i in 0 until navigationView!!.menu.size()) {
+                    navigationView!!.menu.getItem(i).isChecked = false
+                }
+                navigationView!!.menu.setGroupCheckable(0, true, true)
+
+                val args = Bundle()
+                args.putInt("userId", currentMeetingRequest.otherUser)
+                parentViewGroup!!.findNavController().navigate(R.id.myAccountFragment, args)
+            }
+
+            // Get to advert
+            tv_meeting_title.setOnClickListener {
+                if (navigationView == null) return@setOnClickListener
+
+                navigationView!!.menu.setGroupCheckable(0, true, false)
+                for (i in 0 until navigationView!!.menu.size()) {
+                    navigationView!!.menu.getItem(i).isChecked = false
+                }
+                navigationView!!.menu.setGroupCheckable(0, true, true)
+
+                val args = Bundle()
+                args.putInt("advertId", currentMeetingRequest.advertId)
+                parentViewGroup!!.findNavController().navigate(R.id.advertFragment, args)
+            }
 
             if (currentMeetingRequest.proposedTime < LocalDateTime.now()) {
                 btn_meeting_accept.visibility = View.GONE
@@ -193,5 +228,9 @@ class MeetingAdapter(
 
     override fun getItemCount(): Int {
         return meetingRequests.size
+    }
+
+    fun setupNavMenu(bottomNavigationView: BottomNavigationView) {
+        this.navigationView = bottomNavigationView
     }
 }

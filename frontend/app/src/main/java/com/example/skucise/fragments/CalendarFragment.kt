@@ -26,6 +26,7 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.calendar_day_layout.view.*
 import kotlinx.android.synthetic.main.calendar_event_item_view.view.*
 import kotlinx.android.synthetic.main.calendar_month_layout.view.*
@@ -89,6 +90,11 @@ class CalendarFragment : Fragment() {
     // Meeting Requests
     private var meetingRequests: ArrayList<Meeting> = arrayListOf()
     private val meetingRequestAdapter: MeetingAdapter = MeetingAdapter(meetingRequests)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        meetingRequestAdapter.setupNavMenu(requireActivity().nav_bottom_navigator)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
