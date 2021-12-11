@@ -16,6 +16,7 @@ namespace WebAPI.Models
             advert => new
             {
                 Id = advert.Id,
+                OwnerId = advert.OwnerId,
                 Price = advert.Price,
                 Title = advert.Title,
                 City = advert.City,

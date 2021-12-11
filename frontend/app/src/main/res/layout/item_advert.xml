@@ -31,7 +31,7 @@
         app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
 
     <ImageButton
-        android:id="@+id/btn_delete_my_advert"
+        android:id="@+id/btn_edit_my_advert"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="4dp"
@@ -43,7 +43,7 @@
         app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
 
     <ImageButton
-        android:id="@+id/btn_edit_my_advert"
+        android:id="@+id/btn_delete_my_advert"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="4dp"
@@ -51,7 +51,7 @@
         android:background="@drawable/shape_btn_circle_white"
         android:elevation="5dp"
         android:src="@drawable/ic_baseline_delete_outline_32"
-        app:layout_constraintEnd_toStartOf="@+id/btn_delete_my_advert"
+        app:layout_constraintEnd_toStartOf="@+id/btn_edit_my_advert"
         app:layout_constraintTop_toTopOf="@+id/vpg_advert_images" />
 
     <me.relex.circleindicator.CircleIndicator3

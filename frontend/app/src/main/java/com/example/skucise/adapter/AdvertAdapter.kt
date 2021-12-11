@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.example.skucise.Advert
@@ -16,6 +17,7 @@ import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.fragment_advert.*
 import kotlinx.android.synthetic.main.item_advert.*
 import kotlinx.android.synthetic.main.item_advert.view.*
 import java.time.format.DateTimeFormatter
@@ -76,6 +78,25 @@ class AdvertAdapter(
                 btn_add_to_favourites.visibility = View.GONE
                 btn_delete_my_advert.visibility = View.VISIBLE
                 btn_edit_my_advert.visibility = View.VISIBLE
+
+                btn_edit_my_advert.setOnClickListener {
+                    if(navigationView == null) return@setOnClickListener
+
+                    navigationView!!.menu.setGroupCheckable(0, true, false)
+                    for (i in 0 until navigationView!!.menu.size()) {
+                        navigationView!!.menu.getItem(i).isChecked = false
+                    }
+                    navigationView!!.menu.setGroupCheckable(0, true, true)
+
+                    val args = Bundle()
+                    args.putInt("advertId", currentAdvert.id.toInt())
+                    findNavController().navigate(R.id.editAdvertFragment, args)
+                }
+
+                btn_delete_my_advert.setOnClickListener {
+
+                }
+
             } else if (type == 2){
                 btn_add_to_favourites.visibility = View.VISIBLE
                 btn_delete_my_advert.visibility = View.GONE

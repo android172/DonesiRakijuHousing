@@ -93,7 +93,7 @@ namespace WebAPI.Controllers
                 ["Price"] = ((ad, param) => ad.Price >= decimal.Parse(param.GetProperty("From").ToString()) && ad.Price <= decimal.Parse(param.GetProperty("To").ToString())),
                 ["City"] = ((ad, param) =>
                     {
-                        var array = param.GetString().Trim('[', ']').Split(" , ");
+                        var array = param.GetString().Trim('[', ']').Split(", ");
                         bool result = false;
                         foreach (var x in array)
                         {

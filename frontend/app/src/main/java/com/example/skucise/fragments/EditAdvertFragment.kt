@@ -346,8 +346,7 @@ class EditAdvertFragment : Fragment() {
                         return@sendRequestString
                     }
 
-                    val advertId = response.toUInt()
-                    val urlAddAdvertImages = "http://10.0.2.2:5000/api/image/add_advert_images?advertId=$advertId"
+                    val urlAddAdvertImages = "http://10.0.2.2:5000/api/image/add_advert_images?advertId=${advert!!.id}"
 
                     val images = ArrayList<FileData>()
 

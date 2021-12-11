@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.bumptech.glide.Glide
@@ -19,7 +21,9 @@ import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_advert.*
+import kotlinx.android.synthetic.main.item_advert.view.*
 import org.json.JSONObject
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -41,6 +45,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
     private var canLeaveReview: Boolean = false
+    private var isFavourite: Boolean = false
     
     private var selectedYear: Int = 1
     private var selectedMonth: Int = 1
@@ -87,9 +92,10 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     averageScore = response.getString("averageScore")
                     if (averageScore == "Not rated.") averageScore = "Bez ocena"
                     canLeaveReview = response.getBoolean("canLeaveReview")
+                    isFavourite = response.getBoolean("isFavourite")
 
                     if(canLeaveReview)
-                        LoadReviewWriter()
+                        loadReviewWriter()
 
                     if (tv_advert_page_sale_type != null)
                         updateAdvertInfo()
@@ -250,14 +256,47 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             btn_edit_my_advert_advert_page.visibility = View.VISIBLE
             btn_delete_my_advert_advert_page.visibility = View.VISIBLE
 
-            //TODO add functionality
+            btn_edit_my_advert_advert_page.setOnClickListener {
+                val navigationView = requireActivity().nav_bottom_navigator
+
+                navigationView!!.menu.setGroupCheckable(0, true, false)
+                for (i in 0 until navigationView.menu.size()) {
+                    navigationView.menu.getItem(i).isChecked = false
+                }
+                navigationView.menu.setGroupCheckable(0, true, true)
+
+                val args = Bundle()
+                args.putInt("advertId", advert!!.id.toInt())
+                findNavController().navigate(R.id.editAdvertFragment, args)
+            }
+
+            btn_delete_my_advert_advert_page.setOnClickListener {
+
+            }
         }
         else {
             btn_add_to_favourites_advert_page.visibility = View.VISIBLE
             btn_edit_my_advert_advert_page.visibility = View.GONE
             btn_delete_my_advert_advert_page.visibility = View.GONE
 
-            //TODO add functionality
+            isFavouriteLoader()
+
+            btn_add_to_favourites_advert_page.setOnClickListener {
+                val action = if(isFavourite) "remove" else "add"
+                ReqSender.sendRequestString(
+                    requireContext(),
+                    Request.Method.POST,
+                    "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                    hashMapOf(Pair("advertId", advert!!.id.toString())),
+                    {
+                        isFavourite = !isFavourite
+                        isFavouriteLoader()
+                    },
+                    { error ->
+                        Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
         }
 
         // Updating text
@@ -328,7 +367,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         )
     }
 
-    private fun LoadReviewWriter()
+    private fun loadReviewWriter()
     {
         cl_post_review.visibility = View.VISIBLE
 
@@ -354,6 +393,20 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
                 }
             )
+        }
+    }
+
+    private fun isFavouriteLoader()
+    {
+        if (isFavourite)
+        {
+            btn_add_to_favourites_advert_page.setImageResource(R.drawable.ic_favourites_star_yellow_32)
+            btn_add_to_favourites_advert_page.setBackgroundResource(R.drawable.shape_btn_circle_transparent_black)
+        }
+        else
+        {
+            btn_add_to_favourites_advert_page.setImageResource(R.drawable.ic_favourites_star_gray_32)
+            btn_add_to_favourites_advert_page.setBackgroundResource(R.drawable.shape_btn_circle_white)
         }
     }
 
