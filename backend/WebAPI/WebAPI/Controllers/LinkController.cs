@@ -25,6 +25,7 @@ namespace WebAPI.Controllers
         public IActionResult Index()
         {
             return View("Error");
+            //return View("PasswordReset");
         }
 
         [HttpGet]
