@@ -13,8 +13,8 @@
         android:overScrollMode="never"
         android:scrollbars="none"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent" >
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/vpg_background_slider"
             android:layout_width="match_parent"
