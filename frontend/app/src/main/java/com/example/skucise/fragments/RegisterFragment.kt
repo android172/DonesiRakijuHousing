@@ -5,12 +5,9 @@ import android.text.InputFilter
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
-import com.example.skucise.R
-import com.example.skucise.ReqSender
-import com.example.skucise.Util
+import com.example.skucise.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
-import org.json.JSONException
 
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
@@ -65,6 +62,10 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 return@setOnClickListener
             }
 
+            // Start loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
+            loadingDialog.start()
+
             // Send request
             val url = "http://10.0.2.2:5000/api/login/user_register"
 
@@ -80,15 +81,28 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 method = Request.Method.POST,
                 url = url,
                 params = params,
-                listener = { response ->
-                    try {
-                        errorReport.reportError("response:\n${response}")
-                    } catch (e: JSONException) {
-                        errorReport.reportError("json_error:\n$e")
-                    }
+                listener = {
+                    val activity = requireActivity()
+                    val fragment = LoginRegisterResultsFragment(
+                        mainText = "Zahtev za registraciju je poslat.\n" +
+                                   "Prijava ovog naloga će biti omogućena tek nakon potvrde e-mail adrese.\n" +
+                                   "Rok za potvrdu e-mail adrese je narednih 15 minuta.",
+                        positiveText = "Potvrdi e-mail",
+                        onPositiveResponse = {
+                            Util.startEmailAppIntent(activity)
+                        }
+                    )
+
+                    requireActivity().supportFragmentManager
+                        .beginTransaction()
+                        .replace(R.id.frc_login_or_register, fragment)
+                        .commit()
+
+                    loadingDialog.dismiss()
                 },
                 errorListener = { error ->
                     errorReport.reportError("error:\n$error")
+                    loadingDialog.dismiss()
                 },
                 authorization = false
             )

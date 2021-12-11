@@ -213,12 +213,8 @@ class AddAdvertFragment : Fragment() {
 
             // all is right send request
             // start a dialog to prevent the user from further interaction
-            val loadingDialog = AlertDialog
-                .Builder(requireContext())
-                .setView(requireActivity().layoutInflater.inflate(R.layout.dialog_loading, null))
-                .setCancelable(false)
-                .create()
-            loadingDialog.show()
+            val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
+            loadingDialog.start()
 
             // send request
             val js = JSONObject()
