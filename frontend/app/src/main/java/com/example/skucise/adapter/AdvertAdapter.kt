@@ -76,8 +76,7 @@ class AdvertAdapter(
             tv_advert_size.text = "${currentAdvert.size} kvadrata"
             tv_advert_price.text = "${currentAdvert.price} €"
 
-            Log.i("TAG12355555555555555555", "${SessionManager.currentUser!!.id.toUInt()} == ${currentAdvert.ownerId}")
-            //(context, "${SessionManager.currentUser!!.firstname} == ${currentAdvert.ownerId}", Toast.LENGTH_LONG).show()
+
             if (SessionManager.currentUser!!.id.toUInt() == currentAdvert.ownerId){
                 btn_add_to_favourites.visibility = View.GONE
                 btn_delete_my_advert.visibility = View.VISIBLE
