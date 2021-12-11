@@ -3,6 +3,7 @@ package com.example.skucise.adapter
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.android.volley.Request
 import com.example.skucise.Advert
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_advert.*
@@ -74,7 +76,8 @@ class AdvertAdapter(
             tv_advert_size.text = "${currentAdvert.size} kvadrata"
             tv_advert_price.text = "${currentAdvert.price} €"
 
-            if (type == 1){
+
+            if (SessionManager.currentUser!!.id.toUInt() == currentAdvert.ownerId){
                 btn_add_to_favourites.visibility = View.GONE
                 btn_delete_my_advert.visibility = View.VISIBLE
                 btn_edit_my_advert.visibility = View.VISIBLE
@@ -92,23 +95,19 @@ class AdvertAdapter(
                     args.putInt("advertId", currentAdvert.id.toInt())
                     findNavController().navigate(R.id.editAdvertFragment, args)
                 }
-
-                btn_delete_my_advert.setOnClickListener {
-
-                }
-
-            } else if (type == 2){
+                btn_delete_my_advert.setOnClickListener {}
+            }
+            else {
                 btn_add_to_favourites.visibility = View.VISIBLE
                 btn_delete_my_advert.visibility = View.GONE
                 btn_edit_my_advert.visibility = View.GONE
+            }
+
+            if (type == 1){
                 indicator_vpg.visibility = View.GONE
             }
             else {
                 // favorite
-                btn_add_to_favourites.visibility = View.VISIBLE
-                btn_delete_my_advert.visibility = View.GONE
-                btn_edit_my_advert.visibility = View.GONE
-
                 if (isFavorite[position]){
                     btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_32)
                     btn_add_to_favourites.setBackgroundResource(R.drawable.shape_btn_circle_transparent_black)
