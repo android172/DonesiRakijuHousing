@@ -1,5 +1,6 @@
 package com.example.skucise.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -28,6 +29,10 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
+
+        btn_back.setOnClickListener {
+            onBackPressed()
+        }
 
         // Stop navigation menu from reloading same fragment
         nav_bottom_navigator.setOnItemReselectedListener {}

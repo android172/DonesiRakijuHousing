@@ -72,10 +72,6 @@ class AdvertAdapter(
             tv_advert_price.text = "${currentAdvert.price} €"
 
             // favorite
-            if (isFavorite[position])
-                btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_24)
-            else
-                btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_gray_24)
             btn_add_to_favourites.setOnClickListener {
                 val action = if(isFavorite[position]) "remove" else "add"
                 ReqSender.sendRequestString(
@@ -84,6 +80,11 @@ class AdvertAdapter(
                     "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
                     hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                     {
+                        if (isFavorite[position])
+                            btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_yellow_24)
+                        else
+                            btn_add_to_favourites.setImageResource(R.drawable.ic_favourites_star_gray_24)
+
                         isFavorite[position] = !isFavorite[position]
                         notifyItemChanged(position)
                     },

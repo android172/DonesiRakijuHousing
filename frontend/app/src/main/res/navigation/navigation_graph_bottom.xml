@@ -59,4 +59,5 @@
         android:name="com.example.skucise.fragments.EditAdvertFragment"
         android:label="fragment_edit_advert"
         tools:layout="@layout/fragment_edit_advert" />
+
 </navigation>

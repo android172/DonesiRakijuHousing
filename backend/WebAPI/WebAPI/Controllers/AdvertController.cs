@@ -69,7 +69,7 @@ namespace WebAPI.Controllers
                 .Join(ctx.Users, ad => ad.OwnerId, u => u.Id, (ad, u) => new { ad, u.Username}).FirstOrDefault();        // CHANGE LATER
 
             if (result != null)
-                return new { AdvertData = result.ad, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId), Username = result.Username };
+                return new { AdvertData = result.ad, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId), Username = result.Username, IsFavourite = IsFavourite(advertId) };
             else
                 return NotFound("Advert doesn't exist.");
         }
@@ -371,7 +371,7 @@ namespace WebAPI.Controllers
 
                     foreach (PropertyInfo property in properties)
                     {
-                        if (property.Name == "Id")
+                        if (property.Name == "Id" || property.Name == "OwnerId" || property.Name == "DateCreated")
                             continue;
 
                         property.SetValue(result, property.GetValue(editAdvert));
@@ -380,7 +380,7 @@ namespace WebAPI.Controllers
                     ctx.Adverts.Update(result);
                     ctx.SaveChanges();
 
-                    return Ok("Adverted edited.");
+                    return Ok("Advert edited.");
                 }
                 catch (Exception e)
                 {
@@ -389,6 +389,16 @@ namespace WebAPI.Controllers
             }
 
             return NotFound("Advert does not exist.");
+        }
+
+        private bool IsFavourite(uint advertId)
+        {
+            var result = ctx.FavouriteAdverts.Where(f => f.AdvertId == advertId && f.UserId == userId).FirstOrDefault();
+
+            if (result != null)
+                return true;
+
+            return false;
         }
     }
 }

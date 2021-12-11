@@ -32,6 +32,22 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_add_advert.*
+import kotlinx.android.synthetic.main.fragment_add_advert.atv_city
+import kotlinx.android.synthetic.main.fragment_add_advert.atv_residence_type
+import kotlinx.android.synthetic.main.fragment_add_advert.atv_sale_type
+import kotlinx.android.synthetic.main.fragment_add_advert.atv_structure_type
+import kotlinx.android.synthetic.main.fragment_add_advert.btn_add_image
+import kotlinx.android.synthetic.main.fragment_add_advert.et_description
+import kotlinx.android.synthetic.main.fragment_add_advert.et_num_bathrooms
+import kotlinx.android.synthetic.main.fragment_add_advert.et_num_bedrooms
+import kotlinx.android.synthetic.main.fragment_add_advert.et_price
+import kotlinx.android.synthetic.main.fragment_add_advert.et_size
+import kotlinx.android.synthetic.main.fragment_add_advert.et_year_of_make
+import kotlinx.android.synthetic.main.fragment_add_advert.rcv_advert_images
+import kotlinx.android.synthetic.main.fragment_add_advert.sw_furnished
+import kotlinx.android.synthetic.main.fragment_add_advert.ti_adress
+import kotlinx.android.synthetic.main.fragment_add_advert.ti_title
+import kotlinx.android.synthetic.main.fragment_edit_advert.*
 import kotlinx.android.synthetic.main.fragment_my_account.*
 import org.json.JSONObject
 import java.util.*
@@ -184,6 +200,8 @@ class AddAdvertFragment : Fragment() {
             val yearOfMake = et_year_of_make.text.toString()
             val size = et_size.text.toString()
             val price = et_price.text.toString()
+            val numBedrooms = et_num_bedrooms.text.toString()
+            val numBathrooms = et_num_bathrooms.text.toString()
 
             if(title.isBlank()){
                 makeError("Naslov ne može biti prazan!")
@@ -207,6 +225,14 @@ class AddAdvertFragment : Fragment() {
             }
             if(yearOfMake.isBlank()){
                 makeError("Godina gradnje nije uneta!")
+                return@setOnClickListener
+            }
+            if(numBedrooms.isBlank()){
+                makeError("Broj soba nije unet!")
+                return@setOnClickListener
+            }
+            if(numBathrooms.isBlank()) {
+                makeError("Broj kupatila nije unet!")
                 return@setOnClickListener
             }
 
@@ -233,6 +259,8 @@ class AddAdvertFragment : Fragment() {
             js.put("YearOfMake", yearOfMake.toInt())
             js.put("Size",size.toDouble())
             js.put("Price", price.toDouble())
+            js.put("NumBedrooms", numBedrooms.toInt())
+            js.put("NumBathrooms", numBathrooms.toInt())
 
             val params = HashMap<String, String>()
             params["advertJson"] = js.toString()
