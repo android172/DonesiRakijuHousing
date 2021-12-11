@@ -85,9 +85,9 @@ namespace WebAPI.Controllers
 
             try
             {
+                ems.SendConfirmationEmail(newUser.Email);
                 ctx.Users.Add(newUser);
                 ctx.SaveChanges();
-                ems.SendConfirmationEmail(newUser.Email);
 
                 return Ok("User added.");
             }

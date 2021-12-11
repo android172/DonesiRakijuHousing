@@ -9,6 +9,7 @@ import org.json.JSONException
 import com.android.volley.Request
 import android.text.InputFilter
 import com.example.skucise.*
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.activities.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
 import org.json.JSONObject
@@ -63,7 +64,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     loadingDialog.dismiss()
                 },
                 { error ->
-                    val errorMessage = String(error.networkResponse.data, charset("utf-8"))
+                    val errorMessage = error.getMessageString()
                     errorReport.reportError("error:\n$errorMessage")
                     loadingDialog.dismiss()
                 },
@@ -110,7 +111,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     loadingDialog.dismiss()
                 },
                 { error ->
-                    val errorMessage = String(error.networkResponse.data, charset("utf-8"))
+                    val errorMessage = error.getMessageString()
                     errorReport.reportError("error:\n$errorMessage")
                     loadingDialog.dismiss()
                 }

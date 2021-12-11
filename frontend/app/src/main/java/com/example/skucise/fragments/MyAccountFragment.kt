@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -19,8 +21,11 @@ import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
+import com.example.skucise.Util.Companion.dp
 import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
+import com.example.skucise.Util.Companion.getMessageString
+import com.example.skucise.Util.Companion.startEmailAppIntent
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
@@ -233,6 +238,141 @@ class MyAccountFragment : Fragment() {
                     Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
                 }
             )
+        }
+
+        // Edit email
+        btn_user_edit_mail.setOnClickListener {
+            val newEmailView = EditText(requireContext())
+            newEmailView.hint = "Novi e-mail..."
+
+            // New mail form
+            val newEmailDialog = AlertDialog
+                .Builder(requireContext())
+                .setPositiveButton("Pošalji zahtev") { _, _ ->
+                    val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
+                    loadingDialog.start()
+
+                    // Send new mail
+                    ReqSender.sendRequestString(
+                        requireContext(),
+                        Request.Method.POST,
+                        "http://10.0.2.2:5000/api/users/change_email",
+                        hashMapOf(Pair("newEmail", newEmailView.text.toString())),
+                        {
+                            loadingDialog.dismiss()
+
+                            // Confirm mail prompt
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("Kako bi dovršili promenu e-maila potvrdite novu e-mail adresu.\n" +
+                                        "Potvrda će biti moguća narednih 30 min.")
+                                .setPositiveButton("Potvrdi novi E-mail") { _, _ ->
+                                    startEmailAppIntent(requireActivity())
+                                }
+                                .create()
+                                .show()
+                        },
+                        { error ->
+                            loadingDialog.dismiss()
+                            val errorString = error.getMessageString()
+                            Toast.makeText(requireContext(), "error\n$errorString", Toast.LENGTH_LONG).show()
+                        }
+                    )
+                }
+                .setNegativeButton("Poništi") {_,_->}
+                .create()
+            newEmailDialog.setView(newEmailView, 16.dp, 16.dp, 16.dp, 0)
+            newEmailDialog.show()
+        }
+
+        // Password
+        btn_user_edit_password.setOnClickListener {
+            val oldPasswordView  = EditText(requireContext())
+            val newPasswordView  = EditText(requireContext())
+            val newPasswordRView = EditText(requireContext())
+            oldPasswordView.hint  = "Stara Lozinka..."
+            newPasswordView.hint  = "Nova Lozinka..."
+            newPasswordRView.hint = "Ponovi Novu Lozinku..."
+
+            val linearLayout = LinearLayout(requireContext())
+            linearLayout.orientation = LinearLayout.VERTICAL
+            linearLayout.addView(oldPasswordView)
+            linearLayout.addView(newPasswordView)
+            linearLayout.addView(newPasswordRView)
+
+            val changePasswordDialog = AlertDialog
+                .Builder(requireContext())
+                .setPositiveButton("Promeni šifru") { _, _ ->
+                    val oldPassword  = oldPasswordView.text.toString()
+                    val newPassword  = newPasswordView.text.toString()
+                    val newPasswordR = newPasswordRView.text.toString()
+
+                    // Check if inputs are proper
+                    if (oldPassword.isBlank() || newPassword.isBlank() || newPasswordR.isBlank()) {
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Sva polja moraju biti popunjena.")
+                            .create()
+                            .show()
+                        return@setPositiveButton
+                    }
+
+                    if (newPasswordR != newPassword) {
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Šifra nije dobro ponovljena.")
+                            .create()
+                            .show()
+                        return@setPositiveButton
+                    }
+
+                    if (!Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,32}$").matches(newPasswordR)) {
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setMessage("Šifra mora da sadrži makar jedno malo i veliko slovo. broj, i svega od 8 do 32 karaktera")
+                            .create()
+                            .show()
+                        return@setPositiveButton
+                    }
+
+                    // Send password change request
+                    val params = hashMapOf<String, String>()
+                    params["oldPassword"] = oldPassword
+                    params["newPassword"] = newPassword
+
+                    val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
+                    loadingDialog.start()
+
+                    ReqSender.sendRequestString(
+                        requireContext(),
+                        Request.Method.POST,
+                        "http://10.0.2.2:5000/api/users/change_password",
+                        params,
+                        {
+                            loadingDialog.dismiss()
+
+                            // Confirm password changed
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("Promena šifre je uspešno izvršena.")
+                                .create()
+                                .show()
+                        },
+                        { error ->
+                            loadingDialog.dismiss()
+                            val errorString = error.getMessageString()
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("error\n$errorString")
+                                .create()
+                                .show()
+                        }
+                    )
+                }
+                .setNegativeButton("Poništi") {_,_->}
+                .create()
+            changePasswordDialog.setView(linearLayout,  16.dp,16.dp, 16.dp, 16.dp)
+            changePasswordDialog.show()
         }
     }
 
