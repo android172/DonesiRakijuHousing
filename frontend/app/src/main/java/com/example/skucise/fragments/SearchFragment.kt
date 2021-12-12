@@ -43,43 +43,6 @@ class SearchFragment : Fragment() {
     private lateinit var r : Resources
     private var px = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        initCheckboxMargins(8.0f)
-
-        var filterArray : String? = null
-
-        // load previous state if it exists
-        if (fragmentState != null) {
-            filterArray    = fragmentState!!["filterArray"]    as String
-            currentPage    = fragmentState!!["currentPage"]    as Int
-            numberOfPages  = fragmentState!!["numberOfPages"]  as Int
-            advertsPerPage = fragmentState!!["advertsPerPage"] as Int
-            sortBy         = fragmentState!!["sortBy"]         as String
-            searchQuery    = fragmentState!!["searchQuery"]    as String
-        } else {
-            fragmentState = HashMap()
-            fragmentState!!["filterArray"]    = "[]"
-            fragmentState!!["currentPage"]    = currentPage
-            fragmentState!!["numberOfPages"]  = numberOfPages
-            fragmentState!!["advertsPerPage"] = advertsPerPage
-            fragmentState!!["sortBy"]         = sortBy
-            fragmentState!!["searchQuery"]    = searchQuery
-        }
-
-        // if there have been new arguments sent they take priority
-        arguments?.let {
-            filterArray = it.getString(ARG_PARAM1)
-            fragmentState!!["filterArray"] = filterArray!!
-        }
-
-        // load state
-        if (filterArray != null)
-            performAdvertsRequest(filterArray!!)
-        else
-            performAdvertsRequest("[]")
-    }
 
     private fun initCheckboxMargins(fl: Float) {
         r = requireContext().resources
@@ -125,6 +88,40 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initCheckboxMargins(8.0f)
+
+        var filterArray : String? = null
+
+        // load previous state if it exists
+        if (fragmentState != null) {
+            filterArray    = fragmentState!!["filterArray"]    as String
+            currentPage    = fragmentState!!["currentPage"]    as Int
+            numberOfPages  = fragmentState!!["numberOfPages"]  as Int
+            advertsPerPage = fragmentState!!["advertsPerPage"] as Int
+            sortBy         = fragmentState!!["sortBy"]         as String
+            searchQuery    = fragmentState!!["searchQuery"]    as String
+        } else {
+            fragmentState = HashMap()
+            fragmentState!!["filterArray"]    = "[]"
+            fragmentState!!["currentPage"]    = currentPage
+            fragmentState!!["numberOfPages"]  = numberOfPages
+            fragmentState!!["advertsPerPage"] = advertsPerPage
+            fragmentState!!["sortBy"]         = sortBy
+            fragmentState!!["searchQuery"]    = searchQuery
+        }
+
+        // if there have been new arguments sent they take priority
+        arguments?.let {
+            filterArray = it.getString(ARG_PARAM1)
+            fragmentState!!["filterArray"] = filterArray!!
+        }
+
+        // load state
+        if (filterArray != null)
+            performAdvertsRequest(filterArray!!)
+        else
+            performAdvertsRequest("[]")
 
         // Connecting adverts recycler view
         rcv_search_adverts.apply {
