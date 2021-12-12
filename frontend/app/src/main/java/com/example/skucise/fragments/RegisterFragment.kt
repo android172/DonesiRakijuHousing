@@ -63,7 +63,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             }
 
             // Send request
-            val url = "http://10.0.2.2:5000/api/login/user_register"
+            val url = "login/user_register"
 
             val params = HashMap<String, String>()
             params["firstName"] = firstname

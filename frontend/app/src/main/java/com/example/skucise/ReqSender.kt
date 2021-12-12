@@ -13,13 +13,11 @@ import org.json.JSONObject
 import org.json.JSONException
 import com.android.volley.VolleyLog
 import com.android.volley.AuthFailureError
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import java.io.UnsupportedEncodingException
-import javax.xml.transform.ErrorListener
-
 
 open class ReqSender {
     companion object {
-
         private val queuedRequests : HashMap<Context, RequestQueue> = HashMap()
 
         private fun getRequestQueue(context: Context): RequestQueue {
@@ -30,7 +28,7 @@ open class ReqSender {
         }
 
         private fun buildUrl(base_url: String, params: MutableMap<String, String>?): String {
-            var url = "$base_url?"
+            var url = "$BASE_API_URL$base_url?"
             if (params != null) {
                 for (param in params) {
                     url = "$url${param.key}=${param.value}&"
@@ -38,8 +36,6 @@ open class ReqSender {
             }
             return url.substring(0, url.length - 1)
         }
-
-
 
         fun sendRequest(
             context: Context,
@@ -156,7 +152,7 @@ open class ReqSender {
                 val requestBody = jsonArray.toString()
 
                 val stringRequest: StringRequest = object : StringRequest(
-                    method, url, listener, errorListener
+                    method, "${BASE_API_URL}$url", listener, errorListener
                 ) {
                     override fun getBodyContentType(): String {
                         return "application/json; charset=utf-8"

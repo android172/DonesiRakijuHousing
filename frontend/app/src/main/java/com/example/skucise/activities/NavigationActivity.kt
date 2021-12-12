@@ -17,6 +17,7 @@ import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AccountDropdownAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -50,7 +51,7 @@ class NavigationActivity : AppCompatActivity() {
             tv_account_dd_username.text = SessionManager.currentUser!!.username
             tv_account_dd_username.visibility = View.VISIBLE
             Glide.with(this)
-                .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
+                .load("${BASE_API_URL}image/get_user_image_file?userId=${SessionManager.currentUser!!.id}")
                 .centerCrop()
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .into(btn_account_dd_toggle)
@@ -94,7 +95,7 @@ class NavigationActivity : AppCompatActivity() {
             ReqSender.sendRequestString(
                 this,
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/login/user_logout",
+                "login/user_logout",
                 null,
                 {
                     SessionManager.stopSession()
@@ -149,7 +150,7 @@ class NavigationActivity : AppCompatActivity() {
         ReqSender.sendRequestString(
             this,
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/message/check_messages",
+            "message/check_messages",
             null,
             { response ->
                 tv_alert_count.text = response

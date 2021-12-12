@@ -287,7 +287,7 @@ class SearchFragment : Fragment() {
         if (allCities == null) {
             ReqSender.sendRequestArray(
                 requireActivity(), Request.Method.GET,
-                "http://10.0.2.2:5000/api/advert/get_all_cities", null,
+                "advert/get_all_cities", null,
                 { cities ->
                     val cityArray = Array(
                         cities.length()
@@ -463,7 +463,7 @@ class SearchFragment : Fragment() {
         ReqSender.sendRequest(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/search_adverts",
+            "advert/search_adverts",
             params,
             { response ->
                 val advertCount = response.getInt("count")
@@ -497,7 +497,7 @@ class SearchFragment : Fragment() {
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_favourite_adverts",
+            "advert/get_favourite_adverts",
             null,
             { response ->
                 val favoriteAdverts = loadAdverts(response).map { advert -> advert.id }

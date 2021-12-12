@@ -40,7 +40,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             ReqSender.sendRequestArray(
                 requireActivity(),
                 Request.Method.GET,
-                "http://10.0.2.2:5000/api/advert/get_all_cities",
+                "advert/get_all_cities",
                 null,
                 { cities ->
                     val cityArray = Array(
@@ -62,7 +62,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         ReqSender.sendRequestArray(
             requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_recent_adverts",
+            "advert/get_recent_adverts",
             hashMapOf(Pair("numOfAdverts", "10")),
             { results ->
                 val adverts = loadAdverts(results)

@@ -36,7 +36,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 return@setOnClickListener
             }
 
-            val url = "http://10.0.2.2:5000/api/login/user_login"
+            val url = "login/user_login"
 
             val params = HashMap<String, String>()
             params["usernameOrEmail"] = usernameOrEmail
@@ -71,7 +71,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                                 ReqSender.sendRequestString(
                                     requireContext(),
                                     Request.Method.POST,
-                                    "http://10.0.2.2:5000/api/login/send_confirmation_email",
+                                    "login/send_confirmation_email",
                                     hashMapOf(Pair("username", usernameOrEmail)),
                                     {
                                         startEmailAppIntent(requireActivity())
@@ -100,7 +100,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 return@setOnClickListener
             }
 
-            val url = "http://10.0.2.2:5000/api/login/send_pass_reset_email"
+            val url = "login/send_pass_reset_email"
 
             val params = HashMap<String, String>()
             params["usernameOrEmail"] = usernameOrEmail

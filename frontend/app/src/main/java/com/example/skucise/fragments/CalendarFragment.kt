@@ -196,7 +196,7 @@ class CalendarFragment : Fragment() {
         ReqSender.sendRequestArray(
             requireContext(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/meeting/get_my_meetings",
+            "meeting/get_my_meetings",
             null,
             { response ->
                 meetingRequests = ArrayList()

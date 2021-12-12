@@ -19,6 +19,7 @@ import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.example.skucise.*
 import com.example.skucise.R
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
@@ -85,7 +86,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             ReqSender.sendRequest(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/advert/get_advert",
+                "advert/get_advert",
                 params,
                 { response ->
                     val advertData = response.getJSONObject("advertData")
@@ -132,7 +133,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             ReqSender.sendRequestArray(
                 requireContext(),
                 Request.Method.GET,
-                "http://10.0.2.2:5000/api/image/get_advert_image_names",
+                "image/get_advert_image_names",
                 params,
                 { response ->
                     if (tv_image_counter != null)
@@ -142,7 +143,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
 
                     val firstImageName = response[0].toString()
                     Glide.with(requireContext())
-                        .load("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
+                        .load("${BASE_API_URL}image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
                         .centerCrop()
                         .into(imv_advert_page_images)
                 },
@@ -191,7 +192,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         ReqSender.sendRequestString(
             requireContext(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/meeting/arrange_meeting",
+            "meeting/arrange_meeting",
             params,
             {
                 tv_advert_page_arrange_meeting_response.text = "Zahtev sastanka je uspešno poslat." +
@@ -271,7 +272,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
-                            "http://10.0.2.2:5000/api/advert/remove_advert",
+                            "advert/remove_advert",
                             hashMapOf(Pair("advertId", advert!!.id.toString())),
                             {
                                 requireActivity().onBackPressed()
@@ -307,7 +308,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 ReqSender.sendRequestString(
                     requireContext(),
                     Request.Method.POST,
-                    "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                    "advert/${action}_favourite_advert",
                     hashMapOf(Pair("advertId", advert!!.id.toString())),
                     {
                         isFavourite = !isFavourite
@@ -392,7 +393,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         ReqSender.sendRequestArray(
             requireContext(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/review/get_advert_reviews",
+            "review/get_advert_reviews",
             params,
             { response ->
                 val reviews = ArrayList<Review>()
@@ -434,7 +435,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             ReqSender.sendRequestString(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/review/post_review",
+                "review/post_review",
                 params,
                 { response ->
                     Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()

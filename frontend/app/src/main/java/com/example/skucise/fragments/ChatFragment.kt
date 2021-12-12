@@ -52,12 +52,10 @@ class ChatFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
 
-        val url = "http://10.0.2.2:5000/api/message/get_chats"
-
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/message/get_chats",
+            "message/get_chats",
             null,
             { response ->
                 val js = (response as JSONArray)

@@ -255,7 +255,7 @@ class AddAdvertFragment : Fragment() {
             val params = HashMap<String, String>()
             params["advertJson"] = js.toString()
 
-            val urlAddAdvert = "http://10.0.2.2:5000/api/advert/add_advert"
+            val urlAddAdvert = "advert/add_advert"
 
             ReqSender.sendRequestString(
                 context = this.requireActivity(),
@@ -283,7 +283,7 @@ class AddAdvertFragment : Fragment() {
                     }
 
                     // Send images
-                    val urlAddAdvertImages = "http://10.0.2.2:5000/api/image/add_advert_images?advertId=$advertId"
+                    val urlAddAdvertImages = "image/add_advert_images?advertId=$advertId"
 
                     val images = ArrayList<FileData>()
                     for(uri in imageURIs){

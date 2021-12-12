@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.example.skucise.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.example.skucise.Util.Companion.getMessageString
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -103,7 +104,7 @@ class AdvertAdapter(
                             ReqSender.sendRequestString(
                                 context,
                                 Request.Method.POST,
-                                "http://10.0.2.2:5000/api/advert/remove_advert",
+                                "advert/remove_advert",
                                 hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                                 {
                                     notifyItemRemoved(adverts.indexOf(currentAdvert))
@@ -142,7 +143,7 @@ class AdvertAdapter(
                     ReqSender.sendRequestString(
                         context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                        "advert/${action}_favourite_advert",
                         hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                         {
                             isFavorite[position] = !isFavorite[position]
@@ -156,7 +157,7 @@ class AdvertAdapter(
             }
 
             var images = currentAdvert.images.map { image ->
-                "http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${currentAdvert.id}&imageName=$image"
+                "${BASE_API_URL}image/get_advert_image_file?advertId=${currentAdvert.id}&imageName=$image"
             }
             if (images.isEmpty())
                 images = arrayListOf("https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg")

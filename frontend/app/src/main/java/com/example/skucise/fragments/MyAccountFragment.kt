@@ -21,6 +21,7 @@ import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.example.skucise.Util.Companion.dp
 import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
@@ -70,7 +71,7 @@ class MyAccountFragment : Fragment() {
             ReqSender.sendImage(
                 requireContext(),
                 Request.Method.PUT,
-                "http://10.0.2.2:5000/api/image/set_user_image",
+                "image/set_user_image",
                 image,
                 {
                     Glide.with(requireContext())
@@ -118,7 +119,7 @@ class MyAccountFragment : Fragment() {
             ReqSender.sendRequest(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/users/get_my_info",
+                "users/get_my_info",
                 null,
                 { response ->
 
@@ -144,7 +145,7 @@ class MyAccountFragment : Fragment() {
             ReqSender.sendRequest(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/users/get_user_info",
+                "users/get_user_info",
                 hashMapOf(Pair("idUser", userIdRequired.toString())),
                 { response ->
                     user = User (
@@ -246,7 +247,7 @@ class MyAccountFragment : Fragment() {
                 ReqSender.sendRequestString(
                     requireContext(),
                     Request.Method.POST,
-                    "http://10.0.2.2:5000/api/users/change_user_info",
+                    "users/change_user_info",
                     params,
                     {
                         if (et_user_username.isEnabled) {
@@ -283,7 +284,7 @@ class MyAccountFragment : Fragment() {
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
-                            "http://10.0.2.2:5000/api/users/change_email",
+                            "users/change_email",
                             hashMapOf(Pair("newEmail", newEmailView.text.toString())),
                             {
                                 // Confirm mail prompt
@@ -367,7 +368,7 @@ class MyAccountFragment : Fragment() {
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
-                            "http://10.0.2.2:5000/api/users/change_password",
+                            "users/change_password",
                             params,
                             {
                                 // Confirm password changed
@@ -418,7 +419,7 @@ class MyAccountFragment : Fragment() {
         // Update profile picture
         img_user_pfp.clipToOutline = true
         Glide.with(this)
-            .load("http://10.0.2.2:5000/api/image/get_user_image_file?userId=${user!!.id}")
+            .load("${BASE_API_URL}image/get_user_image_file?userId=${user!!.id}")
             .centerCrop()
             .signature(ObjectKey(System.currentTimeMillis().toString()))
             .into(img_user_pfp)

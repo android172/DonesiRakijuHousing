@@ -1,4 +1,4 @@
-package com.example.skucise
+package com.example.skucise.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -10,9 +10,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
+import com.example.skucise.Message
+import com.example.skucise.MessageJSON
+import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.example.skucise.adapter.MessageAdapter
-import com.example.skucise.adapter.RecentMessageAdapter
-import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat_with_user.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -28,7 +30,7 @@ class ChatWithUserFragment : Fragment() {
     private val messages: ArrayList<Message> = ArrayList()
 
     private var otherUserId: UInt? = null
-    lateinit var mAdapter: MessageAdapter
+    private lateinit var mAdapter: MessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +58,7 @@ class ChatWithUserFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
 
-        val url = "http://10.0.2.2:5000/api/message/get_chat?otherUserId=$otherUserId"
+        val url = "message/get_chat?otherUserId=$otherUserId"
 
         ReqSender.sendRequestArray(
             this.requireActivity(),
@@ -71,7 +73,7 @@ class ChatWithUserFragment : Fragment() {
                     messages.add(MessageJSON.toMessage(jsonObj))
                 }
                 mAdapter.updateData()
-                rcv_messages.scrollToPosition(mAdapter.getItemCount()-1);
+                rcv_messages.scrollToPosition(mAdapter.itemCount -1)
             },
             { error ->
                 Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()

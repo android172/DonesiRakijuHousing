@@ -5,6 +5,9 @@ import android.content.SharedPreferences
 
 class SessionManager {
     companion object {
+
+        const val BASE_API_URL = "http://10.0.2.2:5000/api/"
+
         private var sharedPreferences : SharedPreferences? = null
         var currentUser: User?
             get() {

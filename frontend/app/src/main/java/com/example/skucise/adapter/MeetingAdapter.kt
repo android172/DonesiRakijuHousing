@@ -104,7 +104,7 @@ class MeetingAdapter(
                     ReqSender.sendRequestString(
                         parentViewGroup!!.context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/meeting/conclude_meeting",
+                        "meeting/conclude_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
@@ -121,7 +121,7 @@ class MeetingAdapter(
                     ReqSender.sendRequestString(
                         parentViewGroup!!.context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/meeting/delete_meeting",
+                        "meeting/delete_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
@@ -153,7 +153,7 @@ class MeetingAdapter(
                     ReqSender.sendRequestString(
                         parentViewGroup!!.context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/meeting/confirm_meeting",
+                        "meeting/confirm_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             if (currentMeetingRequest.owner)
@@ -179,7 +179,7 @@ class MeetingAdapter(
                         ReqSender.sendRequestString(
                             parentViewGroup!!.context,
                             Request.Method.POST,
-                            "http://10.0.2.2:5000/api/meeting/edit_meeting_proposal",
+                            "meeting/edit_meeting_proposal",
                             params,
                             {
                                 currentMeetingRequest.proposedTime = newTime
@@ -210,7 +210,7 @@ class MeetingAdapter(
                     ReqSender.sendRequestString(
                         parentViewGroup!!.context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/meeting/cancel_meeting",
+                        "meeting/cancel_meeting",
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
