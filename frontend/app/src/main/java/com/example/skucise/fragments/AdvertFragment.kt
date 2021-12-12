@@ -1,6 +1,8 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.location.Geocoder
@@ -261,7 +263,33 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             }
 
             btn_delete_my_advert_advert_page.setOnClickListener {
-
+                AlertDialog
+                    .Builder(requireContext())
+                    .setTitle("Da li ste sigurni da želite da obrišete oglas?")
+                    .setPositiveButton("Da") { _, _ ->
+                        val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
+                        loadingDialog.start()
+                        ReqSender.sendRequestString(
+                            requireContext(),
+                            Request.Method.POST,
+                            "http://10.0.2.2:5000/api/advert/remove_advert",
+                            hashMapOf(Pair("advertId", advert!!.id.toString())),
+                            {
+                                loadingDialog.dismiss()
+                                requireActivity().onBackPressed()
+                            },
+                            { error ->
+                                loadingDialog.dismiss()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "error:\n${error.getMessageString()}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("Ne") {_,_->}
+                    .create().show()
             }
         }
         else {
