@@ -1,6 +1,5 @@
 package com.example.skucise.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -18,6 +17,7 @@ import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
 import com.example.skucise.*
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AccountDropdownAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView
@@ -34,9 +34,6 @@ class NavigationActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        // Stop navigation menu from reloading same fragment
-        nav_bottom_navigator.setOnItemReselectedListener {}
-
         // Dropdown toggle button
         btn_account_dd_toggle.setOnClickListener {
             if (drop_down_account.visibility == View.GONE) {
@@ -49,7 +46,7 @@ class NavigationActivity : AppCompatActivity() {
 
         // set account image
         btn_account_dd_toggle.clipToOutline = true
-        if (SessionManager.currentUser != null)
+        if (SessionManager.currentUser != null) {
             tv_account_dd_username.text = SessionManager.currentUser!!.username
             tv_account_dd_username.visibility = View.VISIBLE
             Glide.with(this)
@@ -57,6 +54,7 @@ class NavigationActivity : AppCompatActivity() {
                 .centerCrop()
                 .signature(ObjectKey(System.currentTimeMillis().toString()))
                 .into(btn_account_dd_toggle)
+        }
 
         // List of dropdown options and their functionalities
         val dropdownOptions = mutableListOf<DropdownOption>()
@@ -93,21 +91,26 @@ class NavigationActivity : AppCompatActivity() {
         dropdownOptions.add(DropdownOption(
             "Odjavi se"
         ) {
+            val loadingDialog = Util.Companion.LoadingDialog(this)
+            loadingDialog.start()
             ReqSender.sendRequestString(
                 this,
                 Request.Method.POST,
                 "http://10.0.2.2:5000/api/login/user_logout",
                 null,
                 {
+                    loadingDialog.dismiss()
                     SessionManager.stopSession()
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 },
                 { error ->
+                    loadingDialog.dismiss()
                     SessionManager.stopSession()
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
-                    Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
+                    val errorMessage = error.getMessageString()
+                    Toast.makeText(this, "error:\n$errorMessage", Toast.LENGTH_LONG).show()
                 }
             )
         })
@@ -138,12 +141,10 @@ class NavigationActivity : AppCompatActivity() {
 
         getAlerts()
         nav_bottom_navigator.setOnItemSelectedListener { item ->
-            if(item.itemId == R.id.chatFragment){
+            if(item.itemId == R.id.chatFragment)
                 message_alert.visibility = View.GONE
-            }else
-            {
+            else
                 getAlerts()
-            }
             NavigationUI.onNavDestinationSelected(item, navController)
         }
     }
@@ -155,15 +156,11 @@ class NavigationActivity : AppCompatActivity() {
             "http://10.0.2.2:5000/api/message/check_messages",
             null,
             { response ->
-                //Toast.makeText(this, "response: $response", Toast.LENGTH_LONG).show()
                 tv_alert_count.text = response
-                if(response == "0")
-                    message_alert.visibility = View.GONE
-                else
-                    message_alert.visibility = View.VISIBLE
+                message_alert.visibility = if(response == "0") View.GONE else View.VISIBLE
             },
             { error ->
-                Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }
