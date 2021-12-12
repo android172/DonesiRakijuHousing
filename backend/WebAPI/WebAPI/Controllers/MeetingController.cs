@@ -35,20 +35,20 @@ namespace WebAPI.Controllers
         public ActionResult<string> ArrangeMeeting(uint advertId, DateTime time)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             var result1 = ctx.Adverts.Where(ad => ad.Id == advertId && ad.OwnerId != userId).FirstOrDefault();
 
             if (result1 == null)
-                return NotFound("Not able to arrange meeting for this advert because it doesn't exist or you are an owner of it.");
+                return NotFound("Greška, nije moguće zakazati sastanak za ovaj oglas jer oglas ne postoji ili ste vi vlasnik.");
 
             if (DateTime.Now >= time)
-                return BadRequest("You can not set a date that has passed.");
+                return BadRequest("Greška, predloženo vreme sastanka je prošlo.");
 
             var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == false);
 
             if (result.Any())
-                return BadRequest("You already proposed meeting for this advert.");
+                return BadRequest("Greška, već ste zakazali sastanak za ovaj oglas.");
 
             Meeting newMeeting = new Meeting() { AdvertId = advertId, Time = time, VisitorId = userId, AgreedVisitor = true, DateCreated = DateTime.Now, AgreedOwner = false, Concluded = false };
 
@@ -56,11 +56,11 @@ namespace WebAPI.Controllers
             {
                 ctx.Meetings.Add(newMeeting);
                 ctx.SaveChanges();
-                return Ok("Meeting proposal sent.");
+                return Ok("Predlog za sastanak uspešno poslat.");
             }
             catch
             {
-                return StatusCode(500, "Failed to arrange meeting.");
+                return StatusCode(500, "Greška pri zakazivanju sastanka.");
             }
 
         }
@@ -95,12 +95,12 @@ namespace WebAPI.Controllers
         public ActionResult<string> ConfirmMeeting(uint meetingId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Meeting meeting = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
             if (meeting == null)
-                return NotFound("Meeting does not exist.");
+                return NotFound("Greška, sastanak ne postoji.");
 
 
             if (meeting.VisitorId == userId)
@@ -114,11 +114,11 @@ namespace WebAPI.Controllers
                 ctx.Meetings.Update(meeting);
                 ctx.SaveChanges();
 
-                return Ok("Meeting confirmed.");
+                return Ok("Sastanak uspešno prihvacen.");
             }
             catch
             {
-                return StatusCode(500, "Failed to confirm meeting.");
+                return StatusCode(500, "Greška pri prihvatanju sastanka.");
             }
         }
 
@@ -127,21 +127,21 @@ namespace WebAPI.Controllers
         public ActionResult<string> EditMeeting(uint meetingId, DateTime newTime)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Meeting does not exist.");
+                return NotFound("Greška, sastanak ne postoji.");
 
             if (DateTime.Now >= result.Time.AddDays(-1))
-                return BadRequest("You can not edit meeting on the day of it.");
+                return BadRequest("Greška, nije moguće izmeniti vreme sastanka 24h pre sastanka.");
 
             //if (result.AgreedOwner == true && result.AgreedVisitor == true)
             //    return BadRequest("Meeting time is already agreed upon.");
 
             if (result.Concluded == true)
-                return BadRequest("Meeting has already been concluded.");
+                return BadRequest("Greška, sastanak je već završen.");
 
             result.Time = newTime;
             
@@ -160,11 +160,11 @@ namespace WebAPI.Controllers
             {
                 ctx.Meetings.Update(result);
                 ctx.SaveChanges();
-                return Ok("Meeting changed proposal sent.");
+                return Ok("Predlog za novo vreme sastanka uspešno poslato.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to change meeting proposal.");
+                return StatusCode(500, "Greška pri izmeni vremena sastanka.");
             }
         }
 
@@ -173,29 +173,29 @@ namespace WebAPI.Controllers
         public ActionResult<string> CancelMeeting(uint meetingId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             var result = ctx.Meetings.Where(m => m.Id == meetingId && m.Concluded == false).
                 Join(ctx.Adverts, m => m.AdvertId, ad => ad.Id, (m, ad) => new { m, ad.OwnerId }).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Meeting does not exist or it has been concluded.");
+                return NotFound("Greška, sastanak ne postoji ili je već završen.");
 
             if (DateTime.Now <= result.m.Time.AddDays(-1))
-                return BadRequest("You can not cancel meeting on the day of it.");
+                return BadRequest("Greška, nije moguće otkazati sastanak 24h pre sastanka.");
 
             if (result.m.VisitorId != userId && result.OwnerId != userId)
-                return BadRequest("You are not part of this meeting and can not cancel it.");
+                return BadRequest("Greška, niste član ovog sastanka.");
 
             try
             {
                 ctx.Meetings.Remove(result.m);
                 ctx.SaveChanges();
-                return Ok("Meeting canceled.");
+                return Ok("Sastanak uspešno otkazan.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to cancel meeting.");
+                return StatusCode(500, "Greška pri otkazivanju sastanka.");
             }
         }
 
@@ -216,18 +216,18 @@ namespace WebAPI.Controllers
         public ActionResult<string> ConcludeMeeting(uint meetingId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId && ctx.Adverts.Any(ad => ad.OwnerId == userId)).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Meeting does not exist.");
+                return NotFound("Greška, sastanak ne postoji.");
 
             if (result.Time > DateTime.Now)
-                return BadRequest("Meeting has not started.");
+                return BadRequest("Greška, sastanak još uvek nije počeo.");
 
             if (result.Concluded == true)
-                return BadRequest("Meeting has already been concluded.");
+                return BadRequest("Greška, sastanak je već završen.");
 
             result.Concluded = true;
 
@@ -235,11 +235,11 @@ namespace WebAPI.Controllers
             {
                 ctx.Meetings.Update(result);
                 ctx.SaveChanges();
-                return Ok("Meeting concluded.");
+                return Ok("Sastanak uspešno završen.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to conclude meeting.");
+                return StatusCode(500, "Greška pri završavanju sastanka.");
             }
         }
 
@@ -248,25 +248,25 @@ namespace WebAPI.Controllers
         public ActionResult<string> DeleteMeeting(uint meetingId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Meeting result = ctx.Meetings.Where(m => m.Id == meetingId && ctx.Adverts.Any(ad => ad.OwnerId == userId) && m.Concluded == false).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Meeting does not exist or it has been concluded.");
+                return NotFound("Greška, sastanak ne postoji ili je već završen.");
 
             if (result.Time > DateTime.Now)
-                return BadRequest("Meeting has not started.");
+                return BadRequest("Greška, sastanak još uvek nije počeo.");
 
             try
             {
                 ctx.Meetings.Remove(result);
                 ctx.SaveChanges();
-                return Ok("Meeting deleted.");
+                return Ok("Sastanak uspešno obrisan.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to delete meeting.");
+                return StatusCode(500, "Greška pri brisanju sastanka.");
             }
         }
     }
