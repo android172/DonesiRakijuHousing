@@ -233,7 +233,7 @@ class EditAdvertFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_edit_advert, container, false)
     }
 
-    fun makeError(text : String){
+    private fun makeError(text : String){
         Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
     }
 

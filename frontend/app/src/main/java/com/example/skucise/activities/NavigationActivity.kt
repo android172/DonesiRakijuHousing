@@ -31,6 +31,36 @@ class NavigationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        // Check if session has expired
+        ReqSender.sendRequestString(
+            this,
+            Request.Method.POST,
+            "login/check_token",
+            hashMapOf(Pair("token", SessionManager.token.toString())),
+            {},
+            {
+                Toast.makeText(this, "Sesija je istekla!", Toast.LENGTH_LONG).show()
+                ReqSender.sendRequestString(
+                    this,
+                    Request.Method.POST,
+                    "login/user_logout",
+                    null,
+                    {
+                        SessionManager.stopSession()
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    },
+                    { error ->
+                        SessionManager.stopSession()
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                        val errorMessage = error.getMessageString()
+                        Toast.makeText(this, "error:\n$errorMessage", Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
+        )
+
         btn_back.setOnClickListener {
             onBackPressed()
         }
