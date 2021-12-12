@@ -1,4 +1,4 @@
-package com.example.skucise.frontpageTiles
+package com.example.skucise
 
 import com.example.skucise.R
 

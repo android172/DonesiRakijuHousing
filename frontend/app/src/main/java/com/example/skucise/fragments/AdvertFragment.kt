@@ -1,7 +1,6 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Intent
@@ -21,6 +20,7 @@ import com.example.skucise.*
 import com.example.skucise.R
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.example.skucise.Util.Companion.getMessageString
+import com.example.skucise.activities.AdvertImagesActivity
 import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng

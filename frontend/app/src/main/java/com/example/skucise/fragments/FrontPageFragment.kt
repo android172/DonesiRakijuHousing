@@ -15,13 +15,12 @@ import com.example.skucise.FilterArray
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.example.skucise.adapter.AdvertAdapter
-import com.example.skucise.frontpageTiles.CityTilesAdapter
-import com.example.skucise.frontpageTiles.TileSet
+import com.example.skucise.adapter.CityTilesAdapter
+import com.example.skucise.TileSet
 import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
 import kotlinx.android.synthetic.main.fragment_frontpage.view.*
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
