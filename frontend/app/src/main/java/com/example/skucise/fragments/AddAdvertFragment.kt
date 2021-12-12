@@ -236,12 +236,6 @@ class AddAdvertFragment : Fragment() {
                 return@setOnClickListener
             }
 
-
-            // all is right send request
-            // start a dialog to prevent the user from further interaction
-            val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-            loadingDialog.start()
-
             // send request
             val js = JSONObject()
             js.put("ResidenceType", residenceType)
@@ -273,10 +267,6 @@ class AddAdvertFragment : Fragment() {
 
                     // Don't send images
                     if(imageURIs.isEmpty()) {
-                        loadingDialog.dismiss()
-
-                        Toast.makeText(requireContext(), "response:\n$response", Toast.LENGTH_LONG).show()
-
                         val navigationView = requireActivity().nav_bottom_navigator
 
                         navigationView!!.menu.setGroupCheckable(0, true, false)
@@ -315,9 +305,6 @@ class AddAdvertFragment : Fragment() {
                         urlAddAdvertImages,
                         images,
                         {
-                            loadingDialog.dismiss()
-                            Toast.makeText(requireContext(), "response:\n$response", Toast.LENGTH_LONG).show()
-
                             val navigationView = requireActivity().nav_bottom_navigator
 
                             navigationView!!.menu.setGroupCheckable(0, true, false)
@@ -331,13 +318,11 @@ class AddAdvertFragment : Fragment() {
                             findNavController().navigate(R.id.advertFragment, args)
                         },
                         { error ->
-                            loadingDialog.dismiss()
                             Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()
                         }
                     )
                 },
                 errorListener = { error ->
-                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), "textError:\n$error", Toast.LENGTH_LONG).show()
                 },
                 authorization = true

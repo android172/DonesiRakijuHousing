@@ -279,9 +279,6 @@ class MyAccountFragment : Fragment() {
                 val newEmailDialog = AlertDialog
                     .Builder(requireContext())
                     .setPositiveButton("Pošalji zahtev") { _, _ ->
-                        val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-                        loadingDialog.start()
-
                         // Send new mail
                         ReqSender.sendRequestString(
                             requireContext(),
@@ -289,8 +286,6 @@ class MyAccountFragment : Fragment() {
                             "http://10.0.2.2:5000/api/users/change_email",
                             hashMapOf(Pair("newEmail", newEmailView.text.toString())),
                             {
-                                loadingDialog.dismiss()
-
                                 // Confirm mail prompt
                                 AlertDialog
                                     .Builder(requireContext())
@@ -303,7 +298,6 @@ class MyAccountFragment : Fragment() {
                                     .show()
                             },
                             { error ->
-                                loadingDialog.dismiss()
                                 val errorString = error.getMessageString()
                                 Toast.makeText(requireContext(), "error\n$errorString", Toast.LENGTH_LONG).show()
                             }
@@ -370,17 +364,12 @@ class MyAccountFragment : Fragment() {
                         params["oldPassword"] = oldPassword
                         params["newPassword"] = newPassword
 
-                        val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-                        loadingDialog.start()
-
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
                             "http://10.0.2.2:5000/api/users/change_password",
                             params,
                             {
-                                loadingDialog.dismiss()
-
                                 // Confirm password changed
                                 AlertDialog
                                     .Builder(requireContext())
@@ -389,7 +378,6 @@ class MyAccountFragment : Fragment() {
                                     .show()
                             },
                             { error ->
-                                loadingDialog.dismiss()
                                 val errorString = error.getMessageString()
                                 AlertDialog
                                     .Builder(requireContext())

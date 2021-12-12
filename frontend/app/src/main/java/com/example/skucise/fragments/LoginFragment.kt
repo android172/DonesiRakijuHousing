@@ -1,5 +1,6 @@
 package com.example.skucise.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,9 +11,9 @@ import com.android.volley.Request
 import android.text.InputFilter
 import com.example.skucise.*
 import com.example.skucise.Util.Companion.getMessageString
+import com.example.skucise.Util.Companion.startEmailAppIntent
 import com.example.skucise.activities.NavigationActivity
 import kotlinx.android.synthetic.main.activity_navigation.*
-import org.json.JSONObject
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -21,8 +22,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         errorReport = Util.Companion.ErrorReport(tv_login_unsuccessful)
-
-        val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
 
         btn_login.setOnClickListener{
             val usernameOrEmail = et_login_username_or_email.text.toString()
@@ -36,8 +35,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 errorReport.reportError("Polje za Šifru ime je prazno!")
                 return@setOnClickListener
             }
-
-            loadingDialog.start()
 
             val url = "http://10.0.2.2:5000/api/login/user_login"
 
@@ -61,12 +58,34 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                     } catch (e: JSONException) {
                         errorReport.reportError("json_error:\n$e")
                     }
-                    loadingDialog.dismiss()
                 },
                 { error ->
                     val errorMessage = error.getMessageString()
                     errorReport.reportError("error:\n$errorMessage")
-                    loadingDialog.dismiss()
+                    if (errorMessage == "Vaš email nije potvrđen.") {
+                        AlertDialog
+                            .Builder(requireContext())
+                            .setTitle("Ponovo pošalji zahtev za potvrdu?")
+                            .setPositiveButton("Da") {_,_->
+                                // Resend email conformation
+                                ReqSender.sendRequestString(
+                                    requireContext(),
+                                    Request.Method.POST,
+                                    "http://10.0.2.2:5000/api/login/send_confirmation_email",
+                                    hashMapOf(Pair("username", usernameOrEmail)),
+                                    {
+                                        startEmailAppIntent(requireActivity())
+                                    },
+                                    { newError ->
+                                        errorReport.reportError("error:\n${newError.getMessageString()}")
+
+                                    }
+                                )
+
+                            }
+                            .setNegativeButton("Ne") {_,_->}
+                            .create().show()
+                    }
                 },
                 false
             )
@@ -86,7 +105,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             val params = HashMap<String, String>()
             params["usernameOrEmail"] = usernameOrEmail
 
-            loadingDialog.start()
             ReqSender.sendRequestString(
                 requireContext(),
                 Request.Method.POST,
@@ -99,7 +117,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                                 "Zahtev će važiti narednih 30min.",
                         positiveText = "Proveri e-mail",
                         onPositiveResponse = {
-                            Util.startEmailAppIntent(activity)
+                            startEmailAppIntent(activity)
                         }
                     )
 
@@ -107,13 +125,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         .beginTransaction()
                         .replace(R.id.frc_login_or_register, fragment)
                         .commit()
-
-                    loadingDialog.dismiss()
                 },
                 { error ->
                     val errorMessage = error.getMessageString()
                     errorReport.reportError("error:\n$errorMessage")
-                    loadingDialog.dismiss()
                 }
             )
         }

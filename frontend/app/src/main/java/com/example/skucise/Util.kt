@@ -130,6 +130,7 @@ class Util  {
         }
 
         fun VolleyError.getMessageString(): String {
+            if (networkResponse == null) return ""
             return String(this.networkResponse.data, charset("utf-8"))
         }
 

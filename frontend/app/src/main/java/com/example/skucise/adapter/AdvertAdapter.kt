@@ -100,19 +100,15 @@ class AdvertAdapter(
                         .Builder(context)
                         .setTitle("Da li ste sigurni da želite da obrišete oglas?")
                         .setPositiveButton("Da") { _, _ ->
-                            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-                            loadingDialog.start()
                             ReqSender.sendRequestString(
                                 context,
                                 Request.Method.POST,
                                 "http://10.0.2.2:5000/api/advert/remove_advert",
                                 hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                                 {
-                                    loadingDialog.dismiss()
                                     notifyItemRemoved(adverts.indexOf(currentAdvert))
                                 },
                                 { error ->
-                                    loadingDialog.dismiss()
                                     Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                                 }
                             )

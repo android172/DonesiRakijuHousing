@@ -91,21 +91,17 @@ class NavigationActivity : AppCompatActivity() {
         dropdownOptions.add(DropdownOption(
             "Odjavi se"
         ) {
-            val loadingDialog = Util.Companion.LoadingDialog(this)
-            loadingDialog.start()
             ReqSender.sendRequestString(
                 this,
                 Request.Method.POST,
                 "http://10.0.2.2:5000/api/login/user_logout",
                 null,
                 {
-                    loadingDialog.dismiss()
                     SessionManager.stopSession()
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 },
                 { error ->
-                    loadingDialog.dismiss()
                     SessionManager.stopSession()
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()

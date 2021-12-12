@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.graphics.Paint
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -267,19 +268,15 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     .Builder(requireContext())
                     .setTitle("Da li ste sigurni da želite da obrišete oglas?")
                     .setPositiveButton("Da") { _, _ ->
-                        val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-                        loadingDialog.start()
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
                             "http://10.0.2.2:5000/api/advert/remove_advert",
                             hashMapOf(Pair("advertId", advert!!.id.toString())),
                             {
-                                loadingDialog.dismiss()
                                 requireActivity().onBackPressed()
                             },
                             { error ->
-                                loadingDialog.dismiss()
                                 Toast.makeText(
                                     requireContext(),
                                     "error:\n${error.getMessageString()}",
@@ -291,6 +288,11 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     .setNegativeButton("Ne") {_,_->}
                     .create().show()
             }
+
+            tv_advert_page_owner.text = "@$ownerUsername (ja)"
+
+            tv_advert_page_calender_header.visibility = View.GONE
+            calv_advert_page_calender.visibility = View.GONE
         }
         else {
             btn_add_to_favourites_advert_page.visibility = View.VISIBLE
@@ -316,6 +318,10 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     }
                 )
             }
+            tv_advert_page_owner.text = "@$ownerUsername"
+
+            tv_advert_page_calender_header.visibility = View.VISIBLE
+            calv_advert_page_calender.visibility = View.VISIBLE
         }
 
         // // Visible by both owner and guests // //
@@ -355,7 +361,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         }
 
         // Owner user information
-        tv_advert_page_owner.text = ownerUsername
+        tv_advert_page_owner.paintFlags = tv_advert_page_owner.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         tv_advert_page_owner.setOnClickListener {
             val navigationView = requireActivity().nav_bottom_navigator
 

@@ -1,5 +1,6 @@
 package com.example.skucise
 
+import android.app.Activity
 import android.content.Context
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -13,6 +14,7 @@ import org.json.JSONException
 import com.android.volley.VolleyLog
 import com.android.volley.AuthFailureError
 import java.io.UnsupportedEncodingException
+import javax.xml.transform.ErrorListener
 
 
 open class ReqSender {
@@ -48,10 +50,16 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : JsonObjectRequest (
-                method, fullUrl, null, listener, errorListener
+                method, fullUrl, null,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -72,10 +80,16 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : StringRequest(
-                method, fullUrl, listener, errorListener
+                method, fullUrl,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -96,10 +110,16 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonArrayRequest(
-                method, fullUrl, null, listener, errorListener
+                method, fullUrl, null,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
