@@ -236,12 +236,6 @@ class AddAdvertFragment : Fragment() {
                 return@setOnClickListener
             }
 
-
-            // all is right send request
-            // start a dialog to prevent the user from further interaction
-            val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-            loadingDialog.start()
-
             // send request
             val js = JSONObject()
             js.put("ResidenceType", residenceType)
@@ -261,7 +255,7 @@ class AddAdvertFragment : Fragment() {
             val params = HashMap<String, String>()
             params["advertJson"] = js.toString()
 
-            val urlAddAdvert = "http://10.0.2.2:5000/api/advert/add_advert"
+            val urlAddAdvert = "advert/add_advert"
 
             ReqSender.sendRequestString(
                 context = this.requireActivity(),
@@ -269,15 +263,29 @@ class AddAdvertFragment : Fragment() {
                 url = urlAddAdvert,
                 params = params,
                 listener = { response ->
-                    //Toast.makeText(requireContext(), "response:\n$response\nAdding images...", Toast.LENGTH_LONG).show()
-
-                    if(imageURIs.isEmpty()) return@sendRequestString
-
                     val advertId = response.toUInt()
-                    val urlAddAdvertImages = "http://10.0.2.2:5000/api/image/add_advert_images?advertId=$advertId"
+
+                    // Don't send images
+                    if(imageURIs.isEmpty()) {
+                        val navigationView = requireActivity().nav_bottom_navigator
+
+                        navigationView!!.menu.setGroupCheckable(0, true, false)
+                        for (i in 0 until navigationView.menu.size()) {
+                            navigationView.menu.getItem(i).isChecked = false
+                        }
+                        navigationView.menu.setGroupCheckable(0, true, true)
+
+                        val args = Bundle()
+                        args.putInt("advertId", advertId.toInt())
+                        findNavController().navigate(R.id.advertFragment, args)
+
+                        return@sendRequestString
+                    }
+
+                    // Send images
+                    val urlAddAdvertImages = "image/add_advert_images?advertId=$advertId"
 
                     val images = ArrayList<FileData>()
-
                     for(uri in imageURIs){
                         val inputStream = requireActivity().contentResolver.openInputStream(uri)
                         val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
@@ -297,8 +305,6 @@ class AddAdvertFragment : Fragment() {
                         urlAddAdvertImages,
                         images,
                         {
-                            Toast.makeText(requireContext(), "response:\n$response", Toast.LENGTH_LONG).show()
-
                             val navigationView = requireActivity().nav_bottom_navigator
 
                             navigationView!!.menu.setGroupCheckable(0, true, false)
@@ -310,16 +316,13 @@ class AddAdvertFragment : Fragment() {
                             val args = Bundle()
                             args.putInt("advertId", advertId.toInt())
                             findNavController().navigate(R.id.advertFragment, args)
-                            loadingDialog.dismiss()
                         },
                         { error ->
-                            loadingDialog.dismiss()
                             Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()
                         }
                     )
                 },
                 errorListener = { error ->
-                    loadingDialog.dismiss()
                     Toast.makeText(requireContext(), "textError:\n$error", Toast.LENGTH_LONG).show()
                 },
                 authorization = true

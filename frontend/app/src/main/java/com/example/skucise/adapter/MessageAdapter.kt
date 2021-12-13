@@ -18,6 +18,7 @@ import com.example.skucise.*
 import com.example.skucise.DateTimeHelper.Companion.getDateAgeClass
 import com.example.skucise.DateTimeHelper.Companion.sameAgeClass
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.item_meeting_request.view.*
 import kotlinx.android.synthetic.main.item_message.view.*
 import kotlinx.android.synthetic.main.item_message.view.img_seen
 import kotlinx.android.synthetic.main.item_message.view.img_user
@@ -187,6 +188,21 @@ class MessageAdapter (
                     .into(img_user)
                 csl_user_image_holder.visibility = View.VISIBLE
                 csl_user_image_holder.layoutParams.height = this@MessageAdapter.height
+
+                // Link to user
+                csl_user_image_holder.setOnClickListener {
+                    if (navigationView == null) return@setOnClickListener
+
+                    navigationView!!.menu.setGroupCheckable(0, true, false)
+                    for (i in 0 until navigationView!!.menu.size()) {
+                        navigationView!!.menu.getItem(i).isChecked = false
+                    }
+                    navigationView!!.menu.setGroupCheckable(0, true, true)
+
+                    val args = Bundle()
+                    args.putInt("userId", otherUserId.toInt())
+                    parentFragment.findNavController().navigate(R.id.myAccountFragment, args)
+                }
             }else{
                 csl_user_image_holder.visibility = View.INVISIBLE
                 csl_user_image_holder.layoutParams.height = 1

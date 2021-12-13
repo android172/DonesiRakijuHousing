@@ -133,7 +133,7 @@ class EditAdvertFragment : Fragment() {
             ReqSender.sendRequest(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/advert/get_advert",
+                "advert/get_advert",
                 params,
                 { response ->
                     val advertData = response.getJSONObject("advertData")
@@ -182,7 +182,7 @@ class EditAdvertFragment : Fragment() {
 //            ReqSender.sendRequestArray(
 //                requireContext(),
 //                Request.Method.GET,
-//                "http://10.0.2.2:5000/api/image/get_advert_image_names",
+//                "image/get_advert_image_names",
 //                params,
 //                { response ->
 //                    var images = ArrayList<String>()
@@ -190,7 +190,7 @@ class EditAdvertFragment : Fragment() {
 //                    for (i in 0 until response.length())
 //                    {
 //                        val image = response[i] as String
-//                        imageURLs.add (URL("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=$image"))
+//                        imageURLs.add (URL("image/get_advert_image_file?advertId=${advertId}&imageName=$image"))
 //                    }
 //
 //                    if (images.isEmpty())
@@ -233,7 +233,7 @@ class EditAdvertFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_edit_advert, container, false)
     }
 
-    fun makeError(text : String){
+    private fun makeError(text : String){
         Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
     }
 
@@ -326,7 +326,7 @@ class EditAdvertFragment : Fragment() {
             val params = HashMap<String, String>()
             params["editJson"] = js.toString()
 
-            val urlEditAdvert = "http://10.0.2.2:5000/api/advert/edit_advert"
+            val urlEditAdvert = "advert/edit_advert"
 
             ReqSender.sendRequestString(
                 context = this.requireActivity(),
@@ -346,7 +346,7 @@ class EditAdvertFragment : Fragment() {
                         return@sendRequestString
                     }
 
-                    val urlAddAdvertImages = "http://10.0.2.2:5000/api/image/add_advert_images?advertId=${advert!!.id}"
+                    val urlAddAdvertImages = "image/add_advert_images?advertId=${advert!!.id}"
 
                     val images = ArrayList<FileData>()
 

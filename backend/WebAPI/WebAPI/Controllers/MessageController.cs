@@ -114,7 +114,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<MessageOrMeeting>> GetChat(uint otherUserId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             var messages = ctx.Messages
                 .Where(m => (m.SenderId == otherUserId && m.ReceiverId == userId) || (m.SenderId == userId && m.ReceiverId == otherUserId))
@@ -213,10 +213,10 @@ namespace WebAPI.Controllers
         public IActionResult SendMessage(uint otherUserId, string content)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             if (otherUserId == userId)
-                return BadRequest("You cannot send messages to yourself!");
+                return BadRequest("Greška, ne možete poslati poruku samom sebi.");
 
             var hasMeeting = ctx.Meetings
                 .Where(m => m.AgreedOwner && m.AgreedVisitor
@@ -224,7 +224,7 @@ namespace WebAPI.Controllers
                     || ((m.VisitorId == userId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == otherUserId))));
 
             if (!hasMeeting.Any())
-                return BadRequest("You must have an arranged meeting before you are able to chat with the recipient!");
+                return BadRequest("Greška, nemate zakazan sastanak sa ovom osobom.");
 
             Message msg = new Message { SenderId = userId, ReceiverId = otherUserId, Content = content, Seen = false, SendDate = DateTime.Now };
 
@@ -246,7 +246,7 @@ namespace WebAPI.Controllers
         public ActionResult<int> CheckMessages()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return ctx.Messages.Where(m => m.ReceiverId == userId && m.Seen == false).Count();
         }
@@ -256,7 +256,7 @@ namespace WebAPI.Controllers
         public ActionResult<UserDisplay> GetUserInfo(uint otherUserId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return GetUserDisplay(otherUserId);
         }

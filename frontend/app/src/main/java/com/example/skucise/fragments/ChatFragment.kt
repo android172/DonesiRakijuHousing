@@ -8,24 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.MessageJSON.Companion.toRecentMessage
-import com.example.skucise.Util.Companion.getFileExtension
-import com.example.skucise.Util.Companion.getFileName
-import com.example.skucise.adapter.AdvertAdapter
-import com.example.skucise.adapter.AdvertImagesAdapter
 import com.example.skucise.adapter.RecentMessageAdapter
-import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_chat.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -62,12 +52,10 @@ class ChatFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
 
-        val url = "http://10.0.2.2:5000/api/message/get_chats"
-
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/message/get_chats",
+            "message/get_chats",
             null,
             { response ->
                 val js = (response as JSONArray)

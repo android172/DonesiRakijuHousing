@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         public ActionResult<FileData> GetUserImage(uint userId = 0)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             if (userId == 0) 
                 userId = currentUserId;
@@ -126,7 +126,7 @@ namespace WebAPI.Controllers
         public ActionResult SetUserImage([FromBody] IEnumerable<FileData> image)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             if (image == null) { return BadRequest("Object must not be null!"); }
 
@@ -156,7 +156,7 @@ namespace WebAPI.Controllers
         public ActionResult DeleteUserImage()
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             try
             {
@@ -174,7 +174,7 @@ namespace WebAPI.Controllers
         public ActionResult<List<FileData>> GetAdvertImages(uint advertId)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             try
             {
@@ -202,7 +202,7 @@ namespace WebAPI.Controllers
             }
             else
             {
-                return Unauthorized("You can only edit your own adverts!");
+                return Unauthorized("Greška, niste vlasnik oglasa.");
             }
         }
 
@@ -211,7 +211,7 @@ namespace WebAPI.Controllers
         public ActionResult AddAdvertImage(uint advertId, [FromBody] FileData image)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             if (image == null) { return BadRequest("Object must not be null!"); }
             try
@@ -230,7 +230,7 @@ namespace WebAPI.Controllers
         public ActionResult AddAdvertImages(uint advertId,[FromBody] IEnumerable<FileData> images)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             //if (images == null) { return BadRequest("Object must not be null!"); }
             try
@@ -250,7 +250,7 @@ namespace WebAPI.Controllers
         public ActionResult DeleteAdvertImage(uint advertId, string imageName = null)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return TryEditAdvert(advertId, () => img.DeleteAdvertImage(advertId, imageName));
         }
@@ -260,7 +260,7 @@ namespace WebAPI.Controllers
         public ActionResult DeleteAdvertImages(uint advertId)
         {
             if (JwtHelper.TokenUnverified(currentUserId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return TryEditAdvert(advertId, () => img.DeleteAdvertImage(advertId));
         }

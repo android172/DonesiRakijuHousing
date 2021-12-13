@@ -38,6 +38,7 @@ fun loadAdverts(jsonArray: JSONArray): ArrayList<Advert> {
 
         adverts.add( Advert(
             id            = json.getInt("id").toUInt(),
+            ownerId       = json.getInt("ownerId").toUInt(),
             title         = json.getString("title"),
             price         = json.getDouble("price"),
             city          = json.getString("city"),

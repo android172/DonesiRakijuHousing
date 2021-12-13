@@ -3,19 +3,18 @@ package com.example.skucise
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.LabeledIntent
+import android.content.res.Resources.getSystem
 import android.net.Uri
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.TextView
 import java.io.File
 import android.provider.OpenableColumns
-
-
+import com.android.volley.VolleyError
 
 
 class Util  {
@@ -129,5 +128,12 @@ class Util  {
         } catch (e: Exception) {
             null
         }
+
+        fun VolleyError.getMessageString(): String {
+            if (networkResponse == null) return ""
+            return String(this.networkResponse.data, charset("utf-8"))
+        }
+
+        val Int.dp: Int get() = (this * getSystem().displayMetrics.density).toInt()
     }
 }

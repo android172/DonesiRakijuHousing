@@ -26,7 +26,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class MyAdvertsFragment : Fragment() {
 
-    private val advertAdapter: AdvertAdapter = AdvertAdapter(allFavorites = false, type = 1)
+    private val advertAdapter: AdvertAdapter = AdvertAdapter(allFavorites = false)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +48,7 @@ class MyAdvertsFragment : Fragment() {
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_my_adverts",
+            "advert/get_my_adverts",
             null,
             { response ->
                 val myAdverts = loadAdverts(response)

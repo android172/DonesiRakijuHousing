@@ -15,18 +15,17 @@ import com.example.skucise.FilterArray
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.example.skucise.adapter.AdvertAdapter
-import com.example.skucise.frontpageTiles.CityTilesAdapter
-import com.example.skucise.frontpageTiles.TileSet
+import com.example.skucise.adapter.CityTilesAdapter
+import com.example.skucise.TileSet
 import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
 import kotlinx.android.synthetic.main.fragment_frontpage.view.*
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
 
-    private val advertAdapter: AdvertAdapter = AdvertAdapter(type = 2)
+    private val advertAdapter: AdvertAdapter = AdvertAdapter(type = 1)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +39,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             ReqSender.sendRequestArray(
                 requireActivity(),
                 Request.Method.GET,
-                "http://10.0.2.2:5000/api/advert/get_all_cities",
+                "advert/get_all_cities",
                 null,
                 { cities ->
                     val cityArray = Array(
@@ -62,7 +61,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
         ReqSender.sendRequestArray(
             requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_recent_adverts",
+            "advert/get_recent_adverts",
             hashMapOf(Pair("numOfAdverts", "10")),
             { results ->
                 val adverts = loadAdverts(results)

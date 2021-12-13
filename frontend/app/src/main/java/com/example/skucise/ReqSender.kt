@@ -1,5 +1,6 @@
 package com.example.skucise
 
+import android.app.Activity
 import android.content.Context
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -12,12 +13,11 @@ import org.json.JSONObject
 import org.json.JSONException
 import com.android.volley.VolleyLog
 import com.android.volley.AuthFailureError
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import java.io.UnsupportedEncodingException
-
 
 open class ReqSender {
     companion object {
-
         private val queuedRequests : HashMap<Context, RequestQueue> = HashMap()
 
         private fun getRequestQueue(context: Context): RequestQueue {
@@ -28,7 +28,7 @@ open class ReqSender {
         }
 
         private fun buildUrl(base_url: String, params: MutableMap<String, String>?): String {
-            var url = "$base_url?"
+            var url = "$BASE_API_URL$base_url?"
             if (params != null) {
                 for (param in params) {
                     url = "$url${param.key}=${param.value}&"
@@ -36,8 +36,6 @@ open class ReqSender {
             }
             return url.substring(0, url.length - 1)
         }
-
-
 
         fun sendRequest(
             context: Context,
@@ -48,10 +46,16 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : JsonObjectRequest (
-                method, fullUrl, null, listener, errorListener
+                method, fullUrl, null,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -72,10 +76,43 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : StringRequest(
-                method, fullUrl, listener, errorListener
+                method, fullUrl,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            ) {
+                override fun getHeaders(): MutableMap<String, String> {
+                    if (!authorization) return super.getHeaders()
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = "Bearer ${SessionManager.token.toString()}"
+                    return headers
+                }
+            }
+            queue.add(stringRequest)
+        }
+
+        fun sendRequestStringNoLoading(
+            context: Context,
+            method : Int,
+            url : String,
+            params : MutableMap<String, String>?,
+            listener: Response.Listener<String>,
+            errorListener: Response.ErrorListener?,
+            authorization: Boolean = true
+        ) {
+            // Send request
+            val fullUrl = buildUrl(url, params)
+            val queue = getRequestQueue(context)
+            val stringRequest = object : StringRequest(
+                method, fullUrl,
+                { listener.onResponse(it) },
+                { errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -96,10 +133,16 @@ open class ReqSender {
             errorListener: Response.ErrorListener?,
             authorization: Boolean = true
         ) {
+            // loading dialog
+            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+            loadingDialog.start()
+            // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonArrayRequest(
-                method, fullUrl, null, listener, errorListener
+                method, fullUrl, null,
+                { loadingDialog.dismiss(); listener.onResponse(it) },
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -136,7 +179,7 @@ open class ReqSender {
                 val requestBody = jsonArray.toString()
 
                 val stringRequest: StringRequest = object : StringRequest(
-                    method, url, listener, errorListener
+                    method, "${BASE_API_URL}$url", listener, errorListener
                 ) {
                     override fun getBodyContentType(): String {
                         return "application/json; charset=utf-8"
