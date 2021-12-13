@@ -23,6 +23,7 @@ import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
 import com.example.skucise.adapter.AddAdvertImagesAdapter
 import com.example.skucise.adapter.AdvertImagesAdapter
+import com.example.skucise.adapter.DeleteAdvertImagesAdapter
 import com.example.skucise.fragments.SearchFragment.Companion.allCities
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
@@ -46,6 +47,7 @@ private const val ARG_PARAM1 = "advertId"
 class EditAdvertFragment : Fragment() {
 
     private val imageURIs = ArrayList<Uri>()
+    private val imageNames = ArrayList<String>()
     private var advertId : Int = 0
     private var advert : Advert? = null
 
@@ -156,6 +158,13 @@ class EditAdvertFragment : Fragment() {
                         dateCreated       = LocalDateTime.parse(advertData.getString("dateCreated"))
                     )
 
+                    val images = response.getJSONArray("images")
+                    for(i in 0 until images.length()){
+                        imageNames.add(images[i].toString())
+                    }
+                    if(rcv_advert_images_old.adapter != null){
+                        rcv_advert_images_old.adapter!!.notifyDataSetChanged()
+                    }
 //                  updateAdvertInfo()
 
                     ti_title.setText(advert!!.title)
@@ -223,6 +232,8 @@ class EditAdvertFragment : Fragment() {
         atv_city.setAdapter(cityArrayAdapter)
 
         rcv_advert_images.adapter = AddAdvertImagesAdapter(imageURIs)
+
+        rcv_advert_images_old.adapter = DeleteAdvertImagesAdapter(advertId, imageNames)
     }
 
     override fun onCreateView(
