@@ -1,4 +1,4 @@
-package com.example.skucise
+package com.example.skucise.fragments
 
 import android.os.Build
 import android.os.Bundle
@@ -10,8 +10,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
+import com.example.skucise.*
 import com.example.skucise.adapter.MessageAdapter
-import com.example.skucise.adapter.RecentMessageAdapter
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.android.synthetic.main.fragment_chat_with_user.*
 import org.json.JSONArray
@@ -25,7 +25,7 @@ private const val ARG_PARAM1 = "otherUserId"
  * create an instance of this fragment.
  */
 class ChatWithUserFragment : Fragment() {
-    private val messages: ArrayList<Message> = ArrayList()
+    private val messages: ArrayList<MessageOrMeeting> = ArrayList()
 
     private var otherUserId: UInt? = null
     lateinit var mAdapter: MessageAdapter
@@ -56,6 +56,39 @@ class ChatWithUserFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
 
+        updateMessages()
+
+        btn_send_msg.setOnClickListener {
+            val msg = et_msg.text.toString()
+
+            if(msg.isBlank())
+                return@setOnClickListener
+
+            val params = HashMap<String, String>()
+            params.put("otherUserId", otherUserId.toString())
+            params.put("content", msg)
+
+            val sendMsgUrl = "http://10.0.2.2:5000/api/message/send_message"
+
+            ReqSender.sendRequestString(
+                this.requireActivity(),
+                Request.Method.POST,
+                sendMsgUrl,
+                params,
+                { response ->
+                    //Toast.makeText(activity, "response:\n($msg)\n$response ", Toast.LENGTH_LONG).show()
+                    et_msg.text.clear()
+                    updateMessages()
+                },
+                { error ->
+                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                }
+            )
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun updateMessages(){
         val url = "http://10.0.2.2:5000/api/message/get_chat?otherUserId=$otherUserId"
 
         ReqSender.sendRequestArray(
@@ -68,7 +101,7 @@ class ChatWithUserFragment : Fragment() {
                 messages.clear()
                 for(i in 0 until js.length()){
                     val jsonObj = js[i] as JSONObject
-                    messages.add(MessageJSON.toMessage(jsonObj))
+                    messages.add(MessageJSON.toMessageOrMeeting(jsonObj))
                 }
                 mAdapter.updateData()
                 rcv_messages.scrollToPosition(mAdapter.getItemCount()-1);
