@@ -38,27 +38,35 @@ class DateTimeHelper {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        fun getReadableDateFull(dt: LocalDateTime): String {
+            return dt.format(DateTimeFormatter.ofPattern("EEEE dd/MM/u HH:mm"))
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun getDateAgeClass(dt: LocalDateTime): Int {
             val ct = LocalDateTime.now()
             val diff = Duration.between(dt, ct)
             return when {
+                diff < Duration.ofSeconds(0)-> {
+                    -1
+                }
                 diff < Duration.ofMinutes(1) -> {
-                    0
+                    0 //Seconds
                 }
                 diff < Duration.ofHours(1) -> {
-                    1
+                    1 //Minutes
                 }
                 diff < Duration.ofDays(1) -> {
-                    2
+                    2 //Hours
                 }
                 diff < Duration.ofDays(7) -> {
-                    3
+                    3 //DayOfWeek
                 }
                 diff < Duration.ofDays(365) -> {
-                    4
+                    4 //DayOfMonth
                 }
                 else -> {
-                    5
+                    5 //DayOfYear
                 }
             }
         }

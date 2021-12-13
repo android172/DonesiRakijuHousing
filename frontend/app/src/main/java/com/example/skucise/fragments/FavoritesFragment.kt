@@ -43,7 +43,7 @@ class FavoritesFragment : Fragment() {
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_favourite_adverts",
+            "advert/get_favourite_adverts",
             null,
             { response ->
                 val favoriteAdverts = loadAdverts(response)

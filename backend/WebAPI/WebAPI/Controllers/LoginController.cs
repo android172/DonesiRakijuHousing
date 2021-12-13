@@ -47,7 +47,7 @@ namespace WebAPI.Controllers
         public ActionResult<object> UserLogin(string usernameOrEmail, string password)
         {
             if (String.IsNullOrWhiteSpace(usernameOrEmail) || String.IsNullOrWhiteSpace(password))
-                return BadRequest("Username or password is blank or empty.");
+                return BadRequest("Korisničko ime/email ili lozinka nisu uneti.");
 
             var exists = ctx.Users.Where(u => (u.Username == usernameOrEmail || u.Email == usernameOrEmail) && u.Password == password);
 
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
                 User user = exists.FirstOrDefault();
 
                 if (user.Confirmed == false)
-                    return BadRequest("Your email is not confirmed.");
+                    return BadRequest("Vaš email nije potvrđen.");
 
                 string token = jwtHelper.CreateToken(user);
                 JwtHelper.AddActiveToken(user.Id, token);
@@ -64,7 +64,7 @@ namespace WebAPI.Controllers
                 return Ok(new { Token = token, UserId =  user.Id, Username = user.Username});
             }
 
-            return NotFound("User does not exist.");
+            return NotFound("Uneli ste pogrešno korisničko ime/email ili lozinku.");
 
         }
 
@@ -79,21 +79,21 @@ namespace WebAPI.Controllers
 
             if (!(imePrezimeReg.IsMatch(firstName) && imePrezimeReg.IsMatch(lastName) && emailReg.IsMatch(email)
                     && usernameReg.IsMatch(username) && passReg.IsMatch(password)))
-                return BadRequest("Regex does not match.");
+                return BadRequest("Neki od unetih podataka su neispravni.");
 
             User newUser = new User { Username = username, Password = password, FirstName = firstName, LastName = lastName, Email = email, DateCreated = DateTime.Now, Confirmed = false };
 
             try
             {
+                ems.SendConfirmationEmail(newUser.Email);
                 ctx.Users.Add(newUser);
                 ctx.SaveChanges();
-                ems.SendConfirmationEmail(newUser.Email);
 
-                return Ok("User added.");
+                return Ok("Korisnik je uspešno dodat.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to add user.");
+                return StatusCode(500, "Greška pri dodavanju korisnika.");
             }
         }
 
@@ -105,17 +105,17 @@ namespace WebAPI.Controllers
 
             if(user == null)
             {
-                return BadRequest();
+                return BadRequest("Korisnik ne postoji.");
             }
 
             try
             {
                 ems.SendConfirmationEmail(user.Email);
-                return Ok();
+                return Ok("Mail poslat.");
             }
             catch
             {
-                return StatusCode(500);
+                return StatusCode(500, "Greška pri slanju maila.");
             }
         }
 
@@ -127,17 +127,17 @@ namespace WebAPI.Controllers
 
             if (user == null)
             {
-                return BadRequest();
+                return BadRequest("Korisnik nije pronađen.");
             }
 
             try
             {
                 ems.SendPasswordResetEmail(user.Email);
-                return Ok();
+                return Ok("Mail za resetovanje lozinke je uspešno poslat.");
             }
             catch (Exception e)
             {
-                return StatusCode(500);
+                return StatusCode(500, "Greška pri slanju maila.");
             }
         }
 
@@ -149,13 +149,13 @@ namespace WebAPI.Controllers
             string temp = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (temp == null)
-                return NotFound("Token doesn't exist");
+                return NotFound("Token nije validan.");
 
             uint userId = uint.Parse(temp);
 
             JwtHelper.RemoveToken(userId);
 
-            return Ok("logged out");
+            return Ok("Uspešno ste se izlogovali.");
         }
 
         [AllowAnonymous]
@@ -164,9 +164,9 @@ namespace WebAPI.Controllers
         public ActionResult<string> CheckToken(string token)
         {
             if (JwtHelper.CheckActiveToken(token))
-                return Ok("Token exists");
+                return Ok("Token postoji.");
 
-            return NotFound("Token doesn't exist");
+            return NotFound("Token ne postoji.");
         }
     }
 }

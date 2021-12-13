@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         public ActionResult<object> GetMyInfo()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return ctx.Users.Where(u => u.Id == userId).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, u.Email, u.DateCreated, NumberOfAdverts = UsersController.NumOfAdverts(ctx, userId), UserScore = ReviewController.AverageUserRating(ctx, userId) }).FirstOrDefault();
         }
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
         public ActionResult<object> GetUserInfo(uint idUser)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return ctx.Users.Where(u => u.Id == idUser).Select(u => new { u.Id, u.Username, u.FirstName, u.LastName, NumberOfAdverts = UsersController.NumOfAdverts(ctx, idUser), UserScore = ReviewController.AverageUserRating(ctx, idUser) }).FirstOrDefault();
         }
@@ -59,17 +59,17 @@ namespace WebAPI.Controllers
         public ActionResult ResetPassword()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             User user = ctx.Users.Where(u => u.Username == username).FirstOrDefault();
             try
             {
                 ems.SendPasswordResetEmail(user.Email);
-                return Ok();
+                return Ok("Zahtev za promenu lozinke uspešno poslat.");
             }
             catch
             {
-                return StatusCode(500);
+                return StatusCode(500, "Greška pri slanju zahteva za promenu lozinke.");
             }
         }
 
@@ -78,26 +78,33 @@ namespace WebAPI.Controllers
         public ActionResult ChangeEmail(string newEmail)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Regex emailReg = new Regex(@"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$");
 
             if (!emailReg.IsMatch(newEmail))
-                return BadRequest("Regex does not match.");
+                return BadRequest("Greška, podatak je neispravan.");
 
             User result = ctx.Users.Where(u => u.Id == userId).FirstOrDefault();
 
             if(result != null)
             {
-                result.Email = newEmail;
-                result.Confirmed = false;           // email is not confirmed anymore.
-                ctx.Users.Update(result);
-                ctx.SaveChanges();
-                ems.SendConfirmationEmail(newEmail);
-                return Ok("Email changed. Confrim new email");
+                try
+                {
+                    result.Email = newEmail;
+                    result.Confirmed = false;           // email is not confirmed anymore.
+                    ctx.Users.Update(result);
+                    ctx.SaveChanges();
+                    ems.SendConfirmationEmail(newEmail);
+                    return Ok("Email adresa uspešno promenjena. Potvrdite novu email adresu.");
+                }
+                catch
+                {
+                    return StatusCode(500, "Greška pri izmeni email adrese.");
+                }
             }
 
-            return NotFound("User does not exist.");
+            return NotFound("Greška, korisnik ne postoji.");
         }
 
         [HttpPost]
@@ -105,22 +112,29 @@ namespace WebAPI.Controllers
         public ActionResult ChangePassword(string oldPassword, string newPassword)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             User result = ctx.Users.Where(u => u.Id == userId && u.Password == oldPassword).FirstOrDefault();
 
             if (result == null)
-                return NotFound("User does not exist or old password is incorrect.");
+                return NotFound("Greška, korisnik ne postoji ili stara lozinka nije tačna.");
 
             Regex passReg = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,32}$");
 
             if (!passReg.IsMatch(newPassword))
-                return BadRequest("Regex does not match.");
+                return BadRequest("Greška, podatak je neispravan.");
 
-            result.Password = newPassword;
-            ctx.Users.Update(result);
-            ctx.SaveChanges();
-            return Ok("Password changed.");
+            try
+            {
+                result.Password = newPassword;
+                ctx.Users.Update(result);
+                ctx.SaveChanges();
+                return Ok("Lozinka uspešno promenjena.");
+            }
+            catch
+            {
+                return StatusCode(500, "Greška pri izmeni lozinke.");
+            }
         }
 
         [HttpPost]
@@ -128,7 +142,7 @@ namespace WebAPI.Controllers
         public ActionResult ChangeInfo(string newUsername, string newFirstName, string newLastName)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             Regex imePrezimeReg = new Regex(@"^([ \u00c0-\u01ffa-zA-Z'\-])+$");
             Regex usernameReg = new Regex(@"^[A-Za-z0-9_-]{4,16}$");
@@ -138,7 +152,7 @@ namespace WebAPI.Controllers
             if (newUsername != null)
             {
                 if (!usernameReg.IsMatch(newUsername))
-                    return BadRequest("Regex does not match.");
+                    return BadRequest("Greška, korisničko ime je neispravno.");
 
                 result.Username = newUsername;
             }
@@ -147,7 +161,7 @@ namespace WebAPI.Controllers
             if (newFirstName != null)
             {
                 if (!imePrezimeReg.IsMatch(newFirstName))
-                    return BadRequest("Regex does not match.");
+                    return BadRequest("Greška, ime je neispravno.");
 
                 result.FirstName = newFirstName;
             }
@@ -156,7 +170,7 @@ namespace WebAPI.Controllers
             if (newLastName != null)
             {
                 if (!imePrezimeReg.IsMatch(newLastName))
-                    return BadRequest("Regex does not match.");
+                    return BadRequest("Greška, prezime je neispravno.");
 
                 result.LastName = newLastName;
             }
@@ -164,7 +178,7 @@ namespace WebAPI.Controllers
             ctx.Users.Update(result);
             ctx.SaveChanges();
 
-            return Ok("Info changed.");
+            return Ok("Podaci uspešno izmenjeni.");
         }
 
         public static int NumOfAdverts(SkuciSeDBContext ctx, uint idUser)

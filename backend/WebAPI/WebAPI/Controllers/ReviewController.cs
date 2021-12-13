@@ -34,12 +34,12 @@ namespace WebAPI.Controllers
         public ActionResult<string> PostReview(uint advertId, uint rating, string text)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             var result = ctx.Meetings.Where(m => m.AdvertId == advertId && m.VisitorId == userId && m.Concluded == true && !ctx.Reviews.Any(r => r.MeetingId == m.Id)).FirstOrDefault();
 
             if (result == null)
-                return NotFound("You can't post a review because meeting does not exist or is not concluded.");
+                return NotFound("Greška, ne možete postaviti recenziju sa ovaj oglas jer sastanak ne postoji ili nije završen.");
 
             Review newReview = new Review { MeetingId = result.Id, Rating = rating, Text = text };
 
@@ -47,11 +47,11 @@ namespace WebAPI.Controllers
             {
                 ctx.Reviews.Add(newReview);
                 ctx.SaveChanges();
-                return Ok("Review posted.");
+                return Ok("Recenzija uspešno postavljena.");
             }
             catch
             {
-                return StatusCode(500, "Failed to post a review.");
+                return StatusCode(500, "Greška pri postavljanju recenzije.");
             }
         }
 
@@ -60,7 +60,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<object>> AvailableReviews()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             var result = ctx.Meetings.Where(m => m.VisitorId == userId && m.Concluded == true && !ctx.Reviews.Any(r => r.MeetingId == m.Id)).ToList();
 
@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
         public ActionResult<string> CalculateAdvertRating(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return AverageAdvertRating(ctx, advertId);
         }
@@ -82,7 +82,7 @@ namespace WebAPI.Controllers
         public ActionResult<string> CalculateUserRating(uint idUser)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return AverageUserRating(ctx, idUser);
         }
@@ -92,7 +92,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<object>> GetAdvertReviews(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(AdvertController.unAuthMsg);
 
             return ctx.Meetings.Where(m => m.AdvertId == advertId)
                     .Join(ctx.Reviews, m => m.Id, r => r.MeetingId, (m, r) => new { m.VisitorId, r })

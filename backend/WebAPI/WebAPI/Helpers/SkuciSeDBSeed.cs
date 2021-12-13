@@ -17,7 +17,7 @@ namespace WebAPI.Helpers
                 new User { Id = 1, Username = "test", Password = "test", Email = "test@mail.com", FirstName = "Pera", LastName = "Peric", DateCreated = DateTime.Now, Confirmed = true });
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Mika", LastName = "Mikic", DateCreated = DateTime.Now, Confirmed = false });
+                new User { Id = 2, Username = "test2", Password = "test2", Email = "test2@mail.com", FirstName = "Mika", LastName = "Mikic", DateCreated = DateTime.Now, Confirmed = true });
 
             string[] names = new[]
             {
@@ -174,7 +174,7 @@ namespace WebAPI.Helpers
                         Id = i,
                         SenderId = uId1,
                         ReceiverId = uId2,
-                        Content = $"Hello user:{uId2}!",
+                        Content = "[Test poruka kreirana od strane servera]",
                         SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365*45 + rgen.Next() % 2000, 0, 0, 0),
                         Seen = PickOne(rgen, trueOrFalse)
                     });
@@ -184,7 +184,7 @@ namespace WebAPI.Helpers
                         Id = i + 10,
                         SenderId = uId2,
                         ReceiverId = uId1,
-                        Content = $"Hello to you too, user:{uId2}!",
+                        Content = "[Test poruka kreirana od strane servera]",
                         SendDate = DateTime.UnixEpoch + new TimeSpan(days: 365 * 45 + rgen.Next() % 2000, 0, 0, 0),
                         Seen = PickOne(rgen, trueOrFalse)
                     });

@@ -48,7 +48,7 @@ class MyAdvertsFragment : Fragment() {
         ReqSender.sendRequestArray(
             this.requireActivity(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/advert/get_my_adverts",
+            "advert/get_my_adverts",
             null,
             { response ->
                 val myAdverts = loadAdverts(response)

@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkuciSe">
         <activity
-            android:name=".AdvertImagesActivity"
+            android:name=".activities.AdvertImagesActivity"
             android:exported="true" />
 
         <meta-data

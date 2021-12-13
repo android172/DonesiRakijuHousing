@@ -26,6 +26,7 @@ namespace WebAPI.Controllers
         private readonly SkuciSeImageService img;
         private readonly string username;
         private readonly uint userId;
+        public static string unAuthMsg = "Zabranjen pristup, morate da se ulogujete.";
 
         public AdvertController(SkuciSeDBContext _ctx, SkuciSeImageService _img, IHttpContextAccessor httpContextAccessor)
         {
@@ -42,7 +43,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<object>> GetRecentAdverts(uint numOfAdverts)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var adverts = ctx.Adverts.OrderByDescending(ad => ad.DateCreated).Take((int)numOfAdverts).Select(Listing.AdListing);
 
@@ -63,15 +64,15 @@ namespace WebAPI.Controllers
         public ActionResult<object> GetAdvert(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId)
                 .Join(ctx.Users, ad => ad.OwnerId, u => u.Id, (ad, u) => new { ad, u.Username}).FirstOrDefault();        // CHANGE LATER
 
             if (result != null)
-                return new { AdvertData = result.ad, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId), Username = result.Username, IsFavourite = IsFavourite(advertId) };
+                return new { AdvertData = result.ad, AverageScore = ReviewController.AverageAdvertRating(ctx, advertId), CanLeaveReview = ReviewController.CanLeaveReview(ctx, advertId, userId), Username = result.Username, IsFavourite = IsFavourite(advertId), Images = Listing.GetImages(advertId) };
             else
-                return NotFound("Advert doesn't exist.");
+                return NotFound("Oglas nije pronađen.");
         }
 
         public class Filter
@@ -85,7 +86,7 @@ namespace WebAPI.Controllers
         public ActionResult<object> SearchAdverts(string filterArray, string searchParam, uint adsPerPage, uint pageNum, string orderBy, bool ascending)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             Dictionary<string, Func<Advert, dynamic, bool>> filterDict = new Dictionary<string, Func<Advert, dynamic, bool>>
             {
@@ -183,7 +184,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<object>> GetMyAdverts()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var result = ctx.Adverts.Where(ad => ad.OwnerId == userId).Select(ad => Listing.AdListing(ad));
 
@@ -195,7 +196,7 @@ namespace WebAPI.Controllers
         public ActionResult<IEnumerable<object>> GetFavouriteAdverts()
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var result = ctx.FavouriteAdverts.Where(f => f.UserId == userId)
                 .Join(ctx.Adverts,f => f.AdvertId,ad => ad.Id,(f, ad) => Listing.AdListing(ad));
@@ -208,7 +209,7 @@ namespace WebAPI.Controllers
         public ActionResult<string> AddFavouriteAdvert(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             FavouriteAdvert newFavourite = new FavouriteAdvert { UserId = userId, AdvertId = advertId };
 
@@ -217,11 +218,11 @@ namespace WebAPI.Controllers
                 ctx.FavouriteAdverts.Add(newFavourite);
                 ctx.SaveChanges();
 
-                return Ok("Advert added.");
+                return Ok("Oglas uspešno dodat u listu omiljenih oglasa.");
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to add advert.");
+                return StatusCode(500, "Greška pri dodavanju oglasa u listu omiljenih oglasa.");
             }
         }
 
@@ -230,7 +231,7 @@ namespace WebAPI.Controllers
         public ActionResult<string> RemoveFavouritAdvert(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var result = ctx.FavouriteAdverts.Where(ad => ad.AdvertId == advertId && ad.UserId == userId).FirstOrDefault();
 
@@ -239,10 +240,10 @@ namespace WebAPI.Controllers
                 ctx.FavouriteAdverts.Remove(result);
                 ctx.SaveChanges();
 
-                return Ok("Advert removed.");
+                return Ok("Oglas uspešno obrisan iz liste omiljenih oglasa.");
             }
 
-            return NotFound("Advert does not exist.");
+            return NotFound("Oglas ne postoji u listi omiljenih oglasa.");
         }
 
         [HttpPost]
@@ -250,7 +251,7 @@ namespace WebAPI.Controllers
         public ActionResult<uint> AddAdvert(string advertJson)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             Advert newAdvert = JsonSerializer.Deserialize<Advert>(advertJson);
             newAdvert.DateCreated = DateTime.Now;
@@ -266,7 +267,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Failed to add advert.");
+                return StatusCode(500, "Greška pri kreiranju oglasa.");
             }
         }
 
@@ -275,22 +276,22 @@ namespace WebAPI.Controllers
         public ActionResult<string> RemoveAdvert(uint advertId)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             var result = ctx.Adverts.Where(ad => ad.Id == advertId).FirstOrDefault();
             
             if(result != null)
             {
                 if (result.OwnerId != userId)
-                    return BadRequest("You are not an owner of this advert.");
+                    return BadRequest("Greška, niste vlasnik oglasa.");
 
                 ctx.Adverts.Remove(result);
                 ctx.SaveChanges();
 
-                return Ok("Advert removed.");
+                return Ok("Oglas uspešno obrisan.");
             }
 
-            return NotFound("Advert does not exist.");
+            return NotFound("Oglas ne postoji.");
         }
 
         //[HttpPost]
@@ -355,7 +356,7 @@ namespace WebAPI.Controllers
         public ActionResult<string> EditAdvert(string editJson)
         {
             if (JwtHelper.TokenUnverified(userId, Request))
-                return Unauthorized();
+                return Unauthorized(unAuthMsg);
 
             Advert editAdvert = JsonSerializer.Deserialize<Advert>(editJson);
             Advert result = ctx.Adverts.Where(ad => editAdvert.Id == ad.Id).FirstOrDefault();
@@ -363,7 +364,7 @@ namespace WebAPI.Controllers
             if(result != null)
             {
                 if (result.OwnerId != userId)
-                    return BadRequest("You are not an owner of this advert.");
+                    return BadRequest("Greška, niste vlasnik oglasa.");
 
                 try
                 {
@@ -380,15 +381,15 @@ namespace WebAPI.Controllers
                     ctx.Adverts.Update(result);
                     ctx.SaveChanges();
 
-                    return Ok("Advert edited.");
+                    return Ok("Oglas uspešno izmenjen.");
                 }
                 catch (Exception e)
                 {
-                    return StatusCode(500, "Failed to edit advert." + e.Message);
+                    return StatusCode(500, "Greška pri izmeni podataka oglasa.");
                 }
             }
 
-            return NotFound("Advert does not exist.");
+            return NotFound("Oglas ne postoji.");
         }
 
         private bool IsFavourite(uint advertId)

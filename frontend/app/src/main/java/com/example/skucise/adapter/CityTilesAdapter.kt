@@ -1,21 +1,17 @@
-package com.example.skucise.frontpageTiles
+package com.example.skucise.adapter
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.get
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.android.volley.Request
+import com.example.skucise.CityImageMap
 import com.example.skucise.FilterArray
 import com.example.skucise.R
-import com.example.skucise.ReqSender
+import com.example.skucise.TileSet
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.item_city_tile.view.*
 
 class CityTilesAdapter(private val tiles: List<TileSet>, private val navigationView: BottomNavigationView)

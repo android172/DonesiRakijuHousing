@@ -1,8 +1,10 @@
 package com.example.skucise.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.graphics.Paint
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,13 +12,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.example.skucise.*
 import com.example.skucise.R
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
+import com.example.skucise.Util.Companion.getMessageString
+import com.example.skucise.activities.AdvertImagesActivity
 import com.example.skucise.adapter.ReviewAdapter
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -41,25 +45,40 @@ private const val ARG_PARAM1 = "advertId"
  * create an instance of this fragment.
  */
 @SuppressLint("SetTextI18n")
-class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener, View.OnClickListener {
+class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSetListener {
+
+    // advert data
     private var advert: Advert? = null
     private var averageScore: String = "Bez ocena"
-    private var canLeaveReview: Boolean = false
+    private var ownerUsername: String = ""
     private var isFavourite: Boolean = false
-    
+
+    // Calendar data
     private var selectedYear: Int = 1
     private var selectedMonth: Int = 1
     private var selectedDay: Int = 1
 
-    private lateinit var intent: Intent
-    private var advertId: Int = 0
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_advert, container, false)
 
-    @SuppressLint("NewApi")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        // Initialize map
+        val mapView = view.findViewById(R.id.map_advert_page_location) as MapView
+        mapView.onCreate(null)
+        mapView.getMapAsync(this)
 
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Request data
         arguments?.let {
-            advertId = it.getInt(ARG_PARAM1)
+            val advertId = it.getInt(ARG_PARAM1)
 
             val params = HashMap<String, String>()
             params["advertId"] = advertId.toString()
@@ -67,7 +86,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             ReqSender.sendRequest(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/advert/get_advert",
+                "advert/get_advert",
                 params,
                 { response ->
                     val advertData = response.getJSONObject("advertData")
@@ -91,74 +110,48 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     )
                     averageScore = response.getString("averageScore")
                     if (averageScore == "Not rated.") averageScore = "Bez ocena"
-                    canLeaveReview = response.getBoolean("canLeaveReview")
                     isFavourite = response.getBoolean("isFavourite")
+                    ownerUsername = response.getString("username")
 
-                    if(canLeaveReview)
-                        loadReviewWriter()
-
-                    if (tv_advert_page_sale_type != null)
-                        updateAdvertInfo()
+                    // update info
+                    updateAdvertInfo()
 
                     // load reviews
                     loadReviews()
+
+                    // load review writer
+                    val canLeaveReview = response.getBoolean("canLeaveReview")
+                    if(canLeaveReview) loadReviewWriter()
                 },
                 { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                    val errorMessage = error.getMessageString()
+                    Toast.makeText(requireContext(), "error:\n$errorMessage", Toast.LENGTH_LONG).show()
                 }
             )
 
+            // load advert images
             ReqSender.sendRequestArray(
                 requireContext(),
                 Request.Method.GET,
-                "http://10.0.2.2:5000/api/image/get_advert_image_names",
+                "image/get_advert_image_names",
                 params,
                 { response ->
                     if (tv_image_counter != null)
-                    tv_image_counter.text = response.length().toString()
+                        tv_image_counter.text = response.length().toString()
 
                     if (response.length() == 0) return@sendRequestArray
 
                     val firstImageName = response[0].toString()
                     Glide.with(requireContext())
-                        .load("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
+                        .load("${BASE_API_URL}image/get_advert_image_file?advertId=${advertId}&imageName=${firstImageName}")
                         .centerCrop()
                         .into(imv_advert_page_images)
                 },
                 { error ->
-                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                    val errorMessage = error.getMessageString()
+                    Toast.makeText(requireContext(), "error:\n$errorMessage", Toast.LENGTH_LONG).show()
                 }
             )
-        }
-
-        intent = Intent(activity, AdvertImagesActivity::class.java).apply {
-            putExtra("id", advertId)
-        }
-    }
-    override fun onClick(p0: View?) {
-        startActivity(intent)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_advert, container, false)
-
-        // Initialize map
-        val mapView = view.findViewById(R.id.map_advert_page_location) as MapView
-        mapView.onCreate(null)
-        mapView.getMapAsync(this)
-
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        this.imv_advert_page_images.setOnClickListener {
-            onClick(view)
         }
 
         // Update page look
@@ -199,7 +192,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         ReqSender.sendRequestString(
             requireContext(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/meeting/arrange_meeting",
+            "meeting/arrange_meeting",
             params,
             {
                 tv_advert_page_arrange_meeting_response.text = "Zahtev sastanka je uspešno poslat." +
@@ -251,6 +244,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
     private fun updateAdvertInfo() {
         if (advert == null) return
 
+        // Some views will only be visible for advert owner
         if (SessionManager.currentUser != null && SessionManager.currentUser!!.id.toUInt() == advert?.ownerId){
             btn_add_to_favourites_advert_page.visibility = View.GONE
             btn_edit_my_advert_advert_page.visibility = View.VISIBLE
@@ -271,14 +265,42 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             }
 
             btn_delete_my_advert_advert_page.setOnClickListener {
-
+                AlertDialog
+                    .Builder(requireContext())
+                    .setTitle("Da li ste sigurni da želite da obrišete oglas?")
+                    .setPositiveButton("Da") { _, _ ->
+                        ReqSender.sendRequestString(
+                            requireContext(),
+                            Request.Method.POST,
+                            "advert/remove_advert",
+                            hashMapOf(Pair("advertId", advert!!.id.toString())),
+                            {
+                                requireActivity().onBackPressed()
+                            },
+                            { error ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    "error:\n${error.getMessageString()}",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        )
+                    }
+                    .setNegativeButton("Ne") {_,_->}
+                    .create().show()
             }
+
+            tv_advert_page_owner.text = "@$ownerUsername (ja)"
+
+            tv_advert_page_calender_header.visibility = View.GONE
+            calv_advert_page_calender.visibility = View.GONE
         }
         else {
             btn_add_to_favourites_advert_page.visibility = View.VISIBLE
             btn_edit_my_advert_advert_page.visibility = View.GONE
             btn_delete_my_advert_advert_page.visibility = View.GONE
 
+            // Load favorites star
             isFavouriteLoader()
 
             btn_add_to_favourites_advert_page.setOnClickListener {
@@ -286,7 +308,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 ReqSender.sendRequestString(
                     requireContext(),
                     Request.Method.POST,
-                    "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                    "advert/${action}_favourite_advert",
                     hashMapOf(Pair("advertId", advert!!.id.toString())),
                     {
                         isFavourite = !isFavourite
@@ -297,8 +319,13 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                     }
                 )
             }
+            tv_advert_page_owner.text = "@$ownerUsername"
+
+            tv_advert_page_calender_header.visibility = View.VISIBLE
+            calv_advert_page_calender.visibility = View.VISIBLE
         }
 
+        // // Visible by both owner and guests // //
         // Updating text
         tv_advert_page_sale_type.text = if (advert!!.saleType == SaleType.Prodaja) "NA PRODAJU" else "IZDAJE SE"
         tv_advert_page_title.text     = advert!!.title
@@ -334,6 +361,29 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             Toast.makeText(requireContext(), "error:\n$e", Toast.LENGTH_LONG).show()
         }
 
+        // Owner user information
+        tv_advert_page_owner.paintFlags = tv_advert_page_owner.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        tv_advert_page_owner.setOnClickListener {
+            val navigationView = requireActivity().nav_bottom_navigator
+
+            navigationView!!.menu.setGroupCheckable(0, true, false)
+            for (i in 0 until navigationView.menu.size()) {
+                navigationView.menu.getItem(i).isChecked = false
+            }
+            navigationView.menu.setGroupCheckable(0, true, true)
+
+            val args = Bundle()
+            args.putInt("userId", advert!!.ownerId.toInt())
+            findNavController().navigate(R.id.myAccountFragment, args)
+        }
+
+        // See all images
+        imv_advert_page_images.setOnClickListener {
+            val intent = Intent(activity, AdvertImagesActivity::class.java).apply {
+                putExtra("id", advert!!.id.toInt())
+            }
+            startActivity(intent)
+        }
     }
 
     private fun loadReviews() {
@@ -343,7 +393,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
         ReqSender.sendRequestArray(
             requireContext(),
             Request.Method.POST,
-            "http://10.0.2.2:5000/api/review/get_advert_reviews",
+            "review/get_advert_reviews",
             params,
             { response ->
                 val reviews = ArrayList<Review>()
@@ -362,7 +412,8 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 }
             },
             { error ->
-                Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                val errorMessage = error.getMessageString()
+                Toast.makeText(requireContext(), "error:\n$errorMessage", Toast.LENGTH_LONG).show()
             }
         )
     }
@@ -384,13 +435,14 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             ReqSender.sendRequestString(
                 requireContext(),
                 Request.Method.POST,
-                "http://10.0.2.2:5000/api/review/post_review",
+                "review/post_review",
                 params,
                 { response ->
                     Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()
                 },
                 { error ->
-                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                    val errorMessage = error.getMessageString()
+                    Toast.makeText(requireContext(), "error:\n$errorMessage", Toast.LENGTH_LONG).show()
                 }
             )
         }

@@ -17,12 +17,19 @@ data class Message(
 data class UserDisplay(
     val Id: UInt,
     val DisplayName: String,
-    val Online: Boolean,
+    val Online: Boolean
 )
 
 data class RecentMessage(
     val User: UserDisplay,
-    val Message: Message
+    val MessageOrMeeting: MessageOrMeeting
+    //val MessageOrMeeting: MessageOrMeeting
+)
+
+data class MessageOrMeeting(
+    val Message: Message?,
+    val Meeting: Meeting?,
+    val IsMessage: Boolean
 )
 
 class MessageJSON {
@@ -48,12 +55,39 @@ class MessageJSON {
         }
 
         @RequiresApi(Build.VERSION_CODES.O)
+        public fun toMeeting(meet: JSONObject): Meeting{
+            return Meeting(
+                id = meet.getInt("id"),
+                advertId = meet.getInt("advertId"),
+                otherUser = meet.getInt("otherUser"),
+                username = meet.getString("username"),
+                title = meet.getString("title"),
+                proposedTime = LocalDateTime.parse(meet.getString("proposedTime")),
+                dateCreated = LocalDateTime.parse(meet.getString("dateCreated")),
+                agreedVisitor = meet.getBoolean("agreedVisitor"),
+                agreedOwner = meet.getBoolean("agreedOwner"),
+                concluded = meet.getBoolean("concluded"),
+                owner = meet.getBoolean("owner"),
+            )
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
+        public fun toMessageOrMeeting(msgOrMeet: JSONObject): MessageOrMeeting{
+            val isMessage = msgOrMeet.getBoolean("isMessage")
+            return MessageOrMeeting(
+                IsMessage = isMessage,
+                Message = (if (isMessage) toMessage(msgOrMeet.getJSONObject("message")) else null),
+                Meeting =  (if (isMessage) null else toMeeting(msgOrMeet.getJSONObject("meeting"))),
+            )
+        }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         public fun toRecentMessage(jsonObj: JSONObject): RecentMessage{
             val user = jsonObj.getJSONObject("user")
             val msg = jsonObj.getJSONObject("message")
             return RecentMessage(
                 toUserDisplay(user),
-                toMessage(msg)
+                toMessageOrMeeting(msg)
             )
         }
     }

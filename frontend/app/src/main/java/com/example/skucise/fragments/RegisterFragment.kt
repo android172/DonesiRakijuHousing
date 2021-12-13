@@ -62,12 +62,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                 return@setOnClickListener
             }
 
-            // Start loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(requireActivity())
-            loadingDialog.start()
-
             // Send request
-            val url = "http://10.0.2.2:5000/api/login/user_register"
+            val url = "login/user_register"
 
             val params = HashMap<String, String>()
             params["firstName"] = firstname
@@ -97,12 +93,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                         .beginTransaction()
                         .replace(R.id.frc_login_or_register, fragment)
                         .commit()
-
-                    loadingDialog.dismiss()
                 },
                 errorListener = { error ->
                     errorReport.reportError("error:\n$error")
-                    loadingDialog.dismiss()
                 },
                 authorization = false
             )

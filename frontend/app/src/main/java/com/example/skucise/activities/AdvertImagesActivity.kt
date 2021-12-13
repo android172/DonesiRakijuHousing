@@ -1,12 +1,15 @@
-package com.example.skucise
+package com.example.skucise.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
+import com.example.skucise.R
+import com.example.skucise.ReqSender
 import com.example.skucise.adapter.AdvertImagesAdapter
 import kotlinx.android.synthetic.main.activity_advert_images.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 
 class AdvertImagesActivity : AppCompatActivity() {
 
@@ -25,19 +28,20 @@ class AdvertImagesActivity : AppCompatActivity() {
         ReqSender.sendRequestArray(
             this,
             Request.Method.GET,
-            "http://10.0.2.2:5000/api/image/get_advert_image_names",
+            "image/get_advert_image_names",
             params,
             { response ->
                 imageNames = ArrayList()
                 imageUrls = ArrayList()
-                for (i in 0 until response.length()){
+                for (i in 0 until response.length()) {
                     val splits = response[i].toString()
                     imageNames.add(splits)
-                    imageUrls.add("http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${advertId}&imageName=$splits")
+                    imageUrls.add("${BASE_API_URL}image/get_advert_image_file?advertId=${advertId}&imageName=$splits")
                 }
                 rcv_advert_images.isNestedScrollingEnabled = false
                 rcv_advert_images.adapter = AdvertImagesAdapter(imageUrls, 2)
-                rcv_advert_images.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                rcv_advert_images.layoutManager =
+                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
             },
             { error ->

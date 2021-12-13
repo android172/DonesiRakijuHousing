@@ -1,6 +1,8 @@
 package com.example.skucise.adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +15,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
-import com.example.skucise.Advert
-import com.example.skucise.R
-import com.example.skucise.ReqSender
-import com.example.skucise.SessionManager
+import com.example.skucise.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
+import com.example.skucise.Util.Companion.getMessageString
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_advert.*
@@ -95,7 +96,27 @@ class AdvertAdapter(
                     args.putInt("advertId", currentAdvert.id.toInt())
                     findNavController().navigate(R.id.editAdvertFragment, args)
                 }
-                btn_delete_my_advert.setOnClickListener {}
+                btn_delete_my_advert.setOnClickListener {
+                    AlertDialog
+                        .Builder(context)
+                        .setTitle("Da li ste sigurni da želite da obrišete oglas?")
+                        .setPositiveButton("Da") { _, _ ->
+                            ReqSender.sendRequestString(
+                                context,
+                                Request.Method.POST,
+                                "advert/remove_advert",
+                                hashMapOf(Pair("advertId", currentAdvert.id.toString())),
+                                {
+                                    notifyItemRemoved(adverts.indexOf(currentAdvert))
+                                },
+                                { error ->
+                                    Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
+                                }
+                            )
+                        }
+                        .setNegativeButton("Ne") {_,_->}
+                        .create().show()
+                }
             }
             else {
                 btn_add_to_favourites.visibility = View.VISIBLE
@@ -122,21 +143,21 @@ class AdvertAdapter(
                     ReqSender.sendRequestString(
                         context,
                         Request.Method.POST,
-                        "http://10.0.2.2:5000/api/advert/${action}_favourite_advert",
+                        "advert/${action}_favourite_advert",
                         hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                         {
                             isFavorite[position] = !isFavorite[position]
                             notifyItemChanged(position)
                         },
                         { error ->
-                            Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
             }
 
             var images = currentAdvert.images.map { image ->
-                "http://10.0.2.2:5000/api/image/get_advert_image_file?advertId=${currentAdvert.id}&imageName=$image"
+                "${BASE_API_URL}image/get_advert_image_file?advertId=${currentAdvert.id}&imageName=$image"
             }
             if (images.isEmpty())
                 images = arrayListOf("https://www.in4s.net/wp-content/uploads/2020/07/Beograd.jpg")
