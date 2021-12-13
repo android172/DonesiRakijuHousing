@@ -68,16 +68,16 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
 
             val params = HashMap<String, String>()
             params["firstName"] = firstname
-            params["lastName"] = lastname
-            params["email"] = email
-            params["username"] = username
-            params["password"] = password
+            params["lastName"]  = lastname
+            params["email"]     = email
+            params["username"]  = username
+            params["password"]  = password
 
             ReqSender.sendRequestString(
-                context = this.requireActivity(),
-                method = Request.Method.POST,
-                url = url,
-                params = params,
+                context  = this.requireActivity(),
+                method   = Request.Method.POST,
+                url      = url,
+                params   = params,
                 listener = {
                     val activity = requireActivity()
                     val fragment = LoginRegisterResultsFragment(
