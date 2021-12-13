@@ -73,7 +73,7 @@ class ChatWithUserFragment : Fragment() {
             params.put("otherUserId", otherUserId.toString())
             params.put("content", msg)
 
-            val sendMsgUrl = "api/message/send_message"
+            val sendMsgUrl = "message/send_message"
 
             ReqSender.sendRequestString(
                 this.requireActivity(),
