@@ -140,12 +140,15 @@ class MeetingAdapter(
                 if ((currentMeetingRequest.owner && currentMeetingRequest.agreedOwner) ||
                     (!currentMeetingRequest.owner && currentMeetingRequest.agreedVisitor)) {
                     btn_meeting_accept.isEnabled = false
+                    btn_meeting_accept.alpha = 0.6F
                 }
 
                 // 24h before the meeting cancel and proposed time tweak are disabled
                 if (LocalDateTime.now() > currentMeetingRequest.proposedTime.minusDays(1)) {
                     btn_meeting_cancel.isEnabled = false
+                    btn_meeting_cancel.alpha = 0.6F
                     btn_meeting_tweak_time.isEnabled = false
+                    btn_meeting_tweak_time.alpha = 0.6F
                 }
 
                 // on accept

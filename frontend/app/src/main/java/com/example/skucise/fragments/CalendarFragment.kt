@@ -251,7 +251,10 @@ class CalendarFragment : Fragment() {
     private fun updateAdapterForDate(date: LocalDate) {
         eventsAdapter.apply {
             events.clear()
+            tv_events.visibility = View.INVISIBLE
             events.addAll(this@CalendarFragment.events[date].orEmpty())
+            if(events.size > 0)
+                tv_events.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
     }
