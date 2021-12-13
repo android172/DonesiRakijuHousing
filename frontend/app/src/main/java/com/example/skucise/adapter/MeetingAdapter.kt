@@ -16,6 +16,7 @@ import com.android.volley.Request
 import com.example.skucise.Meeting
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util.Companion.getMessageString
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.item_meeting_request.view.*
@@ -112,7 +113,7 @@ class MeetingAdapter(
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -129,7 +130,7 @@ class MeetingAdapter(
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -166,7 +167,7 @@ class MeetingAdapter(
                             notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -189,7 +190,7 @@ class MeetingAdapter(
                                 notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
                             },
                             { error ->
-                                Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                                Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                             }
                         )
                     }
@@ -221,7 +222,7 @@ class MeetingAdapter(
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }

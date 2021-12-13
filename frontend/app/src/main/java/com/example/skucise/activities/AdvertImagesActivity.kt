@@ -10,6 +10,7 @@ import com.example.skucise.ReqSender
 import com.example.skucise.adapter.AdvertImagesAdapter
 import kotlinx.android.synthetic.main.activity_advert_images.*
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
+import com.example.skucise.Util.Companion.getMessageString
 
 class AdvertImagesActivity : AppCompatActivity() {
 
@@ -45,7 +46,7 @@ class AdvertImagesActivity : AppCompatActivity() {
 
             },
             { error ->
-                Toast.makeText(this, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

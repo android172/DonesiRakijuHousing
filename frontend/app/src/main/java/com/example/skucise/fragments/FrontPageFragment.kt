@@ -17,6 +17,7 @@ import com.example.skucise.ReqSender
 import com.example.skucise.adapter.AdvertAdapter
 import com.example.skucise.adapter.CityTilesAdapter
 import com.example.skucise.TileSet
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
@@ -49,7 +50,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                     SearchFragment.allCities = cityArray
                 },
                 { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 }
             )
         }
@@ -68,7 +69,7 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
                 advertAdapter.updateAdverts(adverts)
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
 

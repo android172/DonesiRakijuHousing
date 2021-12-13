@@ -90,7 +90,7 @@ class MyAccountFragment : Fragment() {
                             .into(accountPfp)
                 },
                 { error ->
-                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 }
             )
         }
@@ -266,7 +266,7 @@ class MyAccountFragment : Fragment() {
                         btn_user_edit_confirm.isEnabled = false
                     } ,
                     { error ->
-                        Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                     }
                 )
             }

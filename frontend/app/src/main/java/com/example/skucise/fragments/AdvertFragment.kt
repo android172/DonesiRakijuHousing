@@ -199,7 +199,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                         "\nSastanak je predložen za ${time.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL, FormatStyle.MEDIUM))}"
             },
             { error ->
-                tv_advert_page_arrange_meeting_response.text = "GREŠKA: ${error.message}"
+                tv_advert_page_arrange_meeting_response.text = "GREŠKA: ${error.getMessageString()}"
             }
         )
     }
@@ -315,7 +315,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                         isFavouriteLoader()
                     },
                     { error ->
-                        Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                     }
                 )
             }
@@ -437,8 +437,8 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                 Request.Method.POST,
                 "review/post_review",
                 params,
-                { response ->
-                    Toast.makeText(requireContext(), "error:\n$response", Toast.LENGTH_LONG).show()
+                {
+                    Toast.makeText(requireContext(), "Recenzija uspešno postavljena.", Toast.LENGTH_LONG).show()
                 },
                 { error ->
                     val errorMessage = error.getMessageString()

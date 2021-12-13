@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.MessageJSON.Companion.toRecentMessage
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.RecentMessageAdapter
 import kotlinx.android.synthetic.main.fragment_chat.*
 import org.json.JSONArray
@@ -67,7 +68,7 @@ class ChatFragment : Fragment() {
                 rmAdapter.updateData()
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

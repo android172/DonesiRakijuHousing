@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
 import com.example.skucise.*
+import com.example.skucise.Util.Companion.getMessageString
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_register.*
 
@@ -95,7 +96,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
                         .commit()
                 },
                 errorListener = { error ->
-                    errorReport.reportError("error:\n$error")
+                    errorReport.reportError("error:\n${error.getMessageString()}")
                 },
                 authorization = false
             )

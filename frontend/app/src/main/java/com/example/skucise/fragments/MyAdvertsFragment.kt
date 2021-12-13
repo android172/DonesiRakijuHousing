@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AdvertAdapter
 import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.fragment_my_adverts.*
@@ -57,7 +58,7 @@ class MyAdvertsFragment : Fragment() {
                     tv_my_adverts_none.visibility = View.INVISIBLE
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

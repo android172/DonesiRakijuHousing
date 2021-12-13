@@ -19,6 +19,7 @@ import com.android.volley.Request
 import com.example.skucise.Meeting
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.MeetingAdapter
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -232,7 +233,7 @@ class CalendarFragment : Fragment() {
                 calv_calendar_page.notifyCalendarChanged()
             },
             { error ->
-                Toast.makeText(context, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

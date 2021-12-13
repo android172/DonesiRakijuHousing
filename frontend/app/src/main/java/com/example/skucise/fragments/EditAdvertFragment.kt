@@ -21,6 +21,7 @@ import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AddAdvertImagesAdapter
 import com.example.skucise.adapter.AdvertImagesAdapter
 import com.example.skucise.adapter.DeleteAdvertImagesAdapter
@@ -184,7 +185,7 @@ class EditAdvertFragment : Fragment() {
 
                 },
                 { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 }
             )
 
@@ -210,7 +211,7 @@ class EditAdvertFragment : Fragment() {
 //
 //                },
 //                { error ->
-//                    Toast.makeText(requireContext(), "error:\n$error", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(requireContext(), "error:\{error.getMessageString()}", Toast.LENGTH_LONG).show()
 //                }
 //            )
         }
@@ -397,13 +398,13 @@ class EditAdvertFragment : Fragment() {
                         },
                         { error ->
                             loadingDialog.dismiss()
-                            Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 },
                 errorListener = { error ->
                     loadingDialog.dismiss()
-                    Toast.makeText(requireContext(), "textError:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "textError:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 },
                 authorization = true
             )
