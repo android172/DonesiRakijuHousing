@@ -5,7 +5,8 @@
     android:id="@+id/cls_meeting_request"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/frontpage_fragment_shape"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/shape_meeting_bg"
     android:padding="8dp">
 
     <TextView
@@ -73,20 +74,24 @@
 
         <Button
             android:id="@+id/btn_meeting_confirm"
-            android:layout_width="48dp"
+            android:layout_width="100dp"
             android:layout_height="48dp"
             android:text="f"
             android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/btn_meeting_delete"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_meeting_delete"
-            android:layout_width="48dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="d"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/btn_meeting_confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/btn_meeting_confirm"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton

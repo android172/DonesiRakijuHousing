@@ -43,7 +43,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.frc_login_or_register, LoginFragment())
             .commit()
 
-        val bg_images = arrayListOf(R.drawable.blured_login_bg1, R.drawable.blured_login_bg2, R.drawable.blured_login_bg3, R.drawable.blured_login_bg4)
+        val bg_images = arrayListOf(R.drawable.blured_login_bg1,
+            R.drawable.blured_login_bg2,
+            R.drawable.blured_login_bg3,
+            R.drawable.blured_login_bg4)
 
         val display: Display = windowManager.defaultDisplay
         val screenHeight: DisplayMetrics = DisplayMetrics()

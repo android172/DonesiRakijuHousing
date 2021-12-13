@@ -14,7 +14,13 @@
     <color name="transparent_white">#AAFFFFFF</color>
     <color name="transparent_white_88">#88FFFFFF</color>
     <color name="logo_color">#FF1E74B1</color>
+    <color name="logo_color_AA">#AA1E74B1</color>
+    <color name="logo_color_88">#881E74B1</color>
+    <color name="logo_color_55">#551E74B1</color>
     <color name="logo_color_dark">#FF134970</color>
+    <color name="logo_color2_AA">#AAb19b1e</color>
+    <color name="logo_color2_88">#88b19b1e</color>
+    <color name="logo_color2_55">#55b19b1e</color>
     <color name="logo_color2">#FFb19b1e</color>
     <color name="logo_color3">#ffb11e4a</color> <!--1, 2 i 3-->
     <color name="logo_color4">#ffb12d1e</color> <!--1 i 4-->
