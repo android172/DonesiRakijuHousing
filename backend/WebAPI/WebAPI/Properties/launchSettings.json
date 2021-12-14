@@ -4,7 +4,7 @@
     "windowsAuthentication": false, 
     "anonymousAuthentication": true, 
     "iisExpress": {
-      "applicationUrl": "http://localhost:8617",
+      "applicationUrl": "http://localhost:5000;http://0.0.0.0:5000",
       "sslPort": 0
     }
   },
@@ -21,7 +21,7 @@
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "api/test/get_all_adverts",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://localhost:5000;http://0.0.0.0:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
