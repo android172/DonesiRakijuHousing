@@ -87,7 +87,8 @@ class ChatWithUserFragment : Fragment() {
                 },
                 { error ->
                     Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
-                }
+                },
+                loadingScreen = false
             )
         }
     }
@@ -113,7 +114,8 @@ class ChatWithUserFragment : Fragment() {
             },
             { error ->
                 Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
-            }
+            },
+            loadingScreen = false
         )
     }
 

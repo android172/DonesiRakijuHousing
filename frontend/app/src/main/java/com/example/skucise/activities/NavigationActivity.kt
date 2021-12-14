@@ -1,6 +1,5 @@
 package com.example.skucise.activities
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -29,7 +28,6 @@ import kotlinx.android.synthetic.main.item_messages_with_alert.*
 import kotlinx.coroutines.*
 import android.media.RingtoneManager
 
-import android.media.Ringtone
 import android.net.Uri
 import java.lang.Exception
 
@@ -170,17 +168,17 @@ class NavigationActivity : AppCompatActivity() {
 
     }
 
-    var prevAlerts = "0"
+    private var prevAlerts = "0"
 
-    val scope = MainScope() // could also use an other scope such as viewModelScope if available
-    var job: Job? = null
-    var notificationsInitialized = false
+    private val scope = MainScope() // could also use an other scope such as viewModelScope if available
+    private var job: Job? = null
+    private var notificationsInitialized = false
 
     private fun startFetchAlerts(ctx: Context) {
         stopFetchAlerts()
         job = scope.launch {
             delay(2000)
-            ReqSender.sendRequestStringNoLoading(
+            ReqSender.sendRequestString(
                 ctx,
                 Request.Method.POST,
                 "message/check_messages",
@@ -191,9 +189,8 @@ class NavigationActivity : AppCompatActivity() {
                         startFetchAlerts(ctx)
                     }
                 },
-                { error ->
-                    //
-                }
+                null,
+                loadingScreen = false
             )
         }
     }
@@ -228,7 +225,7 @@ class NavigationActivity : AppCompatActivity() {
     }
 
     private fun getAlerts(){
-        ReqSender.sendRequestStringNoLoading(
+        ReqSender.sendRequestString(
             this,
             Request.Method.POST,
             "message/check_messages",
@@ -239,7 +236,8 @@ class NavigationActivity : AppCompatActivity() {
             },
             { error ->
                 Toast.makeText(this, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
-            }
+            },
+            loadingScreen = false
         )
     }
 
