@@ -44,7 +44,7 @@ namespace WebAPI.Controllers
             var otherUsersWithLatestMessage = otherUsersWithMessages
                 .Where(m => otherUsersWithLatestMessageDate.Any(o => o.OtherUserId == m.OtherUserId && m.Message.SendDate == o.MaxDate))
                 .Select(w => new { w.OtherUserId, w.Message })
-                .OrderBy(x => x.Message.SendDate);
+                .OrderByDescending(x => x.Message.SendDate);
 
             // Meetings
             var otherUsersWithMeetings = ctx.Meetings
@@ -86,7 +86,7 @@ namespace WebAPI.Controllers
                             concluded = j.Meeting.Concluded,
                             owner = j.Advert.OwnerId == userId ? true : false
                         }).Select(j => new { OtherUserId = j.otherUser, MeetingDisplay = j })
-                        .OrderBy(x => x.MeetingDisplay.dateCreated);
+                        .OrderByDescending(x => x.MeetingDisplay.dateCreated);
 
             List<object> rMsgs = new List<object>();
             foreach (var rm in otherUsersWithLatestMeeting)
