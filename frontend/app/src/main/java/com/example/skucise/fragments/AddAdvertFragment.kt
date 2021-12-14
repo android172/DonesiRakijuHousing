@@ -65,28 +65,31 @@ class AddAdvertFragment : Fragment() {
 
     private val imageURIs = ArrayList<Uri>()
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     val loadImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val uris = result.data?.clipData ?: return@registerForActivityResult
+            if (result.data?.clipData != null) {
+                val uris = result.data?.clipData
 
-            /*val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
-            val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                for (i in 0 until uris!!.itemCount) {
+                    val uri = (uris.getItemAt(i).uri)
+                    var contains = false
+                    for (imgURI in imageURIs) {
+                        if (requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
+                            contains = true
+                    }
+                    if (!contains)
+                        imageURIs.add(uri)
+                }
+            }
+            else {
+                val uri = result.data?.data?: return@registerForActivityResult
 
-            val image = FileData(
-                Name = requireContext().getFileName(uri),
-                Extension = requireContext().getFileExtension(uri)!!,
-                Content = contents
-            )*/
-
-            for(i in 0 until uris.itemCount){
-                val uri = (uris.getItemAt(i).uri)
                 var contains = false
-                for(imgURI in imageURIs) {
-                    if(requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
+                for (imgURI in imageURIs) {
+                    if (requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
                         contains = true
                 }
-                if(!contains)
+                if (!contains)
                     imageURIs.add(uri)
             }
         }

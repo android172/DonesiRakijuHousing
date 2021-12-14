@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.example.skucise.*
@@ -23,7 +23,6 @@ import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
 import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AddAdvertImagesAdapter
-import com.example.skucise.adapter.AdvertImagesAdapter
 import com.example.skucise.adapter.DeleteAdvertImagesAdapter
 import com.example.skucise.fragments.SearchFragment.Companion.allCities
 import com.karumi.dexter.Dexter
@@ -35,7 +34,6 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_edit_advert.*
 import org.json.JSONObject
-import java.net.URL
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,28 +51,31 @@ class EditAdvertFragment : Fragment() {
     private var advertId : Int = 0
     private var advert : Advert? = null
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     val loadImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val uris = result.data?.clipData ?: return@registerForActivityResult
+            if (result.data?.clipData != null) {
+                val uris = result.data?.clipData
 
-            /*val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
-            val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                for (i in 0 until uris!!.itemCount) {
+                    val uri = (uris.getItemAt(i).uri)
+                    var contains = false
+                    for (imgURI in imageURIs) {
+                        if (requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
+                            contains = true
+                    }
+                    if (!contains)
+                        imageURIs.add(uri)
+                }
+            }
+            else {
+                val uri = result.data?.data?: return@registerForActivityResult
 
-            val image = FileData(
-                Name = requireContext().getFileName(uri),
-                Extension = requireContext().getFileExtension(uri)!!,
-                Content = contents
-            )*/
-
-            for(i in 0 until uris.itemCount){
-                val uri = (uris.getItemAt(i).uri)
                 var contains = false
-                for(imgURI in imageURIs) {
-                    if(requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
+                for (imgURI in imageURIs) {
+                    if (requireContext().getFileName(imgURI) == requireContext().getFileName(uri))
                         contains = true
                 }
-                if(!contains)
+                if (!contains)
                     imageURIs.add(uri)
             }
         }
@@ -125,7 +126,6 @@ class EditAdvertFragment : Fragment() {
             }).onSameThread().check()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
