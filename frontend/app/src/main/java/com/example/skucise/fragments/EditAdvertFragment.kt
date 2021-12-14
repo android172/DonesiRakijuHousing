@@ -49,6 +49,7 @@ class EditAdvertFragment : Fragment() {
 
     private val imageURIs = ArrayList<Uri>()
     private val imageNames = ArrayList<String>()
+    private lateinit var oldAdapter: DeleteAdvertImagesAdapter
     private var advertId : Int = 0
     private var advert : Advert? = null
 
@@ -163,6 +164,7 @@ class EditAdvertFragment : Fragment() {
                     for(i in 0 until images.length()){
                         imageNames.add(images[i].toString())
                     }
+
                     if(rcv_advert_images_old.adapter != null){
                         rcv_advert_images_old.adapter!!.notifyDataSetChanged()
                     }
@@ -234,7 +236,8 @@ class EditAdvertFragment : Fragment() {
 
         rcv_advert_images.adapter = AddAdvertImagesAdapter(imageURIs)
 
-        rcv_advert_images_old.adapter = DeleteAdvertImagesAdapter(advertId, imageNames)
+        oldAdapter = DeleteAdvertImagesAdapter(advertId, imageNames)
+        rcv_advert_images_old.adapter = oldAdapter
     }
 
     override fun onCreateView(
@@ -249,7 +252,6 @@ class EditAdvertFragment : Fragment() {
         Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -346,11 +348,33 @@ class EditAdvertFragment : Fragment() {
                 url = urlEditAdvert,
                 params = params,
                 listener = { response ->
-                    //Toast.makeText(requireContext(), "response:\n$response\nAdding images...", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), oldAdapter.imagesToDelete.joinToString(","), Toast.LENGTH_SHORT).show()
+                    if(oldAdapter.imagesToDelete.isNotEmpty()){
+                        for(img in oldAdapter.imagesToDelete) {
+                            val url =
+                                "image/delete_advert_image?advertId=$advertId&imageName=$img"
+
+                            ReqSender.sendRequestString(
+                                requireContext(),
+                                Request.Method.DELETE,
+                                url,
+                                null,
+                                { },
+                                { error ->
+                                    Toast.makeText(
+                                        context,
+                                        "error:\n${error.getMessageString()}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                },
+                                loadingScreen = false
+                            )
+                        }
+                        oldAdapter.imagesToDelete.clear()
+                    }
 
                     if(imageURIs.isEmpty())
                     {
-
                         val args = Bundle()
                         args.putInt("advertId", advert!!.id.toInt())
                         findNavController().navigate(R.id.advertFragment, args)
@@ -364,7 +388,11 @@ class EditAdvertFragment : Fragment() {
 
                     for(uri in imageURIs){
                         val inputStream = requireActivity().contentResolver.openInputStream(uri)
-                        val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                        val contents = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                        } else {
+                            android.util.Base64.encodeToString(inputStream!!.readBytes(), 0)
+                        }
 
                         val image = FileData(
                             Name = requireContext().getFileName(uri),

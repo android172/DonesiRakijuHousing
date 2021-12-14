@@ -73,13 +73,14 @@ class MessageAdapter (
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun meetingToMessage(meet: Meeting): Message {
+        val seen = (meet.owner && meet.agreedOwner) || (!meet.owner && meet.agreedVisitor)
         return Message(
             Id = 0.toUInt(),
-            SenderId = (if (!meet.owner) meet.otherUser else 0).toUInt(),
+            SenderId = (if (!meet.owner && meet.agreedVisitor) meet.otherUser else 0).toUInt(),
             ReceiverId = 0.toUInt(),
             Content = "Sastanak",
             SendDate = meet.dateCreated,
-            Seen = meet.agreedOwner && meet.agreedVisitor
+            Seen = seen
         )
     }
 
@@ -182,7 +183,7 @@ class MessageAdapter (
             if(customLayout == 0 || customLayout == 2){
                 img_user.clipToOutline = true
                 Glide.with(context)
-                    .load("http:10.0.2.2:5000/api/image/get_user_image_file?userId=${otherUserId}")
+                    .load("${SessionManager.BASE_API_URL}image/get_user_image_file?userId=${otherUserId}")
                     .centerCrop()
                     .placeholder(R.drawable.ic_offline)
                     .into(img_user)

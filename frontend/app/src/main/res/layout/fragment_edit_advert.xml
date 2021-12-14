@@ -28,7 +28,7 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_edit_advert"
+                app:layout_constraintTop_toTopOf="parent"
                 >
 
                 <TextView
@@ -413,7 +413,6 @@
                             android:layoutDirection="ltr"
                             android:orientation="horizontal"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            app:stackFromEnd="true"
                             tools:listitem="@layout/item_add_advert_image" />
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -424,7 +423,6 @@
                             android:layoutDirection="ltr"
                             android:orientation="horizontal"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                            app:stackFromEnd="true"
                             tools:listitem="@layout/item_add_advert_image" />
 
                     </LinearLayout>

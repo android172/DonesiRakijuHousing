@@ -4,12 +4,15 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
 import com.bumptech.glide.Glide
 import com.example.skucise.FileData
 import com.example.skucise.R
 import com.example.skucise.ReqSender
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
+import com.example.skucise.Util.Companion.getMessageString
 import kotlinx.android.synthetic.main.item_add_advert_image.view.*
 import kotlinx.android.synthetic.main.item_advert_image.view.*
 import kotlinx.android.synthetic.main.item_advert_image.view.img_advert
@@ -21,6 +24,8 @@ class DeleteAdvertImagesAdapter (
 ) : RecyclerView.Adapter<DeleteAdvertImagesAdapter.DeleteAdvertImageViewHolder>() {
 
     inner class DeleteAdvertImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    val imagesToDelete = ArrayList<String>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -40,8 +45,10 @@ class DeleteAdvertImagesAdapter (
         val image = imageNames[position]
         holder.itemView.apply {
             btn_remove_image.setOnClickListener {
-                imageNames.removeAt(holder.adapterPosition)
-                notifyItemRemoved(holder.adapterPosition)
+                val img = imageNames[position]
+                imagesToDelete.add(img)
+                imageNames.remove(img)
+                notifyDataSetChanged()
             }
             img_advert?.clipToOutline = true
             Glide.with(context)
