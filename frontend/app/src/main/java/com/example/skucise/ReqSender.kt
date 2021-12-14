@@ -41,18 +41,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<JSONObject>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<JSONObject>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            }
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonObjectRequest (
-                method, fullUrl, null,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
-                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+                method, fullUrl, null, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -75,18 +83,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<String>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<String>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            }
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : StringRequest(
-                method, fullUrl,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
-                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+                method, fullUrl, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -102,37 +118,6 @@ open class ReqSender {
             queue.add(stringRequest)
         }
 
-        fun sendRequestStringNoLoading(
-            context: Context,
-            method : Int,
-            url : String,
-            params : MutableMap<String, String>?,
-            listener: Response.Listener<String>,
-            errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
-        ) {
-            // Send request
-            val fullUrl = buildUrl(url, params)
-            val queue = getRequestQueue(context)
-            val request = object : StringRequest(
-                method, fullUrl,
-                { listener.onResponse(it) },
-                { errorListener?.onErrorResponse(it) }
-            ) {
-                override fun getHeaders(): MutableMap<String, String> {
-                    if (!authorization) return super.getHeaders()
-                    val headers = HashMap<String, String>()
-                    headers["Authorization"] = "Bearer ${SessionManager.token.toString()}"
-                    return headers
-                }
-            }
-            request.retryPolicy = DefaultRetryPolicy(
-                0, -1,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
-            queue.add(request)
-        }
-
         fun sendRequestArray(
             context: Context,
             method : Int,
@@ -140,18 +125,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<JSONArray>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<JSONArray>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            }
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonArrayRequest(
-                method, fullUrl, null,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
-                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+                method, fullUrl, null, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
