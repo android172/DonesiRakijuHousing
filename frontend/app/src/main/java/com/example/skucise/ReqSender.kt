@@ -12,6 +12,7 @@ import org.json.JSONObject
 import org.json.JSONException
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import java.io.UnsupportedEncodingException
+import java.net.URLEncoder
 
 open class ReqSender {
     companion object {
@@ -28,7 +29,8 @@ open class ReqSender {
             var url = "$BASE_API_URL$base_url?"
             if (params != null) {
                 for (param in params) {
-                    url = "$url${param.key}=${param.value}&"
+                    val paramValue = URLEncoder.encode(param.value, "utf-8")
+                    url = "$url${param.key}=$paramValue&"
                 }
             }
             return url.substring(0, url.length - 1)

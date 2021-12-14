@@ -252,7 +252,6 @@ class EditAdvertFragment : Fragment() {
         Toast.makeText(requireContext(), "$text", Toast.LENGTH_LONG).show()
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -389,7 +388,11 @@ class EditAdvertFragment : Fragment() {
 
                     for(uri in imageURIs){
                         val inputStream = requireActivity().contentResolver.openInputStream(uri)
-                        val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                        val contents = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+                        } else {
+                            android.util.Base64.encodeToString(inputStream!!.readBytes(), 0)
+                        }
 
                         val image = FileData(
                             Name = requireContext().getFileName(uri),
