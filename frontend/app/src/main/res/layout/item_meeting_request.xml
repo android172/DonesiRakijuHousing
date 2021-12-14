@@ -5,6 +5,7 @@
     android:id="@+id/cls_meeting_request"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
     android:background="@drawable/frontpage_fragment_shape"
     android:padding="8dp">
 
@@ -37,7 +38,7 @@
         android:id="@+id/tv_at_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="At: "
+        android:text="Vreme sastanka:"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_meeting_time" />
@@ -76,28 +77,28 @@
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_margin="3dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_baseline_check_32"
             android:background="@drawable/meeting_button_shape"
+            android:src="@drawable/ic_baseline_check_32"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/btn_meeting_delete"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_meeting_delete"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btn_meeting_delete"
             android:layout_width="100dp"
             android:layout_height="40dp"
             android:layout_margin="3dp"
-            android:visibility="gone"
-            android:src="@drawable/ic_baseline_delete_outline_32"
             android:background="@drawable/meeting_button_shape"
+            android:src="@drawable/ic_baseline_delete_outline_32"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toEndOf="@id/btn_meeting_confirm"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:tint="@color/white" />
 
         <ImageButton
