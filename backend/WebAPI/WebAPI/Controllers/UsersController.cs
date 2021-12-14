@@ -117,7 +117,7 @@ namespace WebAPI.Controllers
             User result = ctx.Users.Where(u => u.Id == userId && u.Password == oldPassword).FirstOrDefault();
 
             if (result == null)
-                return NotFound("Greška, korisnik ne postoji ili stara lozinka nije tačna.");
+                return NotFound("Greška, Stara lozinka nije tačna.");
 
             Regex passReg = new Regex(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,32}$");
 

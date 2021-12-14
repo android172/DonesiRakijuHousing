@@ -109,7 +109,7 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
@@ -126,7 +126,7 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
@@ -218,7 +218,7 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->

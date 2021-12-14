@@ -2,8 +2,7 @@ package com.example.skucise
 
 import android.app.Activity
 import android.content.Context
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import com.android.volley.*
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -11,8 +10,6 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONException
-import com.android.volley.VolleyLog
-import com.android.volley.AuthFailureError
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import java.io.UnsupportedEncodingException
 
@@ -44,18 +41,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<JSONObject>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<JSONObject>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            }
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
-            val stringRequest = object : JsonObjectRequest (
-                method, fullUrl, null,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
-                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            val request = object : JsonObjectRequest (
+                method, fullUrl, null, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -64,7 +69,11 @@ open class ReqSender {
                     return headers
                 }
             }
-            queue.add(stringRequest)
+            request.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+            queue.add(request)
         }
 
         fun sendRequestString(
@@ -74,45 +83,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<String>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
-            // Send request
-            val fullUrl = buildUrl(url, params)
-            val queue = getRequestQueue(context)
-            val stringRequest = object : StringRequest(
-                method, fullUrl,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<String>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
                 { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
-            ) {
-                override fun getHeaders(): MutableMap<String, String> {
-                    if (!authorization) return super.getHeaders()
-                    val headers = HashMap<String, String>()
-                    headers["Authorization"] = "Bearer ${SessionManager.token.toString()}"
-                    return headers
-                }
             }
-            queue.add(stringRequest)
-        }
-
-        fun sendRequestStringNoLoading(
-            context: Context,
-            method : Int,
-            url : String,
-            params : MutableMap<String, String>?,
-            listener: Response.Listener<String>,
-            errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
-        ) {
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val stringRequest = object : StringRequest(
-                method, fullUrl,
-                { listener.onResponse(it) },
-                { errorListener?.onErrorResponse(it) }
+                method, fullUrl, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -121,6 +111,10 @@ open class ReqSender {
                     return headers
                 }
             }
+            stringRequest.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
             queue.add(stringRequest)
         }
 
@@ -131,18 +125,26 @@ open class ReqSender {
             params : MutableMap<String, String>?,
             listener: Response.Listener<JSONArray>,
             errorListener: Response.ErrorListener?,
-            authorization: Boolean = true
+            authorization: Boolean = true,
+            loadingScreen: Boolean = true
         ) {
+            // callbacks
+            var onResponse = listener
+            var onError = errorListener
             // loading dialog
-            val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-            loadingDialog.start()
+            if (loadingScreen) {
+                val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
+                loadingDialog.start()
+                onResponse = Response.Listener<JSONArray>
+                { loadingDialog.dismiss(); listener.onResponse(it) }
+                onError = Response.ErrorListener()
+                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+            }
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
             val request = object : JsonArrayRequest(
-                method, fullUrl, null,
-                { loadingDialog.dismiss(); listener.onResponse(it) },
-                { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
+                method, fullUrl, null, onResponse, onError
             ) {
                 override fun getHeaders(): MutableMap<String, String> {
                     if (!authorization) return super.getHeaders()
@@ -151,6 +153,10 @@ open class ReqSender {
                     return headers
                 }
             }
+            request.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
             queue.add(request)
         }
 
@@ -178,7 +184,7 @@ open class ReqSender {
                 for (image in images) jsonArray.put(FileDataToJson(image))
                 val requestBody = jsonArray.toString()
 
-                val stringRequest: StringRequest = object : StringRequest(
+                val request: StringRequest = object : StringRequest(
                     method, "${BASE_API_URL}$url", listener, errorListener
                 ) {
                     override fun getBodyContentType(): String {
@@ -205,7 +211,11 @@ open class ReqSender {
                         return headers
                     }
                 }
-                queue.add(stringRequest)
+                request.retryPolicy = DefaultRetryPolicy(
+                    0, -1,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+                queue.add(request)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }

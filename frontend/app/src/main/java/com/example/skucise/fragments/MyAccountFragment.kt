@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -274,18 +275,54 @@ class MyAccountFragment : Fragment() {
             // Edit email
             btn_user_edit_mail.setOnClickListener {
                 val newEmailView = EditText(requireContext())
+                val newEmailViewR = EditText(requireContext())
                 newEmailView.hint = "Novi e-mail..."
+                newEmailViewR.hint = "Ponovi novi e-mail..."
+                val linearLayout = LinearLayout(requireContext())
+
+                linearLayout.orientation = LinearLayout.VERTICAL
+                linearLayout.addView(newEmailView)
+                linearLayout.addView(newEmailViewR)
 
                 // New mail form
                 val newEmailDialog = AlertDialog
                     .Builder(requireContext())
                     .setPositiveButton("Pošalji zahtev") { _, _ ->
+                        val newEmail = newEmailView.text.toString()
+                        val newEmailR = newEmailViewR.text.toString()
+
+                        // Check inputs
+                        if (newEmail.isBlank() || newEmailR.isBlank()) {
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("Sva polja moraju biti popunjena.")
+                                .create()
+                                .show()
+                            return@setPositiveButton
+                        }
+                        if (newEmail != newEmailR) {
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("Email nije dobro ponovljen.")
+                                .create()
+                                .show()
+                            return@setPositiveButton
+                        }
+                        if (!Regex("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$").matches(newEmail)) {
+                            AlertDialog
+                                .Builder(requireContext())
+                                .setMessage("Forma email adrese je pogrešna.")
+                                .create()
+                                .show()
+                            return@setPositiveButton
+                        }
+
                         // Send new mail
                         ReqSender.sendRequestString(
                             requireContext(),
                             Request.Method.POST,
                             "users/change_email",
-                            hashMapOf(Pair("newEmail", newEmailView.text.toString())),
+                            hashMapOf(Pair("newEmail", newEmail)),
                             {
                                 // Confirm mail prompt
                                 AlertDialog
@@ -306,7 +343,7 @@ class MyAccountFragment : Fragment() {
                     }
                     .setNegativeButton("Poništi") {_,_->}
                     .create()
-                newEmailDialog.setView(newEmailView, 16.dp, 16.dp, 16.dp, 0)
+                newEmailDialog.setView(linearLayout, 16.dp, 16.dp, 16.dp, 0)
                 newEmailDialog.show()
             }
 
@@ -318,6 +355,9 @@ class MyAccountFragment : Fragment() {
                 oldPasswordView.hint  = "Stara Lozinka..."
                 newPasswordView.hint  = "Nova Lozinka..."
                 newPasswordRView.hint = "Ponovi Novu Lozinku..."
+                oldPasswordView.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                newPasswordView.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                newPasswordRView.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
                 val linearLayout = LinearLayout(requireContext())
                 linearLayout.orientation = LinearLayout.VERTICAL
@@ -382,7 +422,7 @@ class MyAccountFragment : Fragment() {
                                 val errorString = error.getMessageString()
                                 AlertDialog
                                     .Builder(requireContext())
-                                    .setMessage("error\n$errorString")
+                                    .setMessage("error:\n$errorString")
                                     .create()
                                     .show()
                             }
