@@ -41,6 +41,8 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.*
 import kotlin.collections.HashMap
+import android.util.Base64.encodeToString
+
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "userId"
@@ -54,14 +56,18 @@ class MyAccountFragment : Fragment() {
 
     private var user: User? = null
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     val loadImageFromGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val uri = result.data?.data
 
             val inputStream = requireActivity().contentResolver.openInputStream(uri!!)
-            val contents = Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+            val contents = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Base64.getEncoder().encodeToString(inputStream!!.readBytes())
+            } else {
+                encodeToString(inputStream!!.readBytes(), 0)
+            }
+
 
             val image = FileData(
                 Name = requireContext().getFileName(uri),
