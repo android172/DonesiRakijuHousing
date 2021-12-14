@@ -183,7 +183,7 @@ class MessageAdapter (
             if(customLayout == 0 || customLayout == 2){
                 img_user.clipToOutline = true
                 Glide.with(context)
-                    .load("http:10.0.2.2:5000/api/image/get_user_image_file?userId=${otherUserId}")
+                    .load("${SessionManager.BASE_API_URL}image/get_user_image_file?userId=${otherUserId}")
                     .centerCrop()
                     .placeholder(R.drawable.ic_offline)
                     .into(img_user)

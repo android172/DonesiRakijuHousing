@@ -354,7 +354,7 @@ class EditAdvertFragment : Fragment() {
                             val url =
                                 "image/delete_advert_image?advertId=$advertId&imageName=$img"
 
-                            ReqSender.sendRequestStringNoLoading(
+                            ReqSender.sendRequestString(
                                 requireContext(),
                                 Request.Method.DELETE,
                                 url,
@@ -367,7 +367,7 @@ class EditAdvertFragment : Fragment() {
                                         Toast.LENGTH_LONG
                                     ).show()
                                 },
-                            true
+                                loadingScreen = false
                             )
                         }
                         oldAdapter.imagesToDelete.clear()

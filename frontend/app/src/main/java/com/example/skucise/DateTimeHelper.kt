@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter
 
 class DateTimeHelper {
     companion object {
-        @RequiresApi(Build.VERSION_CODES.O)
         fun getReadableDate(dt: LocalDateTime): String {
             val ct = LocalDateTime.now()
             val diff = Duration.between(dt, ct)
@@ -37,12 +36,10 @@ class DateTimeHelper {
             }
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun getReadableDateFull(dt: LocalDateTime): String {
             return dt.format(DateTimeFormatter.ofPattern("EEEE dd/MM/u HH:mm"))
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun getDateAgeClass(dt: LocalDateTime): Int {
             val ct = LocalDateTime.now()
             val diff = Duration.between(dt, ct)
@@ -71,7 +68,6 @@ class DateTimeHelper {
             }
         }
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun sameAgeClass(dt1: LocalDateTime, dt2: LocalDateTime): Boolean {
             return getDateAgeClass(dt1) == getDateAgeClass(dt2)
         }

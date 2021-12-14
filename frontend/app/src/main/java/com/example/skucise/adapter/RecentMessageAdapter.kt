@@ -1,26 +1,20 @@
 package com.example.skucise.adapter
 
 import android.graphics.Typeface
-import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.skucise.*
+import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.item_recent_message.*
 import kotlinx.android.synthetic.main.item_recent_message.view.*
-import java.time.Duration
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 class RecentMessageAdapter (
     private val recentMessages: ArrayList<RecentMessage> = ArrayList()
@@ -53,7 +47,6 @@ class RecentMessageAdapter (
 
     private lateinit var parentFragment : ViewGroup
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun meetingToMessage(meet: Meeting): Message {
         val time = DateTimeHelper.getReadableDateFull(meet.proposedTime)
         val seen = (meet.owner && meet.agreedOwner) || (!meet.owner && meet.agreedVisitor)
@@ -67,7 +60,7 @@ class RecentMessageAdapter (
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onBindViewHolder(holder: RecentMessageViewHolder, position: Int) {
         val rm = recentMessages[position]
 
@@ -100,7 +93,7 @@ class RecentMessageAdapter (
 
             img_user.clipToOutline = true
             Glide.with(context)
-                .load("http:10.0.2.2:5000/api/image/get_user_image_file?userId=${rm.User.Id}")
+                .load("${BASE_API_URL}image/get_user_image_file?userId=${rm.User.Id}")
                     .centerCrop()
                 .placeholder(R.drawable.ic_offline)
                 .into(img_user)

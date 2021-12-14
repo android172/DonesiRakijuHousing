@@ -182,23 +182,23 @@ class NavigationActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startFetchAlerts(ctx: Context) {
         stopFetchAlerts()
-//        job = scope.launch {
-//            delay(2000)
-//            ReqSender.sendRequestString(
-//                ctx,
-//                Request.Method.POST,
-//                "message/check_messages",
-//                null,
-//                { response ->
-//                    run {
-//                        handleAlerts(response)
-//                        startFetchAlerts(ctx)
-//                    }
-//                },
-//                null,
-//                loadingScreen = false
-//            )
-//        }
+        job = scope.launch {
+            delay(2000)
+            ReqSender.sendRequestString(
+                ctx,
+                Request.Method.POST,
+                "message/check_messages",
+                null,
+                { response ->
+                    run {
+                        handleAlerts(response)
+                        startFetchAlerts(ctx)
+                    }
+                },
+                null,
+                loadingScreen = false
+            )
+        }
     }
 
     private fun stopFetchAlerts() {
@@ -246,20 +246,20 @@ class NavigationActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getAlerts(){
-//        ReqSender.sendRequestString(
-//            this,
-//            Request.Method.POST,
-//            "message/check_messages",
-//            null,
-//            { response ->
-//                //Toast.makeText(this, "response: $response", Toast.LENGTH_LONG).show()
-//                handleAlerts(response)
-//            },
-//            { error ->
-//                Toast.makeText(this, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
-//            },
-//            loadingScreen = false
-//        )
+        ReqSender.sendRequestString(
+            this,
+            Request.Method.POST,
+            "message/check_messages",
+            null,
+            { response ->
+                //Toast.makeText(this, "response: $response", Toast.LENGTH_LONG).show()
+                handleAlerts(response)
+            },
+            { error ->
+                Toast.makeText(this, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
+            },
+            loadingScreen = false
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
