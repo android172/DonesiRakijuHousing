@@ -57,7 +57,7 @@ namespace WebAPI.Services
             {
                 fileName = Directory.GetFiles($"{path}\\{folder}").FirstOrDefault();
             }
-            File.Delete($"{fileName}");
+            File.Delete($"{path}\\{folder}\\{fileName}");
         }
 
         public void DeleteAllFiles(string folder)
