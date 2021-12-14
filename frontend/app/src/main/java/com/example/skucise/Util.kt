@@ -3,6 +3,7 @@ package com.example.skucise
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ActivityNotFoundException
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.webkit.MimeTypeMap
 import android.widget.TextView
 import java.io.File
 import android.provider.OpenableColumns
+import android.widget.Toast
 import com.android.volley.VolleyError
 
 
@@ -42,37 +44,35 @@ class Util  {
 
         // Send email
         fun startEmailAppIntent(activity: Activity) {
-            val emailIntent = Intent(Intent.ACTION_VIEW, Uri.parse("mailto:"))
             val packageManager = activity.packageManager
-
-            val activitiesHandlingEmails = packageManager.queryIntentActivities(emailIntent, 0)
-
-            if (activitiesHandlingEmails.isEmpty())
-                return
-
-            // use the first email package to create the chooserIntent
-            val firstEmailPackageName = activitiesHandlingEmails.first().activityInfo.packageName
-            val firstEmailInboxIntent = packageManager.getLaunchIntentForPackage(firstEmailPackageName)
-            val emailAppChooserIntent = Intent.createChooser(firstEmailInboxIntent, "")
-
-            // created UI for other email packages and add them to the chooser
-            val emailInboxIntents = mutableListOf<LabeledIntent>()
-            for (i in 1 until activitiesHandlingEmails.size) {
-                val activityHandlingEmail = activitiesHandlingEmails[i]
-                val packageName = activityHandlingEmail.activityInfo.packageName
-                val intent = packageManager.getLaunchIntentForPackage(packageName)
-                emailInboxIntents.add(
-                    LabeledIntent(
-                        intent,
-                        packageName,
-                        activityHandlingEmail.loadLabel(packageManager),
-                        activityHandlingEmail.icon
+            try {
+                val intents: List<Intent> = (packageManager.queryIntentActivities(Intent(
+                    Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", "lowhillgamesoy@gmail.com", null
                     )
-                )
+                ), 0) + packageManager.queryIntentActivities(Intent(Intent.ACTION_VIEW).also {
+                    it.type = "message/rfc822"
+                }, 0)).mapNotNull {
+                    it.activityInfo.packageName
+                }.toSet().mapNotNull {
+                    packageManager.getLaunchIntentForPackage(it)
+                }
+
+                if(intents.isNotEmpty()) {
+                    activity.startActivityForResult(Intent.createChooser(intents.first(), "").also {
+                        if(intents.size > 1) {
+                            it.putExtra(Intent.EXTRA_INITIAL_INTENTS, intents.subList(1, intents.size - 1).toTypedArray())
+                        }
+                    }, 1010)
+                } else {
+                    Toast.makeText(activity, "Potvrdite email adresu preko linka u vašem inbox-u.", Toast.LENGTH_LONG).show()
+                }
+
+
+            } catch (e: ActivityNotFoundException) {
+                // Show error message
+                e.printStackTrace()
             }
-            val extraEmailInboxIntents = emailInboxIntents.toTypedArray()
-            val emailChooserIntent = emailAppChooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, extraEmailInboxIntents)
-            activity.startActivity(emailChooserIntent)
         }
 
         class ErrorReport constructor(private val reportTo: TextView) {
