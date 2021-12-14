@@ -234,7 +234,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/mockView2" />
 
-                <com.google.android.gms.maps.MapView
+                <com.example.skucise.view.CustomMapView
                     android:id="@+id/map_advert_page_location"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
