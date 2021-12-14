@@ -22,6 +22,7 @@ import com.android.volley.Request
 import com.example.skucise.*
 import com.example.skucise.Util.Companion.getFileExtension
 import com.example.skucise.Util.Companion.getFileName
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AddAdvertImagesAdapter
 import com.example.skucise.fragments.SearchFragment.Companion.allCities
 import com.karumi.dexter.Dexter
@@ -318,12 +319,12 @@ class AddAdvertFragment : Fragment() {
                             findNavController().navigate(R.id.advertFragment, args)
                         },
                         { error ->
-                            Toast.makeText(requireContext(), "error:\n${error}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(requireContext(), "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 },
                 errorListener = { error ->
-                    Toast.makeText(requireContext(), "textError:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "textError:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 },
                 authorization = true
             )

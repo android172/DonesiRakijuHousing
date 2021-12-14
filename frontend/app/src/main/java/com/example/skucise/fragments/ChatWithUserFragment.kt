@@ -17,6 +17,7 @@ import com.example.skucise.Message
 import com.example.skucise.MessageJSON
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util.Companion.getMessageString
 import kotlinx.android.synthetic.main.fragment_chat_with_user.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -72,7 +73,7 @@ class ChatWithUserFragment : Fragment() {
             params.put("otherUserId", otherUserId.toString())
             params.put("content", msg)
 
-            val sendMsgUrl = "api/message/send_message"
+            val sendMsgUrl = "message/send_message"
 
             ReqSender.sendRequestString(
                 this.requireActivity(),
@@ -85,7 +86,7 @@ class ChatWithUserFragment : Fragment() {
                     updateMessages()
                 },
                 { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 }
             )
         }
@@ -111,7 +112,7 @@ class ChatWithUserFragment : Fragment() {
                 rcv_messages.scrollToPosition(mAdapter.itemCount -1)
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

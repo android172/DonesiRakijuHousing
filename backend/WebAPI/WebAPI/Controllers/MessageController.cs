@@ -219,8 +219,8 @@ namespace WebAPI.Controllers
                 return BadRequest("Greška, ne možete poslati poruku samom sebi.");
 
             var hasMeeting = ctx.Meetings
-                .Where(m => m.AgreedOwner && m.AgreedVisitor
-                && ((m.VisitorId == otherUserId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == userId)
+                .Where(m => 
+                    ((m.VisitorId == otherUserId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == userId)
                     || ((m.VisitorId == userId && ctx.Adverts.Where(a => a.Id == m.AdvertId).FirstOrDefault().OwnerId == otherUserId))));
 
             if (!hasMeeting.Any())

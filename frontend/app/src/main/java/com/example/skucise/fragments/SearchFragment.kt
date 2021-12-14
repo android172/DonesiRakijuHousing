@@ -15,6 +15,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
 import com.example.skucise.*
+import com.example.skucise.Util.Companion.getMessageString
 import com.example.skucise.adapter.AdvertAdapter
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlin.collections.ArrayList
@@ -293,7 +294,7 @@ class SearchFragment : Fragment() {
                     allCities = cityArray
                 },
                 { error ->
-                    Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                 }
             )
         } else {
@@ -485,7 +486,7 @@ class SearchFragment : Fragment() {
                 scv_search_scroll.scrollTo(0, 0)
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }
@@ -505,7 +506,7 @@ class SearchFragment : Fragment() {
                 }
             },
             { error ->
-                Toast.makeText(activity, "error:\n$error", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
             }
         )
     }

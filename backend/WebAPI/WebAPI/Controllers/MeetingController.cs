@@ -181,7 +181,7 @@ namespace WebAPI.Controllers
             if (result == null)
                 return NotFound("Greška, sastanak ne postoji ili je već završen.");
 
-            if (DateTime.Now <= result.m.Time.AddDays(-1))
+            if (DateTime.Now >= result.m.Time.AddDays(-1))
                 return BadRequest("Greška, nije moguće otkazati sastanak 24h pre sastanka.");
 
             if (result.m.VisitorId != userId && result.OwnerId != userId)

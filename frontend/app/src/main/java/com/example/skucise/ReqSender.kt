@@ -2,8 +2,7 @@ package com.example.skucise
 
 import android.app.Activity
 import android.content.Context
-import com.android.volley.RequestQueue
-import com.android.volley.Response
+import com.android.volley.*
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -11,8 +10,6 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONException
-import com.android.volley.VolleyLog
-import com.android.volley.AuthFailureError
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
 import java.io.UnsupportedEncodingException
 
@@ -52,7 +49,7 @@ open class ReqSender {
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
-            val stringRequest = object : JsonObjectRequest (
+            val request = object : JsonObjectRequest (
                 method, fullUrl, null,
                 { loadingDialog.dismiss(); listener.onResponse(it) },
                 { loadingDialog.dismiss(); errorListener?.onErrorResponse(it) }
@@ -64,7 +61,11 @@ open class ReqSender {
                     return headers
                 }
             }
-            queue.add(stringRequest)
+            request.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+            queue.add(request)
         }
 
         fun sendRequestString(
@@ -94,6 +95,10 @@ open class ReqSender {
                     return headers
                 }
             }
+            stringRequest.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
             queue.add(stringRequest)
         }
 
@@ -109,7 +114,7 @@ open class ReqSender {
             // Send request
             val fullUrl = buildUrl(url, params)
             val queue = getRequestQueue(context)
-            val stringRequest = object : StringRequest(
+            val request = object : StringRequest(
                 method, fullUrl,
                 { listener.onResponse(it) },
                 { errorListener?.onErrorResponse(it) }
@@ -121,7 +126,11 @@ open class ReqSender {
                     return headers
                 }
             }
-            queue.add(stringRequest)
+            request.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+            queue.add(request)
         }
 
         fun sendRequestArray(
@@ -151,6 +160,10 @@ open class ReqSender {
                     return headers
                 }
             }
+            request.retryPolicy = DefaultRetryPolicy(
+                0, -1,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
             queue.add(request)
         }
 
@@ -178,7 +191,7 @@ open class ReqSender {
                 for (image in images) jsonArray.put(FileDataToJson(image))
                 val requestBody = jsonArray.toString()
 
-                val stringRequest: StringRequest = object : StringRequest(
+                val request: StringRequest = object : StringRequest(
                     method, "${BASE_API_URL}$url", listener, errorListener
                 ) {
                     override fun getBodyContentType(): String {
@@ -205,7 +218,11 @@ open class ReqSender {
                         return headers
                     }
                 }
-                queue.add(stringRequest)
+                request.retryPolicy = DefaultRetryPolicy(
+                    0, -1,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                )
+                queue.add(request)
             } catch (e: JSONException) {
                 e.printStackTrace()
             }

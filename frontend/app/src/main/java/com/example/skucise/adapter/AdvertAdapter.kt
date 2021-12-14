@@ -107,7 +107,9 @@ class AdvertAdapter(
                                 "advert/remove_advert",
                                 hashMapOf(Pair("advertId", currentAdvert.id.toString())),
                                 {
-                                    notifyItemRemoved(adverts.indexOf(currentAdvert))
+                                    val removePosition = adverts.indexOf(currentAdvert)
+                                    adverts.removeAt(removePosition)
+                                    notifyItemRemoved(removePosition)
                                 },
                                 { error ->
                                     Toast.makeText(context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()

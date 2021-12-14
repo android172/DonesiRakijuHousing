@@ -16,6 +16,7 @@ import com.android.volley.Request
 import com.example.skucise.Meeting
 import com.example.skucise.R
 import com.example.skucise.ReqSender
+import com.example.skucise.Util.Companion.getMessageString
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.item_meeting_request.view.*
@@ -108,11 +109,11 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -125,11 +126,11 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -140,12 +141,15 @@ class MeetingAdapter(
                 if ((currentMeetingRequest.owner && currentMeetingRequest.agreedOwner) ||
                     (!currentMeetingRequest.owner && currentMeetingRequest.agreedVisitor)) {
                     btn_meeting_accept.isEnabled = false
+                    btn_meeting_accept.alpha = 0.6F
                 }
 
                 // 24h before the meeting cancel and proposed time tweak are disabled
                 if (LocalDateTime.now() > currentMeetingRequest.proposedTime.minusDays(1)) {
                     btn_meeting_cancel.isEnabled = false
+                    btn_meeting_cancel.alpha = 0.6F
                     btn_meeting_tweak_time.isEnabled = false
+                    btn_meeting_tweak_time.alpha = 0.6F
                 }
 
                 // on accept
@@ -163,7 +167,7 @@ class MeetingAdapter(
                             notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
@@ -186,7 +190,7 @@ class MeetingAdapter(
                                 notifyItemChanged(meetingRequests.indexOf(currentMeetingRequest))
                             },
                             { error ->
-                                Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                                Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                             }
                         )
                     }
@@ -214,11 +218,11 @@ class MeetingAdapter(
                         hashMapOf(Pair("meetingId", currentMeetingRequest.id.toString())),
                         {
                             val dropPosition = meetingRequests.indexOf(currentMeetingRequest)
-                            meetingRequests.drop(dropPosition)
+                            meetingRequests.removeAt(dropPosition)
                             notifyItemRemoved(dropPosition)
                         },
                         { error ->
-                            Toast.makeText(parentViewGroup!!.context, "error:\n$error", Toast.LENGTH_LONG).show()
+                            Toast.makeText(parentViewGroup!!.context, "error:\n${error.getMessageString()}", Toast.LENGTH_LONG).show()
                         }
                     )
                 }
