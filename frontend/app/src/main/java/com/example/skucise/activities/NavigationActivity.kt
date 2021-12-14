@@ -31,6 +31,10 @@ import android.media.RingtoneManager
 
 import android.media.Ringtone
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.findFragment
+import com.example.skucise.fragments.ChatWithUserFragment
 import java.lang.Exception
 
 
@@ -166,16 +170,18 @@ class NavigationActivity : AppCompatActivity() {
                 R.layout.item_messages_with_alert,
                 bottomNavigationMenuView, false
             )
+        chatBadge.visibility = View.GONE
         itemView.addView(chatBadge)
 
     }
 
-    var prevAlerts = "0"
+    var prevAlerts = "-1"
 
     val scope = MainScope() // could also use an other scope such as viewModelScope if available
     var job: Job? = null
     var notificationsInitialized = false
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun startFetchAlerts(ctx: Context) {
         stopFetchAlerts()
         job = scope.launch {
@@ -203,6 +209,7 @@ class NavigationActivity : AppCompatActivity() {
         job = null
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleAlerts(response: String) {
         if (response.toInt() > prevAlerts.toInt()) {
             if (notificationsInitialized) {
@@ -215,18 +222,32 @@ class NavigationActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }
-
             notificationsInitialized = true
 
-            tv_alert_count.text = response
-            if (response == "0")
-                message_alert.visibility = View.GONE
-            else
-                message_alert.visibility = View.VISIBLE
+            val navController = findNavController(R.id.frc_page_body)
+            //Toast.makeText(this, navController.currentDestination.toString(), Toast.LENGTH_LONG).show()
+
+            if(navController.currentDestination!!.id == R.id.chatWithUserFragment) {
+                supportFragmentManager.fragments.forEach {
+                    it.childFragmentManager.fragments.forEach { fragment ->
+                        if (fragment is ChatWithUserFragment) {
+                            fragment.updateMessages()
+                        }
+                    }
+                }
+            }
         }
+
+        tv_alert_count.text = response
+        if (response == "0")
+            message_alert.visibility = View.GONE
+        else
+            message_alert.visibility = View.VISIBLE
+
         prevAlerts = response
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getAlerts(){
         ReqSender.sendRequestStringNoLoading(
             this,
@@ -243,6 +264,7 @@ class NavigationActivity : AppCompatActivity() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() {
         super.onStart()
         val navController = findNavController(R.id.frc_page_body)

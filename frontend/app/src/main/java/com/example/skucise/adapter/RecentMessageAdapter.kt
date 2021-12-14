@@ -59,7 +59,7 @@ class RecentMessageAdapter (
         val seen = (meet.owner && meet.agreedOwner) || (!meet.owner && meet.agreedVisitor)
         return Message(
             Id = 0.toUInt(),
-            SenderId = (if (!meet.owner) meet.otherUser else 0).toUInt(),
+            SenderId = (if (!meet.owner && meet.agreedVisitor) meet.otherUser else 0).toUInt(),
             ReceiverId = 0.toUInt(),
             Content = "Sastanak - $time",
             SendDate = meet.dateCreated,

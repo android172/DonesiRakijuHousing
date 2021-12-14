@@ -49,6 +49,7 @@ class EditAdvertFragment : Fragment() {
 
     private val imageURIs = ArrayList<Uri>()
     private val imageNames = ArrayList<String>()
+    private lateinit var oldAdapter: DeleteAdvertImagesAdapter
     private var advertId : Int = 0
     private var advert : Advert? = null
 
@@ -163,6 +164,7 @@ class EditAdvertFragment : Fragment() {
                     for(i in 0 until images.length()){
                         imageNames.add(images[i].toString())
                     }
+
                     if(rcv_advert_images_old.adapter != null){
                         rcv_advert_images_old.adapter!!.notifyDataSetChanged()
                     }
@@ -234,7 +236,8 @@ class EditAdvertFragment : Fragment() {
 
         rcv_advert_images.adapter = AddAdvertImagesAdapter(imageURIs)
 
-        rcv_advert_images_old.adapter = DeleteAdvertImagesAdapter(advertId, imageNames)
+        oldAdapter = DeleteAdvertImagesAdapter(advertId, imageNames)
+        rcv_advert_images_old.adapter = oldAdapter
     }
 
     override fun onCreateView(
@@ -346,11 +349,33 @@ class EditAdvertFragment : Fragment() {
                 url = urlEditAdvert,
                 params = params,
                 listener = { response ->
-                    //Toast.makeText(requireContext(), "response:\n$response\nAdding images...", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), oldAdapter.imagesToDelete.joinToString(","), Toast.LENGTH_SHORT).show()
+                    if(oldAdapter.imagesToDelete.isNotEmpty()){
+                        for(img in oldAdapter.imagesToDelete) {
+                            val url =
+                                "image/delete_advert_image?advertId=$advertId&imageName=$img"
+
+                            ReqSender.sendRequestStringNoLoading(
+                                requireContext(),
+                                Request.Method.DELETE,
+                                url,
+                                null,
+                                { },
+                                { error ->
+                                    Toast.makeText(
+                                        context,
+                                        "error:\n${error.getMessageString()}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                },
+                            true
+                            )
+                        }
+                        oldAdapter.imagesToDelete.clear()
+                    }
 
                     if(imageURIs.isEmpty())
                     {
-
                         val args = Bundle()
                         args.putInt("advertId", advert!!.id.toInt())
                         findNavController().navigate(R.id.advertFragment, args)
