@@ -218,7 +218,7 @@ class MessageAdapter (
                 ll_message.layoutDirection = View.LAYOUT_DIRECTION_LTR
                 csl_message_content.backgroundTintList = context.getResources().getColorStateList(R.color.msgs_background)
                 img_seen.foregroundTintList = context.getResources().getColorStateList(R.color.msgs_grey)
-                tv_message.setTextColor(resources.getColor(R.color.black))
+                tv_message.setTextColor(resources.getColor(R.color.transparent_text))
             }else{
                 if(msg.Seen) {
                     img_seen.visibility = View.VISIBLE

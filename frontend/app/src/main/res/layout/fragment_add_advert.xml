@@ -68,6 +68,7 @@
                     android:id="@+id/ti_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/transparent_text"
                     android:hint="Naslov:" />
                 <!--</com.google.android.material.textfield.TextInputLayout>-->
 
@@ -97,6 +98,7 @@
                     android:id="@+id/ti_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColorHint="@color/transparent_text"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -107,6 +109,7 @@
                         android:gravity="start|top"
                         android:hint="Opis oglasa:"
                         android:lines="5"
+                        android:background="@color/text_field_background"
                         android:maxLines="50"
                         android:nestedScrollingEnabled="true"
                         android:scrollbars="vertical"/>
@@ -247,6 +250,7 @@
                 android:id="@+id/ti_adress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/transparent_text"
                 android:hint="Adresa:" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -363,6 +367,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Namešten:"
+                    android:textColor="@color/main_text"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

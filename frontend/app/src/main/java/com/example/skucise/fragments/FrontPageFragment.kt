@@ -22,6 +22,9 @@ import com.example.skucise.loadAdverts
 import kotlinx.android.synthetic.main.activity_navigation.*
 import kotlinx.android.synthetic.main.fragment_frontpage.*
 import kotlinx.android.synthetic.main.fragment_frontpage.view.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.min
 
 class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
@@ -131,9 +134,24 @@ class FrontPageFragment : Fragment(R.layout.fragment_frontpage) {
             )
         }
         //Toast.makeText(context, "test: mounted = " + Environment.getExternalStorageState(), Toast.LENGTH_LONG).show()
-        val cityTilesAdapter = CityTilesAdapter(tileSet, requireActivity().nav_bottom_navigator)
-        val a = view.findViewById<RecyclerView>(R.id.rcv_city_tiles)
-        a.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        a.adapter = cityTilesAdapter
+        if (activity != null) {
+            val cityTilesAdapter = CityTilesAdapter(tileSet, requireActivity().nav_bottom_navigator)
+            val a = view.findViewById<RecyclerView>(R.id.rcv_city_tiles)
+            a.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            a.adapter = cityTilesAdapter
+        }
+        else {
+            MainScope().launch {
+                delay(4000)
+                if (activity != null) {
+                    val cityTilesAdapter =
+                        CityTilesAdapter(tileSet, requireActivity().nav_bottom_navigator)
+                    val a = view.findViewById<RecyclerView>(R.id.rcv_city_tiles)
+                    a.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    a.adapter = cityTilesAdapter
+                }
+            }
+        }
     }
 }

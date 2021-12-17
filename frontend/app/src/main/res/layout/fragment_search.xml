@@ -140,6 +140,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:text="1"
+                    android:backgroundTint="@color/main_text"
                     android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/btn_paging_next"
@@ -159,6 +160,7 @@
         android:background="@color/white"
         android:padding="8dp"
         android:visibility="gone"
+        android:backgroundTint="@color/main_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -316,6 +318,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintEnd_toStartOf="@+id/et_filters_size_from_measure"
                         app:layout_constraintStart_toEndOf="@id/tv_filters_size_from"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -346,6 +349,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintEnd_toStartOf="@+id/et_filters_size_to_measure"
                         app:layout_constraintStart_toEndOf="@id/tv_filters_size_to"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -404,6 +408,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintEnd_toStartOf="@+id/et_filters_price_from_currency"
                         app:layout_constraintStart_toEndOf="@id/tv_filters_price_from"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -434,6 +439,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintEnd_toStartOf="@+id/et_filters_price_to_currency"
                         app:layout_constraintStart_toEndOf="@id/tv_filters_price_to"
                         app:layout_constraintTop_toTopOf="parent" />

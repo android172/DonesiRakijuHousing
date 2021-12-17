@@ -93,7 +93,6 @@ class ChatWithUserFragment : Fragment() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun updateMessages(){
         val url = "message/get_chat?otherUserId=$otherUserId"
 

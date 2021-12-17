@@ -32,6 +32,10 @@ import kotlinx.android.synthetic.main.calendar_day_layout.view.*
 import kotlinx.android.synthetic.main.calendar_event_item_view.view.*
 import kotlinx.android.synthetic.main.calendar_month_layout.view.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -94,7 +98,23 @@ class CalendarFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        meetingRequestAdapter.setupNavMenu(requireActivity().nav_bottom_navigator)
+        if (requireActivity().nav_bottom_navigator != null)
+            meetingRequestAdapter.setupNavMenu(requireActivity().nav_bottom_navigator)
+        else loadNavigationView()
+    }
+
+    private var job: Job? = null
+    private fun loadNavigationView() {
+        job?.cancel()
+        job = null
+        job = MainScope().launch {
+            delay(4000)
+            if (requireActivity().nav_bottom_navigator != null)
+                meetingRequestAdapter.setupNavMenu(requireActivity().nav_bottom_navigator)
+            else {
+                loadNavigationView()
+            }
+        }
     }
 
     override fun onCreateView(
@@ -149,7 +169,7 @@ class CalendarFragment : Fragment() {
 
                 textView.background = null
                 if (day.owner == DayOwner.THIS_MONTH) {
-                    textView.setTextColor(resources.getColor(R.color.black))
+                    textView.setTextColor(resources.getColor(R.color.main_text))
                     dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
                     if (dotView.isVisible && day.date < LocalDate.now())
                         dotView.setBackgroundColor(resources.getColor(R.color.red))
@@ -162,7 +182,7 @@ class CalendarFragment : Fragment() {
                         }
                     }
                 } else {
-                    textView.setTextColor(resources.getColor(R.color.transparent_dark))
+                    textView.setTextColor(resources.getColor(R.color.transparent_text))
                     dotView.visibility = View.INVISIBLE
                 }
             }
@@ -187,7 +207,7 @@ class CalendarFragment : Fragment() {
                     container.legendLayout.tag = month.yearMonth
                     container.legendLayout.children.map { it as TextView }.forEachIndexed { index, tv ->
                         tv.text = daysOfWeek[index].name.first().toString()
-                        tv.setTextColor(resources.getColor(R.color.black))
+                        tv.setTextColor(resources.getColor(R.color.main_text))
                     }
                 }
             }

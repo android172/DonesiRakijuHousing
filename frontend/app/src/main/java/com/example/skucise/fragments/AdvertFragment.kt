@@ -265,7 +265,7 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
             }
 
             btn_delete_my_advert_advert_page.setOnClickListener {
-                AlertDialog
+                val dialog = AlertDialog
                     .Builder(requireContext())
                     .setTitle("Da li ste sigurni da želite da obrišete oglas?")
                     .setPositiveButton("Da") { _, _ ->
@@ -287,7 +287,9 @@ class AdvertFragment : Fragment(), OnMapReadyCallback, TimePickerDialog.OnTimeSe
                         )
                     }
                     .setNegativeButton("Ne") {_,_->}
-                    .create().show()
+                    .create()
+                dialog.show()
+                dialog.window!!.setBackgroundDrawableResource(R.color.main_background)
             }
 
             tv_advert_page_owner.text = "@$ownerUsername (ja)"

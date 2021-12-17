@@ -16,7 +16,7 @@
         android:autofillHints="username|emailAddress"
         android:background="@drawable/login_et_style"
         android:ems="10"
-        android:hint="@string/username_hint"
+        android:hint="@string/username_hint2"
         android:inputType="text|textEmailAddress"
         android:minHeight="45dp"
         android:textColorHighlight="@color/transparent"

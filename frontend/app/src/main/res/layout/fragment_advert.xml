@@ -304,6 +304,9 @@
                     android:id="@+id/calv_advert_page_calender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:theme="@style/CalenderViewCustom"
+                    android:dateTextAppearance="@style/CalenderViewDateCustomText"
+                    android:weekDayTextAppearance="@style/CalenderViewWeekCustomText"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_advert_page_calender_header" />

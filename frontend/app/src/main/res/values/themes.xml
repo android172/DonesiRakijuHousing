@@ -10,11 +10,24 @@
         <item name="colorSecondary">@color/logo_color4</item>
         <item name="colorSecondaryVariant">@color/logo_color4_dark</item>
         <item name="colorOnSecondary">@color/white</item>
+        <!-- Text color -->
         <!-- Status bar color. -->
         <!--
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         -->
         <!-- Customize your theme here.-->
+    </style>
+
+    <!-- This will set the fade in animation on all your activities by default -->
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <!-- Custom calendar style -->
+    <style name="CalenderViewDateCustomText" parent="android:TextAppearance.DeviceDefault.Small">
+        <item name="android:textColor">@color/black</item>
+        <item name="dayTodayStyle">@color/white</item>a
     </style>
 
     <style name="Theme.SkuciSe.FrontpageTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -27,6 +40,10 @@
         <item name="colorSecondary">@color/logo_color4</item>
         <item name="colorSecondaryVariant">@color/logo_color4_dark</item>
         <item name="colorOnSecondary">@color/white</item>
+        <!-- Text color -->
+        <item name="android:textColor">@color/transparent_text</item>
+        <item name="android:editTextColor">@color/main_text</item>
+        <item name="android:textColorHint">@color/transparent_text</item>
 
         <item name="cardViewStyle">@style/roundedCardView</item>
         <item name="android:checkboxStyle">@style/filterCheckboxesStyle</item>

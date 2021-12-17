@@ -57,6 +57,7 @@
                         android:id="@+id/ti_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:backgroundTint="@color/transparent_text"
                         android:hint="Naslov:" />
                     <!--</com.google.android.material.textfield.TextInputLayout>-->
 
@@ -96,6 +97,7 @@
                             android:gravity="start|top"
                             android:hint="Opis oglasa:"
                             android:lines="5"
+                            android:background="@color/text_field_background"
                             android:maxLines="50"
                             android:nestedScrollingEnabled="true"
                             android:scrollbars="vertical"/>
@@ -236,6 +238,7 @@
                     android:id="@+id/ti_adress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/transparent_text"
                     android:hint="Adresa:" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -247,6 +250,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:ems="10"
+                        android:backgroundTint="@color/transparent_text"
                         android:inputType="numberDecimal"
                         app:layout_constraintStart_toEndOf="@+id/tv_size"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -256,6 +260,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:ems="10"
+                        android:backgroundTint="@color/transparent_text"
                         android:inputType="numberDecimal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -294,6 +299,7 @@
                         android:gravity="center"
                         android:inputType="number"
                         android:text="1"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tv_num_bedrooms"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -306,6 +312,7 @@
                         android:gravity="center"
                         android:inputType="number"
                         android:text="1"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -343,6 +350,7 @@
                         android:gravity="center"
                         android:inputType="number"
                         android:text="2000"
+                        android:backgroundTint="@color/transparent_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/tv_year_of_make"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -352,6 +360,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Namešten:"
+                        android:textColor="@color/main_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

@@ -1,5 +1,6 @@
 package com.example.skucise.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
@@ -31,8 +32,8 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.findFragment
 import androidx.navigation.NavController
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.skucise.fragments.ChatWithUserFragment
 import java.lang.Exception
 
@@ -42,6 +43,18 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
+
+
+        val sharedPreferences = getSharedPreferences("AppSettingsPrefs", 0)
+        var isDarkMode = sharedPreferences.getBoolean("DarkMode", false)
+        loadDarkMode(isDarkMode)
+
+        img_dark_mode.setOnClickListener {
+//        sw_dark_mode.setOnClickListener {
+            isDarkMode = !isDarkMode
+            sharedPreferences.edit().putBoolean("DarkMode", isDarkMode).apply()
+            loadDarkMode(isDarkMode)
+        }
 
         // Check if session has expired
         ReqSender.sendRequestString(
@@ -181,7 +194,6 @@ class NavigationActivity : AppCompatActivity() {
     private var job: Job? = null
     private var notificationsInitialized = false
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun startFetchAlerts(ctx: Context) {
         stopFetchAlerts()
         job = scope.launch {
@@ -203,12 +215,23 @@ class NavigationActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun loadDarkMode(isDarkMode: Boolean) {
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            img_dark_mode.background = resources.getDrawable(R.drawable.ic_baseline_light_mode)
+        }
+        else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            img_dark_mode.background = resources.getDrawable(R.drawable.ic_baseline_darkmode)
+        }
+    }
+
     private fun stopFetchAlerts() {
         job?.cancel()
         job = null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleAlerts(response: String) {
         if (response.toInt() > prevAlerts.toInt()) {
             if (notificationsInitialized) {
@@ -245,7 +268,6 @@ class NavigationActivity : AppCompatActivity() {
         prevAlerts = response
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getAlerts(){
         ReqSender.sendRequestString(
             this,
@@ -274,10 +296,10 @@ class NavigationActivity : AppCompatActivity() {
         nav_bottom_navigator.setOnItemSelectedListener { item ->
             if(item.itemId == R.id.chatFragment){
                 message_alert.visibility = View.GONE
-            }else
-            {
+            } else {
                 getAlerts()
             }
+
             NavigationUI.onNavDestinationSelected(item, navController)
         }
     }

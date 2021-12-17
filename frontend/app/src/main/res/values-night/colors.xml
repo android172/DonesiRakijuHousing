@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="main_background">#FFFFFF</color>
-    <color name="text_field_background">#dfdfdf</color>
-    <color name="main_text">#FF000000</color>
-    <color name="transparent_text">#A0444444</color>
-    <color name="button_disabled">#E0E0E0</color>
-    <color name="button_disabled_text">#8B8B8B</color>
-    <color name="msg_color">#F8F8FF</color>
+    <color name="main_background">#191919</color>
+    <color name="text_field_background">#212121</color>
+    <color name="main_text">#FFFFFF</color>
+    <color name="transparent_text">#AAFFFFFF</color>
+    <color name="button_disabled">#101010</color>
+    <color name="button_disabled_text">#626262</color>
+    <color name="msg_color">#2C2F33</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

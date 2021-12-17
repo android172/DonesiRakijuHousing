@@ -11,6 +11,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONException
 import com.example.skucise.SessionManager.Companion.BASE_API_URL
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
@@ -52,7 +54,7 @@ open class ReqSender {
             // loading dialog
             if (loadingScreen) {
                 val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-                loadingDialog.start()
+                MainScope().launch { loadingDialog.start() }
                 onResponse = Response.Listener<JSONObject>
                 { loadingDialog.dismiss(); listener.onResponse(it) }
                 onError = Response.ErrorListener()
@@ -94,7 +96,7 @@ open class ReqSender {
             // loading dialog
             if (loadingScreen) {
                 val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-                loadingDialog.start()
+                MainScope().launch { loadingDialog.start() }
                 onResponse = Response.Listener<String>
                 { loadingDialog.dismiss(); listener.onResponse(it) }
                 onError = Response.ErrorListener()
@@ -136,7 +138,7 @@ open class ReqSender {
             // loading dialog
             if (loadingScreen) {
                 val loadingDialog = Util.Companion.LoadingDialog(context as Activity)
-                loadingDialog.start()
+                MainScope().launch { loadingDialog.start() }
                 onResponse = Response.Listener<JSONArray>
                 { loadingDialog.dismiss(); listener.onResponse(it) }
                 onError = Response.ErrorListener()

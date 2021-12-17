@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scv_login_background_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <ScrollView
         android:layout_width="match_parent"

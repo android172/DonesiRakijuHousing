@@ -94,6 +94,13 @@ class SearchFragment : Fragment() {
 
         var filterArray : String? = null
 
+        // set search tint
+        val searchIcon  = sv_adverts.findViewById<ImageView>(R.id.search_button)
+        searchIcon.setColorFilter(R.color.transparent_text)
+
+        val closeIcon = sv_adverts.findViewById<ImageView>(R.id.search_close_btn)
+        closeIcon.setColorFilter(R.color.transparent_text)
+
         // load previous state if it exists
         if (fragmentState != null) {
             filterArray    = fragmentState!!["filterArray"]    as String
@@ -207,7 +214,7 @@ class SearchFragment : Fragment() {
         params.setMargins(px, 0, 0, 0)
         checkBox.layoutParams = params
         checkBox.setBackgroundResource(R.drawable.checkbox_selector_shape)
-        checkBox.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
+        checkBox.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.main_text))
         //checkBox.setTextColor(R.drawable.checkbox_selector_text_color)
         into.addView(checkBox)
         return checkBox
@@ -243,7 +250,7 @@ class SearchFragment : Fragment() {
         for (option in options) {
             val radioButton = RadioButton(context)
             radioButton.text = option
-            radioButton.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.selector_color))
+            radioButton.setTextColor(AppCompatResources.getColorStateList(requireContext(), R.color.main_text))
             val params = LinearLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
             params.setMargins(px, 0, 0, 0)
             radioButton.layoutParams = params

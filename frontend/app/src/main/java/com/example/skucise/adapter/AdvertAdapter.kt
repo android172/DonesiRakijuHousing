@@ -97,7 +97,7 @@ class AdvertAdapter(
                     findNavController().navigate(R.id.editAdvertFragment, args)
                 }
                 btn_delete_my_advert.setOnClickListener {
-                    AlertDialog
+                    val dialog = AlertDialog
                         .Builder(context)
                         .setTitle("Da li ste sigurni da želite da obrišete oglas?")
                         .setPositiveButton("Da") { _, _ ->
@@ -117,7 +117,9 @@ class AdvertAdapter(
                             )
                         }
                         .setNegativeButton("Ne") {_,_->}
-                        .create().show()
+                        .create()
+                    dialog.show()
+                    dialog.window!!.setBackgroundDrawableResource(R.color.main_background)
                 }
             }
             else {
