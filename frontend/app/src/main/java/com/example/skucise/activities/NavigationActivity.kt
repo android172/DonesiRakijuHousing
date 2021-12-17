@@ -32,6 +32,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.findFragment
+import androidx.navigation.NavController
 import com.example.skucise.fragments.ChatWithUserFragment
 import java.lang.Exception
 
@@ -173,6 +174,7 @@ class NavigationActivity : AppCompatActivity() {
 
     }
 
+    private lateinit var navController: NavController
     private var prevAlerts = "-1"
 
     private val scope = MainScope() // could also use an other scope such as viewModelScope if available
@@ -221,10 +223,9 @@ class NavigationActivity : AppCompatActivity() {
             }
             notificationsInitialized = true
 
-            val navController = findNavController(R.id.frc_page_body)
             //Toast.makeText(this, navController.currentDestination.toString(), Toast.LENGTH_LONG).show()
 
-            if(navController.currentDestination!!.id == R.id.chatWithUserFragment) {
+            if(navController != null && navController.currentDestination!!.id == R.id.chatWithUserFragment) {
                 supportFragmentManager.fragments.forEach {
                     it.childFragmentManager.fragments.forEach { fragment ->
                         if (fragment is ChatWithUserFragment) {
@@ -265,7 +266,7 @@ class NavigationActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() {
         super.onStart()
-        val navController = findNavController(R.id.frc_page_body)
+        navController = findNavController(R.id.frc_page_body)
         nav_bottom_navigator.setupWithNavController(navController)
 
         getAlerts()
